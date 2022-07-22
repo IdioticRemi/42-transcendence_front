@@ -1,10 +1,22 @@
 <template>
-  <nav>
+  <RegisterUsername />
+  <!-- <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </nav>
-  <router-view />
+  <router-view /> -->
 </template>
+
+<script>
+import RegisterUsername from "./components/RegisterUsername.vue";
+
+export default {
+  name: "App",
+  components: {
+    RegisterUsername,
+  },
+};
+</script>
 
 <style lang="scss">
 #app {
