@@ -45,8 +45,18 @@ export default {
         body: JSON.stringify(user),
       };
       fetch("http://127.0.0.1:3000/users/register", options)
-        .then((response) => response.json())
-        .catch((error) => console.log(error.message));
+        .then(async (response) => {
+          let json = await response.json();
+          console.log(json);
+          if (!response.ok) {
+            if (response.status == 400) {
+              console.log(json);
+              return false;
+            }
+          }
+        })
+        .then((response) => console.log(response.json()))
+        .catch((error) => console.log(error));
       return true;
     },
   },
