@@ -28,7 +28,7 @@ export default {
       this.errors = [];
       if (!this.username) {
         this.errors.push("Username required.");
-        return false;
+        return;
       }
       const user = {
         username: this.username,
@@ -49,15 +49,13 @@ export default {
           let json = await response.json();
           console.log(json);
           if (!response.ok) {
-            if (response.status == 400) {
-              console.log(json);
-              return false;
-            }
+            return Promise.reject(json.message);
           }
         })
-        .then((response) => console.log(response.json()))
-        .catch((error) => console.log(error));
-      return true;
+        .catch((error) => {
+          console.log(error);
+          this.errors.push(error);
+        });
     },
   },
 };
