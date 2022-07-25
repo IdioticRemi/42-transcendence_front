@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     checkForm() {
-      console.log("username: ", this.username);
+      // console.log("username: ", this.username);
       this.errors = [];
       if (!this.username) {
         this.errors.push("Username required.");
@@ -47,9 +47,12 @@ export default {
       fetch("http://127.0.0.1:3000/users/register", options)
         .then(async (response) => {
           let json = await response.json();
-          console.log(json);
+          // console.log(json);
           if (!response.ok) {
             return Promise.reject(json.message);
+          }
+          if (json.status === "error") {
+            this.errors.push(json.message);
           }
         })
         .catch((error) => {
