@@ -1,17 +1,14 @@
 <template>
-  <div class="home">
-    <register-username></register-username>
-  </div>
+  <home-component />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import RegisterUsername from "@/components/RegisterUsername.vue";
-
+import HomeComponent from "@/components/HomeComponent.vue";
 export default defineComponent({
   name: "HomeView",
   components: {
-    RegisterUsername,
+    HomeComponent,
   },
 });
 </script>

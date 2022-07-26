@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import LoginView from "../views/LoginView.vue";
-import HomeView from "../views/HomeView.vue";
-import NotFound from "../views/NotFound.vue";
+import RegisterView from "@/views/RegisterView.vue";
+import HomeView from "@/views/HomeView.vue";
+import NotFound from "@/views/NotFound.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -13,13 +13,21 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView,
   },
   {
-    path: "/login",
-    name: "LoginView",
+    path: "/register",
+    name: "RegisterView",
     meta: {
-      title: "Login",
+      title: "Register",
     },
-    component: LoginView,
+    component: RegisterView,
   },
+  // {
+  //   path: "/login",
+  //   name: "LoginView",
+  //   meta: {
+  //     title: "Login",
+  //   },
+  //   component: LoginView,
+  // },
   {
     name: "NotFound",
     path: "/:pathMatch(.*)",
@@ -47,8 +55,9 @@ const router = createRouter({
   routes,
 });
 
+router.replace("/login");
+
 router.afterEach((to) => {
   document.title = to.meta.title as string;
 });
-router.replace({ path: "/login", name: "LoginView" });
 export default router;
