@@ -1,18 +1,17 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <register-username></register-username>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import HelloWorld from "@/components/HelloWorld.vue";
+import RegisterUsername from "@/components/RegisterUsername.vue";
 
 export default defineComponent({
   name: "HomeView",
   components: {
-    HelloWorld,
+    RegisterUsername,
   },
 });
 </script>
