@@ -3,5 +3,7 @@
  * @type {import('@vue/cli-service').ProjectOptions}
  */
 module.exports = {
-	// lintOnSave: 'warning',
+	devServer: {
+        port: 8081
+    }
 };
