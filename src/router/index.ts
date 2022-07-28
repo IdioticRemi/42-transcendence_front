@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import RegisterView from "@/views/RegisterView.vue";
 import HomeView from "@/views/HomeView.vue";
-import NotFound from "@/views/NotFound.vue";
+import NotFoundView from "@/views/NotFound.vue";
+import AboutView from "@/views/AboutView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -34,7 +35,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: "Not Found",
     },
-    component: NotFound,
+    component: NotFoundView,
   },
   {
     path: "/about",
@@ -42,11 +43,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: "About",
     },
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    component: AboutView,
   },
 ];
 
@@ -55,9 +52,4 @@ const router = createRouter({
   routes,
 });
 
-router.replace("/login");
-
-router.afterEach((to) => {
-  document.title = to.meta.title as string;
-});
 export default router;
