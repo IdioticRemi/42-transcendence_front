@@ -25,6 +25,11 @@ export default {
       errors: [],
     };
   },
+  mounted() {
+    if (this.$route.query.token)
+      localStorage.setItem("token", this.$route.query.token);
+    history.pushState({}, null, this.$route.path);
+  },
   methods: {
     authenticate() {
       const options = {
@@ -54,7 +59,6 @@ export default {
         });
     },
     checkForm() {
-      // console.log("username: ", this.username);
       this.errors = [];
       if (!this.username) {
         this.errors.push("Username required.");
