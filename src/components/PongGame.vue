@@ -51,5 +51,3 @@ body {
   background: white;
 }
 </style>
-
-NavBar
