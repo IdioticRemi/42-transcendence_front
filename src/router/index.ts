@@ -1,12 +1,21 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import RegisterView from "@/views/RegisterView.vue";
 import HomeView from "@/views/HomeView.vue";
+import LoginView from "@/views/LoginView.vue";
 import NotFoundView from "@/views/NotFound.vue";
 import AboutView from "@/views/AboutView.vue";
+import UserProfileView from "@/views/UserProfileView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
+    name: "LoginView",
+    meta: {
+      title: "Login",
+    },
+    component: LoginView,
+  },
+  {
+    path: "/home",
     name: "HomeView",
     meta: {
       title: "Home",
@@ -14,21 +23,13 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView,
   },
   {
-    path: "/register",
-    name: "RegisterView",
+    path: "/profile",
+    name: "UserProfileView",
     meta: {
-      title: "Register",
+      title: "Profile",
     },
-    component: RegisterView,
+    component: UserProfileView,
   },
-  // {
-  //   path: "/login",
-  //   name: "LoginView",
-  //   meta: {
-  //     title: "Login",
-  //   },
-  //   component: LoginView,
-  // },
   {
     name: "NotFound",
     path: "/:pathMatch(.*)",

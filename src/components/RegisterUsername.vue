@@ -6,13 +6,10 @@
       </p>
     </div>
     <form id="Register" @submit="checkForm" onsubmit="return false">
-      <label for="username">Username: </label>
+      <label for="username">New Nickname: </label>
       <input id="username" v-model="username" type="text" name="username" />
       <input type="submit" value="Submit" />
     </form>
-  </div>
-  <div>
-    <button @click="authenticate">login</button>
   </div>
 </template>
 
@@ -31,33 +28,6 @@ export default {
     history.pushState({}, null, this.$route.path);
   },
   methods: {
-    authenticate() {
-      const options = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "http://127.0.0.1:8081",
-          "Access-Control-Allow-Credentials": "true",
-          "Access-Control-Allow-Methods": "GET",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-      };
-      fetch("http://127.0.0.1:3000/login", options)
-        .then(async (response) => {
-          let json = await response.json();
-          console.log(json);
-          if (!response.ok) {
-            return Promise.reject(json.message);
-          }
-          if (json.status === "error") {
-            this.errors.push(json.message);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          this.errors.push(error);
-        });
-    },
     checkForm() {
       this.errors = [];
       if (!this.username) {
@@ -81,7 +51,6 @@ export default {
       fetch("http://127.0.0.1:3000/users/register", options)
         .then(async (response) => {
           let json = await response.json();
-          // console.log(json);
           if (!response.ok) {
             return Promise.reject(json.message);
           }
