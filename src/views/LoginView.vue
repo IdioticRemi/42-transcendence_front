@@ -1,14 +1,14 @@
 <template>
-  <home-component />
+  <login-component />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import HomeComponent from "@/components/HomeComponent.vue";
+import LoginComponent from "@/components/LoginComponent.vue";
 export default defineComponent({
   name: "LoginView",
   components: {
-    HomeComponent,
+    LoginComponent,
   },
 });
 </script>
