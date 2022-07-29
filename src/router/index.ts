@@ -4,6 +4,7 @@ import LoginView from "@/views/LoginView.vue";
 import NotFoundView from "@/views/NotFound.vue";
 import AboutView from "@/views/AboutView.vue";
 import UserProfileView from "@/views/UserProfileView.vue";
+import PongView from "@/views/PongView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -29,6 +30,14 @@ const routes: Array<RouteRecordRaw> = [
       title: "Profile",
     },
     component: UserProfileView,
+  },
+  {
+    path: "/pong",
+    name: "PongView",
+    meta: {
+      title: "Pong",
+    },
+    component: PongView,
   },
   {
     name: "NotFound",
