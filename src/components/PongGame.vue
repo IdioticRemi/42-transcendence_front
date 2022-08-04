@@ -1,15 +1,15 @@
 <template>
   <div ref="pixi"></div>
-  <input
+  <!-- <input
     type="button"
     value="New Game"
     id="new-game-button"
     @click="startPong()"
-  />
+  /> -->
 </template>
 
 <script>
-import { initPixi, startGame } from "./Pong.ts";
+import { initPixi, startNewGame } from "./Pong.ts";
 export default {
   name: "PongGame",
   data() {
@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     startPong: function () {
-      startGame();
+      startNewGame();
     },
   },
   mounted() {
