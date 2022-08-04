@@ -3,7 +3,7 @@ const settings = [
   "plugin:vue/vue3-essential",
   "eslint:recommended",
   "@vue/typescript/recommended",
-  "plugin:prettier/recommended",
+  // "plugin:prettier/recommended",
 ];
 
 // if (process.env.NODE_ENV === "production") {

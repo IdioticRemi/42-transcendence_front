@@ -1,6 +1,11 @@
 <template>
   <div ref="pixi"></div>
-  <input type="button" value="New Game" id="new-game-button" @click="startPong()" />
+  <input
+    type="button"
+    value="New Game"
+    id="new-game-button"
+    @click="startPong()"
+  />
 </template>
 
 <script>
