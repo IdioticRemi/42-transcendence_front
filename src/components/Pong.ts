@@ -54,9 +54,12 @@ function setInit() {
   padRight.y = app.view.height / 2 - padRight.height / 2;
   ball.x = app.view.width / 2 - ball.width / 2;
   ball.y = 10;
-  ballSpeed = -5;
-  velocityX = ballSpeed;
-  velocityY = ballSpeed;
+  ballSpeed = 5;
+  if (p2Score > p1Score)
+    velocityX = ballSpeed * Math.cos(Math.PI / 4);
+  else
+    velocityX = - ballSpeed * Math.cos(Math.PI / 4);
+  velocityY = ballSpeed * Math.sin(Math.PI / 4);
 }
 
 function createBall(size: number, color: number): PIXI.Graphics {
@@ -83,20 +86,26 @@ function checkWalls() {
 function checkPadLeft() {
   if (ball.x <= padLeft.x + padLeft.width && velocityX < 0) {
     if (ball.y + ball.height > padLeft.y && ball.y < padLeft.y + padLeft.height){
-       velocityX = -velocityX; 
+      const collidePoint = (ball.y + ball.width /2) - (padLeft.y + padLeft.height / 2);
+       velocityX = Math.abs(ballSpeed * Math.cos( (collidePoint * Math.PI / 4) / (padLeft.height / 2) )); 
+       velocityY = ballSpeed * Math.sin( (collidePoint * Math.PI / 4) / (padLeft.height / 2) ); 
+       ballSpeed++;
       }
     }
   }
   
-function checkPadRight() {
-  if (ball.x + ball.width >= padRight.x && velocityX > 0) {
-    if (ball.y + ball.height > padRight.y && ball.y < padRight.y + padRight.height){
-      velocityX = -velocityX; 
+  function checkPadRight() {
+    if (ball.x + ball.width >= padRight.x && velocityX > 0) {
+      if (ball.y + ball.height > padRight.y && ball.y < padRight.y + padRight.height){
+        const collidePoint = (ball.y + ball.width /2) - (padRight.y + padRight.height / 2);
+        velocityX = - Math.abs(ballSpeed * Math.cos( (collidePoint * Math.PI / 4) / (padRight.height / 2) )); 
+        velocityY = ballSpeed * Math.sin( (collidePoint * Math.PI / 4) / (padRight.height / 2) );
+        ballSpeed++;
     }
   }
 }
 
-function checkPoint() {
+function checkWin() {
   if (ball.x <= 0)
   {
     p2Score++;
@@ -115,6 +124,7 @@ function padRightAI() {
 
 export function startGame() {
   app.stage.removeChild(stagedText[0]);
+  stagedText[0].destroy();
   ball = createBall(20, 0xffffff);
   padLeft = createPad(10, 100, 0xffffff);
   padRight = createPad(10, 100, 0xffffff);
@@ -127,7 +137,7 @@ export function startGame() {
     padLeft.y = event.data.global.y - padLeft.height / 2;
   });
   app.ticker.add( () => {
-    checkPoint();
+    checkWin();
     checkWalls();
     checkPadLeft();
     checkPadRight();
