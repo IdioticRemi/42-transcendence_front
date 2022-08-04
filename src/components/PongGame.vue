@@ -1,22 +1,28 @@
 <template>
-  <div class="canvas">
-    <canvas
-      id="pongCanvas"
-      width="600"
-      height="400"
-      style="border: 1px solid black"
-    ></canvas>
-  </div>
-  <input type="button" value="New Game" id="new-game-button" onclick="" />
+  <div ref="pixi"></div>
+  <!-- <input
+    type="button"
+    value="New Game"
+    id="new-game-button"
+    @click="startPong()"
+  /> -->
 </template>
 
 <script>
+import { initPixi, startNewGame } from "./Pong.ts";
 export default {
   name: "PongGame",
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    startPong: function () {
+      startNewGame();
+    },
+  },
+  mounted() {
+    initPixi(this.$refs.pixi);
+  },
 };
 </script>
 
@@ -27,15 +33,6 @@ body {
   background-color: rgb(194, 194, 194);
 }
 
-#pongCanvas {
-  padding-left: 0;
-  padding-right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  background: black;
-}
-
 #new-game-button {
   color: black;
   font-family: "Press Start 2P", cursive;
@@ -44,7 +41,7 @@ body {
   padding-right: 0;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
-  width: 600px;
+  width: 800px;
   margin-left: auto;
   margin-right: auto;
   display: block;
