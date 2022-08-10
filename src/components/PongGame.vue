@@ -9,7 +9,7 @@ import * as PIXI from "pixi.js";
 const pixi = ref(null);
 
 onMounted(() => {
-  initPixi(pixi.value);
+  if (pixi.value) initPixi(pixi.value);
 });
 
 let app: PIXI.Application;
