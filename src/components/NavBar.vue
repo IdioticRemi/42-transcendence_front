@@ -1,27 +1,54 @@
 <template>
-  <div>
-    <router-view />
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/pong">Pong</router-link> |
-      <router-link to="/profile">Profile</router-link> |
-      <router-link to="/about">About</router-link>
-      <button @click="logoutUser">Logout</button>
-    </nav>
-  </div>
+  <nav class="navbar navbar-dark navbar-expand-lg bg-dark mb-4">
+    <div class="container">
+      <ul class="navbar-nav d-flex flex-row">
+        <li class="nav-item">
+          <router-link class="nav-link" to="/">Home</router-link>
+        </li>
+        <li v-if="connected" class="nav-item">
+          <router-link class="nav-link mx-2" to="/pong">Pong</router-link>
+        </li>
+        <li v-if="connected" class="nav-item">
+          <router-link class="nav-link" to="/profile">Profile</router-link>
+        </li>
+      </ul>
+
+      <div v-if="connected" class="d-flex flex-row">
+        <img
+          v-if="user.hasOwnProperty('username')"
+          class="rounded"
+          style="
+            object-fit: cover;
+            width: 2rem;
+            height: 2rem;
+            cursor: pointer !important;
+          "
+          v-bind:src="'http://localhost:3000/users/avatar/' + user.username"
+          alt="profile picture"
+        />
+        <p class="my-2 mx-2 text-light">{{ user.username }}</p>
+        <a class="my-2 nav-link link-danger" @click="logoutUser">Logout</a>
+      </div>
+      <div v-else>
+        <a class="my-2 nav-link link-success" @click="loginUser">Login</a>
+      </div>
+    </div>
+  </nav>
 </template>
 
-<script>
+<script setup>
 import { store } from "@/store/index";
+import { computed } from "vue";
 
-export default {
-  name: "NavBar",
-  methods: {
-    logoutUser() {
-      store.commit("auth/logout");
-    },
-  },
-};
+const connected = computed(() => store.getters["auth/isConnected"]);
+const user = computed(() => store.state.auth.user);
+
+function logoutUser() {
+  store.commit("auth/logout");
+  window.location = "http://localhost:8081/";
+}
+
+function loginUser() {
+  window.location = "http://localhost:3000/auth";
+}
 </script>
-
-<style scoped></style>

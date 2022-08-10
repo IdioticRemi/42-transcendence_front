@@ -39,14 +39,6 @@ const routes: Array<RouteRecordRaw> = [
     },
     component: NotFoundView,
   },
-  {
-    path: "/about",
-    name: "about",
-    meta: {
-      title: "About",
-    },
-    component: AboutView,
-  },
 ];
 
 const router = createRouter({
