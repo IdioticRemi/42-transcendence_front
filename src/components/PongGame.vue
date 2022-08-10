@@ -1,9 +1,11 @@
 <template>
+  <h1 v-if="finished == false">score : {{ p1Score }} - {{ p2Score }}</h1>
+  <h1 v-else>final score : {{ p1Score }} - {{ p2Score }}</h1>
   <div ref="pixi"></div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import * as PIXI from "pixi.js";
 
 const pixi = ref(null);
@@ -13,8 +15,8 @@ onMounted(() => {
 });
 
 let app: PIXI.Application;
-let p1Score: number;
-let p2Score: number;
+const p1Score = ref(0);
+const p2Score = ref(0);
 let ball: PIXI.Graphics;
 let ballSpeed: number;
 let velocityX: number;
@@ -23,6 +25,7 @@ let padLeft: PIXI.Graphics;
 let padRight: PIXI.Graphics;
 let p1ScoreText: PIXI.Text;
 let p2ScoreText: PIXI.Text;
+let finished = ref(false);
 const scoreMax = 3;
 
 function startScreen() {
@@ -49,8 +52,8 @@ function displayScore() {
     fontSize: 80,
     fill: "#ffffff",
   });
-  p1ScoreText = new PIXI.Text(p1Score.toString(), style);
-  p2ScoreText = new PIXI.Text(p2Score.toString(), style);
+  p1ScoreText = new PIXI.Text(p1Score.value.toString(), style);
+  p2ScoreText = new PIXI.Text(p2Score.value.toString(), style);
   p1ScoreText.anchor.set(0.5);
   p1ScoreText.x = app.view.width / 4;
   p1ScoreText.y = app.view.height / 4;
@@ -62,6 +65,7 @@ function displayScore() {
 }
 
 function displayWinner() {
+  finished.value = true;
   app.ticker.remove(gameLoop);
   const style = new PIXI.TextStyle({
     fontFamily: "Arial",
@@ -69,7 +73,7 @@ function displayWinner() {
     fill: "#ffffff",
   });
   let winner: string;
-  if (p1Score > p2Score) winner = "Player 1";
+  if (p1Score.value > p2Score.value) winner = "Player 1";
   else winner = "Player 2";
   const winText = new PIXI.Text(winner + " wins !", style);
   winText.anchor.set(0.5);
@@ -87,8 +91,8 @@ function displayWinner() {
 }
 
 function gameInit() {
-  p1Score = 0;
-  p2Score = 0;
+  p1Score.value = 0;
+  p2Score.value = 0;
   setInit();
 }
 
@@ -100,7 +104,8 @@ function setInit() {
   ball.x = app.view.width / 2 - ball.width / 2;
   ball.y = 10;
   ballSpeed = 5;
-  if (p2Score > p1Score) velocityX = ballSpeed * Math.cos(Math.PI / 4);
+  if (p2Score.value > p1Score.value)
+    velocityX = ballSpeed * Math.cos(Math.PI / 4);
   else velocityX = -ballSpeed * Math.cos(Math.PI / 4);
   velocityY = ballSpeed * Math.sin(Math.PI / 4);
 }
@@ -175,13 +180,13 @@ function checkPadRight() {
 
 function checkWin() {
   if (ball.x <= 0) {
-    p2Score++;
-    p2ScoreText.text = p2Score.toString();
-    if (p2Score !== scoreMax) setInit();
+    p2Score.value++;
+    p2ScoreText.text = p2Score.value.toString();
+    if (p2Score.value !== scoreMax) setInit();
   } else if (ball.x + ball.width >= app.view.width) {
-    p1Score++;
-    p1ScoreText.text = p1Score.toString();
-    if (p1Score !== scoreMax) setInit();
+    p1Score.value++;
+    p1ScoreText.text = p1Score.value.toString();
+    if (p1Score.value !== scoreMax) setInit();
   }
 }
 
@@ -198,7 +203,7 @@ function padRightAI() {
 
 function gameLoop() {
   checkWin();
-  if (p1Score === scoreMax || p2Score === scoreMax) {
+  if (p1Score.value === scoreMax || p2Score.value === scoreMax) {
     app.ticker.stop();
     displayWinner();
   }
@@ -222,6 +227,7 @@ function startNewGame() {
   padLeft.on("pointermove", (event: PIXI.InteractionEvent) => {
     padLeft.y = event.data.global.y - padLeft.height / 2;
   });
+  finished.value = false;
   displayScore();
 }
 
