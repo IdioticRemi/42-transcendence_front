@@ -1,49 +1,25 @@
 <template>
-  <LoginView v-if="!connected" />
-  <router-view v-else />
+  <NavBar />
+  <div class="container">
+    <LoginView v-if="!connected" />
+    <router-view v-else />
+  </div>
 </template>
 
-<script>
+<script setup>
+import "bootstrap/dist/css/bootstrap.css";
 import LoginView from "./views/LoginView.vue";
-import { useStore } from "vuex";
+import { store } from "@/store/index";
 import { computed } from "vue";
+import NavBar from "@/components/NavBar";
 
-export default {
-  name: "App",
-  components: {
-    LoginView,
-  },
-  data() {
-    return {
-      connected: false,
-    };
-  },
-  mounted() {
-    const store = useStore();
-    this.connected = computed(() => store.getters["auth/isConnected"]);
-  },
-};
+const connected = computed(() => store.getters["auth/isConnected"]);
+
+import "bootstrap/dist/js/bootstrap";
 </script>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+<style>
+a:hover {
+  cursor: pointer !important;
 }
 </style>
