@@ -1,5 +1,5 @@
 <template>
-  <LoginView v-if="!co" />
+  <LoginView v-if="!connected" />
   <router-view v-else />
 </template>
 
@@ -15,12 +15,12 @@ export default {
   },
   data() {
     return {
-      co: false,
+      connected: false,
     };
   },
   mounted() {
     const store = useStore();
-    this.co = computed(() => store.getters["auth/isConnected"]);
+    this.connected = computed(() => store.getters["auth/isConnected"]);
   },
 };
 </script>

@@ -16,6 +16,7 @@ export default {
     logout(state: any) {
       state.user = null;
       state.token = null;
+      localStorage.removeItem("token");
     },
   },
 };
