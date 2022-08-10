@@ -1,11 +1,27 @@
 <template>
-  <router-view />
+  <LoginView v-if="!co" />
+  <router-view v-else />
 </template>
 
 <script>
+import LoginView from "./views/LoginView.vue";
+import { useStore } from "vuex";
+import { computed } from "vue";
+
 export default {
   name: "App",
-  components: {},
+  components: {
+    LoginView,
+  },
+  data() {
+    return {
+      co: false,
+    };
+  },
+  mounted() {
+    const store = useStore();
+    this.co = computed(() => store.getters["auth/isConnected"]);
+  },
 };
 </script>
 

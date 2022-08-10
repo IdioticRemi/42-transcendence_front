@@ -9,14 +9,6 @@ import PongView from "@/views/PongView.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    name: "LoginView",
-    meta: {
-      title: "Login",
-    },
-    component: LoginView,
-  },
-  {
-    path: "/home",
     name: "HomeView",
     meta: {
       title: "Home",

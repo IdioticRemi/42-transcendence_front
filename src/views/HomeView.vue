@@ -1,19 +1,16 @@
 <template>
   <div>
     <nav-bar />
-    <register-username />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import RegisterUsername from "@/components/RegisterUsername.vue";
 import NavBar from "@/components/NavBar.vue";
 
 export default defineComponent({
   name: "HomeView",
   components: {
-    RegisterUsername,
     NavBar,
   },
 });

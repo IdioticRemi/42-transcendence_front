@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import { useStore } from "vuex";
+
 export default {
   name: "LoginComponent",
   methods: {},
@@ -13,9 +15,44 @@ export default {
       failedLogin: false,
     };
   },
-  mounted() {
-    if (this.$route.query.login && this.$route.query.login == "false")
-      this.failedLogin = true;
+  async mounted() {
+    const store = useStore();
+    const query = new URLSearchParams(window.location.search);
+
+    if (query.get("token")) {
+      localStorage.setItem("token", query.get("token"));
+      history.pushState({}, null, this.$route.path);
+    }
+    if (localStorage.getItem("token")) {
+      if (localStorage.getItem("token") === "null") {
+        this.failedLogin = true;
+        return;
+      }
+
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(
+        "http://localhost:3000/auth/check?token=" + token,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "http://127.0.0.1:8081",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "GET",
+          },
+        }
+      );
+      const json_data = await res.json();
+
+      if (!res.ok) {
+        this.failedLogin = true;
+        localStorage.removeItem("token", token);
+        return;
+      }
+
+      store.commit("auth/login", { token, user: json_data });
+    }
   },
 };
 </script>
