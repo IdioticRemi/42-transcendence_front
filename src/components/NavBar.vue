@@ -11,7 +11,7 @@
       </ul>
 
       <div v-if="connected" class="navbar-nav d-flex flex-row">
-        <router-link class="nav-link" to="/profile">
+        <router-link class="nav-link p-0" to="/profile">
           <img
             v-if="user.hasOwnProperty('username')"
             class="rounded"
@@ -20,13 +20,13 @@
             alt="profile picture"
           />
         </router-link>
-        <router-link class="nav-link mx-2 my-2 py-2" to="/profile">
+        <router-link class="nav-link mx-2 py-2" to="/profile">
           {{ user.username }}
         </router-link>
-        <a class="my-2 nav-link link-danger" @click="logoutUser">Logout</a>
+        <a class="nav-link link-danger" @click="logoutUser">Logout</a>
       </div>
       <div v-else>
-        <a class="my-2 nav-link link-success" @click="loginUser">Login</a>
+        <a class="nav-link link-success" @click="loginUser">Login</a>
       </div>
     </div>
   </nav>
