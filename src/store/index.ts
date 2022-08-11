@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
 import ModuleAuth from "./modules/auth";
+import ModuleChat from "./modules/chat";
 
 export const store = createStore({
   state: {},
@@ -8,5 +9,6 @@ export const store = createStore({
   actions: {},
   modules: {
     auth: ModuleAuth,
+    chat: ModuleChat,
   },
 });

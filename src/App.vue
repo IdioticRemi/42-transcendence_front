@@ -24,6 +24,7 @@ import SideChat from "@/components/SideChat";
 const connected = computed(() => store.getters["auth/isConnected"]);
 
 import "bootstrap/dist/js/bootstrap";
+import "bootstrap-icons/font/bootstrap-icons.css";
 </script>
 
 <style>
