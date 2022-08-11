@@ -1,11 +1,16 @@
 <template>
-  <h1 v-if="finished == false">score : {{ p1Score }} - {{ p2Score }}</h1>
-  <h1 v-else>final score : {{ p1Score }} - {{ p2Score }}</h1>
-  <div ref="pixi"></div>
+  <div class="d-none d-lg-flex flex-column">
+    <h1 v-if="finished == false">score : {{ p1Score }} - {{ p2Score }}</h1>
+    <h1 v-else>final score : {{ p1Score }} - {{ p2Score }}</h1>
+    <div ref="pixi"></div>
+  </div>
+  <div class="d-flex d-lg-none">
+    Please connect on a larger screen to be able to play the amazing pong game!
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import * as PIXI from "pixi.js";
 
 const pixi = ref(null);

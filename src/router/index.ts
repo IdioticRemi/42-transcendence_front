@@ -1,8 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
-import LoginView from "@/views/LoginView.vue";
 import NotFoundView from "@/views/NotFound.vue";
-import AboutView from "@/views/AboutView.vue";
 import UserProfileView from "@/views/UserProfileView.vue";
 import PongView from "@/views/PongView.vue";
 
