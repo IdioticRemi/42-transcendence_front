@@ -8,25 +8,21 @@
         <li v-if="connected" class="nav-item">
           <router-link class="nav-link mx-2" to="/pong">Pong</router-link>
         </li>
-        <li v-if="connected" class="nav-item">
-          <router-link class="nav-link" to="/profile">Profile</router-link>
-        </li>
       </ul>
 
-      <div v-if="connected" class="d-flex flex-row">
-        <img
-          v-if="user.hasOwnProperty('username')"
-          class="rounded"
-          style="
-            object-fit: cover;
-            width: 2rem;
-            height: 2rem;
-            cursor: pointer !important;
-          "
-          v-bind:src="'http://localhost:3000/users/avatar/' + user.username"
-          alt="profile picture"
-        />
-        <p class="my-2 mx-2 text-light">{{ user.username }}</p>
+      <div v-if="connected" class="navbar-nav d-flex flex-row">
+        <router-link class="nav-link" to="/profile">
+          <img
+            v-if="user.hasOwnProperty('username')"
+            class="rounded"
+            style="object-fit: cover; width: 40px; height: 40px"
+            v-bind:src="'http://localhost:3000/users/avatar/' + user.username"
+            alt="profile picture"
+          />
+        </router-link>
+        <router-link class="nav-link mx-2 my-2 py-2" to="/profile">
+          {{ user.username }}
+        </router-link>
         <a class="my-2 nav-link link-danger" @click="logoutUser">Logout</a>
       </div>
       <div v-else>

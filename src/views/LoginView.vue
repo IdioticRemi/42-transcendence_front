@@ -1,31 +1,46 @@
 <template>
-  <h2 v-if="failedLogin" style="color: #ff4242">
-    Failed to authenticate, please retry !
-  </h2>
+  <div
+    v-if="failedLogin"
+    class="alert alert-danger alert-dismissible fade show"
+    role="alert"
+  >
+    Your session token has expired or is invalid, please log back in.
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    />
+  </div>
   <h1>Welcome To Transcendence</h1>
 </template>
 
 <script setup>
 import { store } from "@/store/index";
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 
-let failedLogin = false;
+const failedLogin = ref(false);
+
+function resetURL() {
+  window.history.replaceState(
+    {},
+    null,
+    window.location.origin + window.location.pathname
+  );
+}
 
 onMounted(async () => {
   const query = new URLSearchParams(window.location.search);
 
   if (query.get("token")) {
     localStorage.setItem("token", query.get("token"));
-    window.history.replaceState(
-      {},
-      null,
-      window.location.origin + window.location.pathname
-    );
+    resetURL();
   }
   if (localStorage.getItem("token")) {
     if (localStorage.getItem("token") === "null") {
-      failedLogin = true;
+      failedLogin.value = true;
       store.commit("auth/logout");
+      resetURL();
       return;
     }
 
@@ -40,15 +55,16 @@ onMounted(async () => {
         "Access-Control-Allow-Methods": "GET",
       },
     });
+    resetURL();
     const json_data = await res.json();
+    console.debug(json_data);
 
-    if (!res.ok) {
-      failedLogin = true;
+    if (!res.ok || json_data.error) {
+      failedLogin.value = true;
       store.commit("auth/logout");
-      return;
+    } else {
+      store.commit("auth/login", { token, user: json_data.content });
     }
-
-    store.commit("auth/login", { token, user: json_data });
   }
 });
 </script>
