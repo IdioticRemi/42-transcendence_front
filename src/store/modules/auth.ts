@@ -1,4 +1,4 @@
-type AuthState = {
+export type AuthState = {
   token: string | null;
   user: {
     id: number;

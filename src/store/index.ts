@@ -1,6 +1,11 @@
 import { createStore } from "vuex";
-import ModuleAuth from "./modules/auth";
-import ModuleChat from "./modules/chat";
+import ModuleAuth, { AuthState } from "./modules/auth";
+import ModuleChat, { ChatState } from "./modules/chat";
+
+export type StoreState = {
+  auth: AuthState;
+  chat: ChatState;
+};
 
 export const store = createStore({
   state: {},

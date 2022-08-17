@@ -8,7 +8,7 @@ export type ChatChannel = {
   messages: ChatMessage[];
 };
 
-type ChatState = {
+export type ChatState = {
   selected: string | null;
   channels: Map<string, ChatChannel>;
 };
@@ -20,7 +20,7 @@ export default {
     channels: new Map(),
   } as ChatState,
   getters: {
-    getMessages(state: ChatState) {
+    getMessages(state: ChatState): ChatMessage[] {
       if (state.selected) return state.channels.get(state.selected)!.messages;
       return [];
     },
@@ -30,7 +30,7 @@ export default {
   },
   mutations: {
     newMessage(state: ChatState, payload: ChatMessage) {
-      state.channels.get(state.selected!)!.messages.push(payload);
+      state.channels.get(state.selected || "")?.messages.push(payload);
     },
     newChannel(state: ChatState, { name, messages = [] }: ChatChannel) {
       if (state.channels.get(name))

@@ -51,16 +51,14 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import { store } from "@/store/index";
+import { store, StoreState } from "@/store/index";
 import { ChatChannel, ChatMessage } from "@/store/modules/chat";
 
 const messageContent = ref("");
-const selected = computed(() => store.state.chat.selected as string);
-const channels = computed(
-  () => store.state.chat.channels as Map<string, ChatChannel>
-);
+const selected = computed(() => (store.state as StoreState).chat.selected);
+const channels = computed(() => (store.state as StoreState).chat.channels);
 const messages = computed(
-  () => channels.value.get(selected.value)!.messages as ChatMessage[]
+  () => channels.value.get(selected.value || "")?.messages
 );
 
 function selectChannel(name: string) {
@@ -74,7 +72,7 @@ function unselectChannel() {
 function sendMessage() {
   console.log(messageContent);
   store.commit("chat/newMessage", {
-    user: store.state.auth.user.username,
+    user: (store.state as StoreState).auth.user?.username,
     content: messageContent.value,
   } as ChatMessage);
   messageContent.value = "";

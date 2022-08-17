@@ -16,7 +16,7 @@
             v-if="user.hasOwnProperty('username')"
             class="rounded"
             style="object-fit: cover; width: 40px; height: 40px"
-            v-bind:src="'http://localhost:3000/users/avatar/' + user.username"
+            :src="CONST.BackendURL + '/users/avatar/' + user.username"
             alt="profile picture"
           />
         </router-link>
@@ -33,6 +33,7 @@
 </template>
 
 <script setup>
+import CONST from "@/utils/const";
 import { store } from "@/store/index";
 import { computed } from "vue";
 
