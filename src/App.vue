@@ -2,7 +2,7 @@
   <NavBar />
   <div class="container-fluid row">
     <div class="d-none d-lg-flex col-0 col-lg-3 px-lg-0">
-      <SideChat />
+      <SideChat v-if="connected" />
     </div>
     <div class="col-12 col-lg-9">
       <div class="container">

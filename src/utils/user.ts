@@ -5,8 +5,8 @@ async function sendBackendRequest(path: string, opts?: RequestInit) {
   const token = (store.state as StoreState).auth.token;
 
   opts = {
-    ...opts,
     headers: { Authorization: `Bearer ${token}` },
+    ...opts,
   };
   const res = await fetch(CONST.BackendURL + path, opts);
 
@@ -20,14 +20,18 @@ export async function getMessages(channelId: number) {
 }
 
 export async function createChannel(channelName: string) {
-  return sendBackendRequest(`/channels/`, {
+  return sendBackendRequest(`/channels`, {
     method: "POST",
     body: JSON.stringify({ channelName }),
   });
 }
 
+export async function getChannels() {
+  return sendBackendRequest(`/channels`);
+}
+
 export async function deleteChannel(channelId: number) {
-  return sendBackendRequest(`/channels/`, {
+  return sendBackendRequest(`/channels`, {
     method: "DELETE",
     body: JSON.stringify({ channelId }),
   });

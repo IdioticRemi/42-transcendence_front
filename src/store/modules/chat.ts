@@ -5,12 +5,13 @@ export type ChatMessage = {
 
 export type ChatChannel = {
   name: string;
+  id: number;
   messages: ChatMessage[];
 };
 
 export type ChatState = {
-  selected: string | null;
-  channels: Map<string, ChatChannel>;
+  selected: number | null;
+  channels: Map<number, ChatChannel>;
 };
 
 export default {
@@ -29,18 +30,21 @@ export default {
     },
   },
   mutations: {
+    "channel_message"(state: ChatState, payload: { user: { nickname: string }, channelId: number, content: string }) {
+      state.channels.get(payload.channelId)?.messages.push({ user: payload.user.nickname, content: payload.content });
+    },
     newMessage(state: ChatState, payload: ChatMessage) {
-      state.channels.get(state.selected || "")?.messages.push(payload);
+      state.channels.get(state.selected || -1)?.messages.push(payload);
     },
-    newChannel(state: ChatState, { name, messages = [] }: ChatChannel) {
-      if (state.channels.get(name))
-        state.channels.get(name)!.messages = messages;
-      else state.channels.set(name, { name, messages });
+    newChannel(state: ChatState, { name, id, messages = [] }: ChatChannel) {
+      if (state.channels.get(id))
+        state.channels.get(id)!.messages = messages;
+      else state.channels.set(id, { name, messages, id });
     },
-    deleteChannel(state: ChatState, payload: string) {
+    deleteChannel(state: ChatState, payload: number) {
       if (state.channels.get(payload)) state.channels.delete(payload);
     },
-    selectChannel(state: ChatState, payload: string) {
+    selectChannel(state: ChatState, payload: number) {
       if (state.channels.get(payload)) state.selected = payload;
       else state.selected = null;
     },

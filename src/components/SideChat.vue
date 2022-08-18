@@ -3,7 +3,7 @@
     <div class="px-2 py-0 m-0 w-100 d-flex flex-column" id="chat-list">
       <div v-if="selected" class="d-flex flex-column w-100">
         <div class="d-flex flex-row justify-content-between w-100 mb-3 mt-2">
-          <h3>#{{ selected }}</h3>
+          <h3>#{{ selectedChannel.name }}</h3>
           <button class="btn btn-primary" @click="unselectChannel()">
             <i class="bi bi-arrow-return-left" />
           </button>
@@ -37,7 +37,7 @@
               <div class="text-secondary m-0 py-2 px-0" style="max-width: 50%">
                 {{ chan.name }}
               </div>
-              <button class="btn btn-primary" @click="selectChannel(chan.name)">
+              <button class="btn btn-primary" @click="selectChannel(chan.id)">
                 <i class="bi bi-send" />
               </button>
             </div>
@@ -53,13 +53,15 @@
 import { computed, onMounted, ref } from "vue";
 import { store, StoreState } from "@/store/index";
 import { ChatChannel, ChatMessage } from "@/store/modules/chat";
+import { getChannels } from "@/utils/user";
 
 const messageContent = ref("");
 const selected = computed(() => (store.state as StoreState).chat.selected);
 const channels = computed(() => (store.state as StoreState).chat.channels);
 const messages = computed(
-  () => channels.value.get(selected.value || "")?.messages
+  () => channels.value.get(selected.value || -1)?.messages
 );
+const selectedChannel = computed(() => (store.state as StoreState).chat.channels.get(selected.value || -1));
 
 function selectChannel(name: string) {
   store.commit("chat/selectChannel", name);
@@ -78,10 +80,13 @@ function sendMessage() {
   messageContent.value = "";
 }
 
-onMounted(() => {
-  store.commit("chat/newChannel", { name: "Momo" } as ChatChannel);
-  store.commit("chat/newChannel", { name: "Coucou" } as ChatChannel);
-  store.commit("chat/newChannel", { name: "42 Global" } as ChatChannel);
+onMounted(async () => {
+  const chans = await getChannels();
+  
+  console.debug(chans);
+  chans.payload.forEach((chan: { id: number, name: string }) => {
+    store.commit("chat/newChannel", chan);
+  });
 });
 </script>
 
