@@ -1,6 +1,6 @@
 <template>
   <div class="d-none d-lg-flex flex-column">
-    <h1 v-if="finished == false">score : {{ p1Score }} - {{ p2Score }}</h1>
+    <h1 v-if="!finished">score : {{ p1Score }} - {{ p2Score }}</h1>
     <h1 v-else>final score : {{ p1Score }} - {{ p2Score }}</h1>
     <div ref="pixi"></div>
   </div>

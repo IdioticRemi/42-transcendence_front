@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { store } from "@/store/index";
+import { store } from "@/store";
 import { ref, onMounted } from "vue";
 
 const failedLogin = ref(false);
@@ -46,24 +46,15 @@ onMounted(async () => {
 
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://localhost:3000/auth/check?token=" + token, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "http://127.0.0.1:8081",
-        "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Allow-Methods": "GET",
-      },
-    });
+    const res = await fetch("http://localhost:3000/auth/check?token=" + token);
     resetURL();
     const json_data = await res.json();
-    console.debug(json_data);
 
     if (!res.ok || json_data.error) {
       failedLogin.value = true;
-      store.commit("auth/logout");
+      await store.dispatch("auth/logout");
     } else {
-      store.commit("auth/login", { token, user: json_data.content });
+      await store.dispatch("auth/login", { token, user: json_data.content });
     }
   }
 });

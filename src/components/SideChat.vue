@@ -82,8 +82,7 @@ function sendMessage() {
 
 onMounted(async () => {
   const chans = await getChannels();
-  
-  console.debug(chans);
+
   chans.payload.forEach((chan: { id: number, name: string }) => {
     store.commit("chat/newChannel", chan);
   });

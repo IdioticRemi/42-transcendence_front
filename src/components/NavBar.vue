@@ -34,14 +34,14 @@
 
 <script setup>
 import CONST from "@/utils/const";
-import { store } from "@/store/index";
+import { store } from "@/store";
 import { computed } from "vue";
 
 const connected = computed(() => store.getters["auth/isConnected"]);
 const user = computed(() => store.state.auth.user);
 
 function logoutUser() {
-  store.commit("auth/logout");
+  store.dispatch("auth/logout");
   window.location = "http://localhost:8081/";
 }
 

@@ -16,7 +16,7 @@
 <script setup>
 import "bootstrap/dist/css/bootstrap.css";
 import LoginView from "./views/LoginView.vue";
-import { store } from "@/store/index";
+import { store } from "@/store";
 import { computed } from "vue";
 import NavBar from "@/components/NavBar";
 import SideChat from "@/components/SideChat";

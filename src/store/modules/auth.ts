@@ -1,4 +1,7 @@
-export type AuthState = {
+import {ActionPayload, Module} from "vuex";
+import {store, StoreState} from "@/store";
+
+export interface AuthState {
   token: string | null;
   user: {
     id: number;
@@ -9,7 +12,7 @@ export type AuthState = {
     nickname: string;
     username: string;
   } | null;
-};
+}
 
 export default {
   namespaced: true,
@@ -21,16 +24,37 @@ export default {
     isConnected: (state: AuthState) =>
       state.token != null && state.user != null,
   },
+  actions: {
+    login({ state, rootState, commit }, payload) {
+      commit("loginUser", payload);
+      console.debug(rootState.socket);
+      rootState.socket.io.opts.extraHeaders = {};
+      rootState.socket.io.opts.extraHeaders["authorization"] = state.token;
+      rootState.socket?.on("connect_error", console.debug)
+      rootState.socket?.on("connect", console.debug)
+      rootState.socket?.on("disconnect", console.debug)
+      try {
+        rootState.socket?.connect();
+      } catch (e) {
+        console.warn(e);
+      }
+    },
+    logout({ rootState, commit }) {
+      commit("logoutUser");
+      console.debug(rootState.socket);
+      rootState.socket?.disconnect();
+    }
+  },
   mutations: {
-    login(state: AuthState, payload: AuthState) {
+    loginUser(state: AuthState, payload: AuthState) {
       const { user, token } = payload;
       state.user = user;
       state.token = token;
     },
-    logout(state: AuthState) {
+    logoutUser(state: AuthState) {
       state.user = null;
       state.token = null;
       localStorage.removeItem("token");
     },
   },
-};
+} as unknown as Module<AuthState, StoreState>;

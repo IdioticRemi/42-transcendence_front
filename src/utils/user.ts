@@ -1,8 +1,8 @@
-import { store, StoreState } from "@/store";
+import { store } from "@/store";
 import CONST from "@/utils/const";
 
 async function sendBackendRequest(path: string, opts?: RequestInit) {
-  const token = (store.state as StoreState).auth.token;
+  const token = store.state.auth.token;
 
   opts = {
     headers: { Authorization: `Bearer ${token}` },
