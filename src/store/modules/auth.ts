@@ -1,5 +1,5 @@
-import {ActionPayload, Module} from "vuex";
-import {store, StoreState} from "@/store";
+import {Module} from "vuex";
+import {StoreState} from "@/store";
 
 export interface AuthState {
   token: string | null;
@@ -30,14 +30,9 @@ export default {
       console.debug(rootState.socket);
       rootState.socket.io.opts.extraHeaders = {};
       rootState.socket.io.opts.extraHeaders["authorization"] = state.token;
-      rootState.socket?.on("connect_error", console.debug)
-      rootState.socket?.on("connect", console.debug)
-      rootState.socket?.on("disconnect", console.debug)
       try {
         rootState.socket?.connect();
-      } catch (e) {
-        console.warn(e);
-      }
+      } catch {}
     },
     logout({ rootState, commit }) {
       commit("logoutUser");

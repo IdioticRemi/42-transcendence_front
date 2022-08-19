@@ -31,25 +31,44 @@ export default {
       return state.channels.keys();
     },
   },
-  mutations: {
-    SOCKET_channel_message(state: ChatState, payload: { user: { nickname: string }, channelId: number, content: string }) {
-      state.channels.get(payload.channelId)?.messages.push({ user: payload.user.nickname, content: payload.content });
+  actions: {
+    getMyChannels({ rootState }) {
+      rootState.socket?.emit("channel_list");
     },
-    newMessage(state: ChatState, payload: ChatMessage) {
-      state.channels.get(state.selected || -1)?.messages.push(payload);
+    newMessage({ state, rootState }, payload: string) {
+      rootState.socket?.emit("channel_message", { channelId: state.selected, content: payload })
     },
-    newChannel(state: ChatState, { name, id, messages = [] }: ChatChannel) {
-      state.channels.set(id, { name, messages, id });
+    subToChannel({ rootState }, payload: number) {
+      rootState.socket?.emit("channel_subscribe", { channelId: payload })
     },
-    deleteChannel(state: ChatState, payload: number) {
-      if (state.channels.get(payload)) state.channels.delete(payload);
+    unsubFromChannel({ rootState }, payload: number) {
+      rootState.socket?.emit("channel_unsubscribe", { channelId: payload })
     },
-    selectChannel(state: ChatState, payload: number) {
-      if (state.channels.get(payload)) state.selected = payload;
-      else state.selected = null;
+    createChannel({ rootState }, payload: { name: string, private: boolean, password?: string }) {
+      if (!payload.password)
+        delete payload.password;
+      console.log("emitted channel create");
+      rootState.socket?.emit("channel_create", payload)
     },
-    unselectChannel(state: ChatState) {
+    joinChannel({ rootState }, payload: number) {
+      rootState.socket?.emit("channel_join", { channelId: payload })
+    },
+    leaveChannel({ rootState }, payload: number) {
+      rootState.socket?.emit("channel_leave", { channelId: payload })
+    },
+    selectChannel({ state }, payload: number) {
+      state.selected = payload;
+    },
+    unselectChannel({ state }) {
       state.selected = null;
+    },
+  },
+  mutations: {
+    SOCKET_channel_message(state: ChatState, payload: { channelId: number, user: number, content: string }) {
+      state.channels.get(payload.channelId)?.messages.push({ content: payload.content, user: payload.user.toString() })
+    },
+    SOCKET_channel_info(state: ChatState, { id, name, messages }: { id: number, name: string, messages: { id: number, userId: number, content: string }[] }) {
+      state.channels.set(id, { name, id, messages: messages.map(m => { return { content: m.content, user: m.userId.toString() } }) });
     },
   },
 } as Module<ChatState, StoreState>;
