@@ -56,6 +56,9 @@ export default {
     leaveChannel({ rootState }, payload: number) {
       rootState.socket?.emit("channel_leave", { channelId: payload })
     },
+    deleteChannel({ rootState }, payload: number) {
+      rootState.socket?.emit("channel_delete", { channelId: payload })
+    },
     selectChannel({ state }, payload: number) {
       state.selected = payload;
     },
@@ -69,6 +72,11 @@ export default {
     },
     SOCKET_channel_info(state: ChatState, { id, name, messages }: { id: number, name: string, messages: { id: number, userId: number, content: string }[] }) {
       state.channels.set(id, { name, id, messages: messages.map(m => { return { content: m.content, user: m.userId.toString() } }) });
+    },
+    SOCKET_channel_leave(state: ChatState, payload: {channelId: number}) {
+      if (state.selected === payload.channelId)
+        state.selected = null;
+      state.channels.delete(payload.channelId);
     },
   },
 } as Module<ChatState, StoreState>;

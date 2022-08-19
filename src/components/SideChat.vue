@@ -4,9 +4,17 @@
       <div v-if="selected" class="d-flex flex-column w-100">
         <div class="d-flex flex-row justify-content-between w-100 mb-3 mt-2">
           <h3>#{{ selectedChannel?.name }}</h3>
-          <button class="btn btn-primary" @click="unselectChannel()">
-            <i class="bi bi-arrow-return-left" />
-          </button>
+          <div>
+            <button class="btn btn-danger" @click="deleteChannel(selected)">
+              <i class="bi bi-trash" />
+            </button>
+            <button class="btn btn-warning mx-2" @click="leaveChannel(selected)">
+              <i class="bi bi-door-open" />
+            </button>
+            <button class="btn btn-primary" @click="unselectChannel()">
+              <i class="bi bi-arrow-return-left" />
+            </button>
+          </div>
         </div>
         <div class="overflow-scroll" id="msg-list">
           <div v-for="(msg, id) in messages" class="w-100" :key="id">
@@ -154,7 +162,15 @@ function joinChannel(channelId: number) {
   joiningChannel.value = false;
 }
 
+function deleteChannel(channelId: number) {
+  if (channelId < 0)
+    return;
+  store.dispatch("chat/deleteChannel", channelId);
+}
+
 function leaveChannel(channelId: number) {
+  if (channelId < 0)
+    return;
   store.dispatch("chat/leaveChannel", channelId);
   if (selected.value === channelId)
     unselectChannel();
