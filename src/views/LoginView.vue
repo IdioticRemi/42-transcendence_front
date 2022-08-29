@@ -1,39 +1,28 @@
 <template>
-  <div
-    v-if="failedLogin"
-    class="alert alert-danger alert-dismissible fade show"
-    role="alert"
-  >
-    Your session token has expired or is invalid, please log back in.
-    <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="alert"
-      aria-label="Close"
-    />
-  </div>
-  <h1>Welcome To Transcendence</h1>
+  <h1>Authenticating...</h1>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { store } from "@/store";
 import { ref, onMounted } from "vue";
+import router from "@/router";
 
 const failedLogin = ref(false);
 
 function resetURL() {
-  window.history.replaceState(
-    {},
-    null,
-    window.location.origin + window.location.pathname
-  );
+  router.replace("/login");
+}
+
+function sendToHome(success: boolean) {
+  router.push(success ? "/" : "/?login=fail");
 }
 
 onMounted(async () => {
   const query = new URLSearchParams(window.location.search);
+  const token = query.get("token");
 
-  if (query.get("token")) {
-    localStorage.setItem("token", query.get("token"));
+  if (token) {
+    localStorage.setItem("token", token);
     resetURL();
   }
   if (localStorage.getItem("token")) {
@@ -41,6 +30,7 @@ onMounted(async () => {
       failedLogin.value = true;
       store.commit("auth/logout");
       resetURL();
+      sendToHome(false);
       return;
     }
 
@@ -56,6 +46,7 @@ onMounted(async () => {
     } else {
       await store.dispatch("auth/login", { token, user: json_data.content });
     }
+    sendToHome(true);
   }
 });
 </script>
