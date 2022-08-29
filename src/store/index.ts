@@ -26,4 +26,4 @@ export const store = createStore({
     auth: ModuleAuth,
     chat: ModuleChat,
   },
-}) as Store<StoreState>;
+}) as unknown as Store<StoreState>;

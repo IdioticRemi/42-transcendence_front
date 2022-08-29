@@ -35,7 +35,8 @@
 <script setup>
 import CONST from "@/utils/const";
 import { store } from "@/store";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
+import router from "@/router";
 
 const connected = computed(() => store.getters["auth/isConnected"]);
 const user = computed(() => store.state.auth.user);
@@ -48,4 +49,10 @@ function logoutUser() {
 function loginUser() {
   window.location = "http://localhost:3000/auth";
 }
+
+onMounted(async () => {
+  if (localStorage.getItem("token") && !connected.value) {
+    router.push("/login");
+  }
+});
 </script>

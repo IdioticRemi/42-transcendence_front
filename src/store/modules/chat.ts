@@ -15,6 +15,14 @@ export interface ChatChannel {
 export interface ChatState {
   selected: number | null;
   channels: Map<number, ChatChannel>;
+  action: ChatActions,
+}
+
+export enum ChatActions {
+  LIST_CHANNELS,
+  LIST_AVAILABLE_CHANNELS,
+  CREATE_CHANNEL,
+  CHANNEL_VIEW,
 }
 
 export default {
@@ -22,6 +30,7 @@ export default {
   state: {
     selected: null,
     channels: new Map(),
+    action: 0,
   } as ChatState,
   getters: {
     getMessages(state: ChatState): ChatMessage[] {
@@ -47,7 +56,6 @@ export default {
     createChannel({ rootState }, payload: { name: string, private: boolean, password?: string }) {
       if (!payload.password)
         delete payload.password;
-      console.log("emitted channel create");
       rootState.socket?.emit("channel_create", payload)
     },
     joinChannel({ rootState }, payload: number) {
@@ -61,9 +69,14 @@ export default {
     },
     selectChannel({ state }, payload: number) {
       state.selected = payload;
+      this.dispatch("chat/setAction", ChatActions.CHANNEL_VIEW);
     },
     unselectChannel({ state }) {
       state.selected = null;
+      this.dispatch("chat/setAction", ChatActions.LIST_CHANNELS);
+    },
+    setAction({ state }, payload: number) {
+      state.action = payload;
     },
   },
   mutations: {
