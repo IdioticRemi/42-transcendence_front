@@ -1,6 +1,6 @@
 <template>
   <NavBar />
-  <div class="container-fluid row">
+  <div class="container-fluid row mx-0">
     <div class="d-none d-lg-flex col-0 col-lg-3 px-lg-0">
       <SideChat v-if="connected" />
     </div>

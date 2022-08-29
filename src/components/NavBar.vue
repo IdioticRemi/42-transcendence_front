@@ -1,12 +1,15 @@
 <template>
-  <nav class="navbar navbar-dark navbar-expand-lg bg-dark mb-4">
+  <nav class="position-sticky sticky-top navbar navbar-dark navbar-expand-lg bg-dark mb-4">
     <div class="container">
       <ul class="navbar-nav d-flex flex-row">
         <li class="nav-item">
           <router-link class="nav-link" to="/">Home</router-link>
         </li>
         <li v-if="connected" class="nav-item">
-          <router-link class="nav-link mx-2" to="/pong">Pong</router-link>
+          <router-link class="nav-link ms-2" to="/pong">Pong</router-link>
+        </li>
+        <li v-if="connected" class="nav-item d-block d-lg-none">
+          <router-link class="nav-link ms-2" to="/chat">Chat</router-link>
         </li>
       </ul>
 
@@ -20,8 +23,8 @@
             alt="profile picture"
           />
         </router-link>
-        <router-link class="nav-link mx-2 py-2" to="/profile">
-          {{ user.username }}
+        <router-link class="nav-link mx-2 py-2" :to="`/profile/${user.id}`">
+          {{ user.nickname }}
         </router-link>
         <a class="nav-link link-danger" @click="logoutUser">Logout</a>
       </div>

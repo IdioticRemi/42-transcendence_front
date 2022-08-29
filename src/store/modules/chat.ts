@@ -3,6 +3,7 @@ import {StoreState} from "@/store";
 
 export interface ChatMessage {
   user: string;
+  nick: string;
   content: string;
 }
 
@@ -12,10 +13,26 @@ export interface ChatChannel {
   messages: ChatMessage[];
 }
 
+export interface Friend {
+  nickname: string;
+  id: number;
+  status: FriendStatus;
+  messages: ChatMessage[];
+}
+
 export interface ChatState {
+  myId: number;
   selected: number | null;
+  selectedFriend: number | null;
   channels: Map<number, ChatChannel>;
-  action: ChatActions,
+  friends: Map<number, Friend>;
+  action: ChatActions;
+}
+
+export enum FriendStatus {
+  ONLINE = 'online',
+  OFFLINE = 'offline',
+  PENDING = 'pending',
 }
 
 export enum ChatActions {
@@ -23,13 +40,19 @@ export enum ChatActions {
   LIST_AVAILABLE_CHANNELS,
   CREATE_CHANNEL,
   CHANNEL_VIEW,
+  FRIEND_LIST,
+  FRIEND_ADD,
+  FRIEND_MESSAGE,
 }
 
 export default {
   namespaced: true,
   state: {
+    myId: -1,
     selected: null,
+    selectedFriend: null,
     channels: new Map(),
+    friends: new Map(),
     action: 0,
   } as ChatState,
   getters: {
@@ -46,12 +69,6 @@ export default {
     },
     newMessage({ state, rootState }, payload: string) {
       rootState.socket?.emit("channel_message", { channelId: state.selected, content: payload })
-    },
-    subToChannel({ rootState }, payload: number) {
-      rootState.socket?.emit("channel_subscribe", { channelId: payload })
-    },
-    unsubFromChannel({ rootState }, payload: number) {
-      rootState.socket?.emit("channel_unsubscribe", { channelId: payload })
     },
     createChannel({ rootState }, payload: { name: string, private: boolean, password?: string }) {
       if (!payload.password)
@@ -78,18 +95,50 @@ export default {
     setAction({ state }, payload: number) {
       state.action = payload;
     },
+    getMyFriends({ rootState }) {
+      rootState.socket?.emit("friend_list");
+    },
+    sendFriendRequest({ rootState }, payload: string) {
+      rootState.socket?.emit("friend_add", { userNick: payload });
+    },
+    selectFriend({ state }, payload: number) {
+      state.selectedFriend = payload;
+      this.dispatch("chat/setAction", ChatActions.FRIEND_MESSAGE);
+    },
+    unselectFriend({ state }) {
+      state.selectedFriend = null;
+      this.dispatch("chat/setAction", ChatActions.FRIEND_LIST);
+    },
+    newFriendMessage({ state, rootState }, payload: string) {
+      rootState.socket?.emit("friend_message", { friendId: state.selectedFriend, content: payload })
+    },
+    setMyId({ state }, payload: number) {
+      state.myId = payload;
+    }
   },
   mutations: {
-    SOCKET_channel_message(state: ChatState, payload: { channelId: number, user: number, content: string }) {
-      state.channels.get(payload.channelId)?.messages.push({ content: payload.content, user: payload.user.toString() })
+    SOCKET_channel_message(state: ChatState, payload: { channelId: number, userId: number, userNick: string, content: string }) {
+      state.channels.get(payload.channelId)?.messages.push({ content: payload.content, nick: payload.userNick, user: payload.userId.toString() })
     },
-    SOCKET_channel_info(state: ChatState, { id, name, messages }: { id: number, name: string, messages: { id: number, userId: number, content: string }[] }) {
-      state.channels.set(id, { name, id, messages: messages.map(m => { return { content: m.content, user: m.userId.toString() } }) });
+    SOCKET_channel_info(state: ChatState, { id, name, messages }: { id: number, name: string, messages: { id: number, userId: number, userNick: string, content: string }[] }) {
+      state.channels.set(id, { name, id, messages: messages.map(m => { return { content: m.content, nick: m.userNick, user: m.userId.toString() } }) });
     },
     SOCKET_channel_leave(state: ChatState, payload: {channelId: number}) {
       if (state.selected === payload.channelId)
         state.selected = null;
       state.channels.delete(payload.channelId);
+    },
+    SOCKET_friend_info(state: ChatState, { id, nickname, messages, status }: { id: number, nickname: string, status: FriendStatus, messages: { id: number, userNick: string, userId: number, content: string }[] }) {
+      state.friends.set(id, { nickname, status, id, messages: messages.map(m => { return { content: m.content, nick: m.userNick, user: m.userId.toString() } }) });
+    },
+    SOCKET_friend_message(state: ChatState, payload: { friendId: number, userId: number, userNick: string, content: string }) {
+      state.friends.get(payload.userId === state.myId ? payload.friendId : payload.userId)?.messages.push({ content: payload.content, nick: payload.userNick, user: payload.userId.toString() })
+    },
+    SOCKET_friend_status(state: ChatState, payload: { id: number, status: FriendStatus }) {
+      const f = state.friends.get(payload.id);
+
+      if (f)
+        f.status = payload.status;
     },
   },
 } as Module<ChatState, StoreState>;

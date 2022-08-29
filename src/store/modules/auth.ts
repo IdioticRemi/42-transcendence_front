@@ -25,19 +25,19 @@ export default {
       state.token != null && state.user != null,
   },
   actions: {
-    login({ state, rootState, commit }, payload) {
+    login({ state, rootState, commit, dispatch }, payload) {
       commit("loginUser", payload);
-      console.debug(rootState.socket);
       rootState.socket.io.opts.extraHeaders = {};
       rootState.socket.io.opts.extraHeaders["authorization"] = state.token;
       try {
         rootState.socket?.connect();
       } catch {}
+      dispatch("chat/setMyId", state.user.id, {root: true})
     },
-    logout({ rootState, commit }) {
+    logout({ rootState, commit, dispatch }) {
       commit("logoutUser");
-      console.debug(rootState.socket);
       rootState.socket?.disconnect();
+      dispatch("chat/setMyId", -1, {root: true})
     }
   },
   mutations: {

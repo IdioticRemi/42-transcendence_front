@@ -4,6 +4,7 @@ import NotFoundView from "@/views/NotFound.vue";
 import UserProfileView from "@/views/UserProfileView.vue";
 import PongView from "@/views/PongView.vue";
 import LoginView from "@/views/LoginView.vue";
+import ChatView from "@/views/ChatView.vue";
 import {store} from "@/store";
 
 const routes: Array<RouteRecordRaw> = [
@@ -24,7 +25,15 @@ const routes: Array<RouteRecordRaw> = [
     component: LoginView,
   },
   {
-    path: "/profile",
+    path: "/chat",
+    name: "ChatView",
+    meta: {
+      title: "Chat"
+    },
+    component: ChatView,
+  },
+  {
+    path: "/profile/:id",
     name: "UserProfileView",
     meta: {
       title: "Profile",

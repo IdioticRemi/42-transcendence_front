@@ -2,10 +2,13 @@
   <div class="d-flex flex-row justify-content-between p-2">
     <h3 class="mb-3 mt-2">My Channels</h3>
     <div>
-      <button class="btn btn-primary my-2 me-2" @click="setAction(ChatActions.CREATE_CHANNEL)" data-toggle="modal" data-target=".create-channel-modal">
-        <i class="bi bi-pencil" />
+      <button class="btn btn-primary my-2 me-2" @click="setAction(ChatActions.FRIEND_LIST)">
+        <i class="bi bi-person" />
       </button>
-      <button class="btn btn-primary my-2" @click="joinAvailableChannel()">
+      <button class="btn btn-primary my-2 me-2" @click="setAction(ChatActions.CREATE_CHANNEL)">
+        <i class="bi bi-plus" />
+      </button>
+      <button class="btn btn-primary my-2" @click="setAction(ChatActions.LIST_AVAILABLE_CHANNELS)">
         <i class="bi bi-list" />
       </button>
     </div>
@@ -34,12 +37,6 @@ const channels = computed(() => store.state.chat.channels);
 
 function setAction(action: ChatActions) {
   store.dispatch("chat/setAction", action);
-}
-
-function joinAvailableChannel(channelId: number) {
-  store.dispatch("chat/joinChannel", channelId);
-  selectChannel(channelId);
-  setAction(ChatActions.LIST_AVAILABLE_CHANNELS);
 }
 
 function selectChannel(channelId: number) {

@@ -1,5 +1,121 @@
 <template>
   <div>
-    <h1>User Profile</h1>
+    <h1 class="mb-4">User Information</h1>
+    <div v-if="!res || !'payload' in res">
+      Loading...
+    </div>
+    <div v-else-if="'status' in res && res.status !== 'success'">
+      This user does not exist.
+    </div>
+    <div v-else class="row">
+      <div class="col-12 col-lg-0 d-flex">
+        <div class="d-lg-none w-100 d-flex">
+          <img
+              class="rounded me-4 mb-4"
+              style="object-fit: cover; width: 15vw; height: 15vw; min-height: 140px; min-width: 140px"
+              :src="CONST.BackendURL + '/users/avatar/' + res.payload.username"
+              alt="profile picture"
+          />
+          <div class="d-flex-col w-50">
+            <div class="row w-100">
+              <b class="col-sm-4 col-12">User ID</b>
+              <span class="col-sm-8 col-12 text-sm-end">#{{ res.payload.id }}</span>
+            </div>
+            <div class="row w-100">
+              <b class="col-sm-4 col-12">Nickname</b>
+              <span class="col-sm-8 col-12 text-sm-end">{{ res.payload.nickname }}</span>
+            </div>
+            <div class="row w-100">
+              <b class="col-sm-4 col-12">Joined</b>
+              <span class="col-sm-8 col-12 text-sm-end">{{ moment(res.payload.createdAt).format("ll [at] HH:mm") }}</span>
+            </div>
+            <div class="row w-100">
+              <b class="col-sm-4 col-12">K/D</b>
+              <span class="col-sm-8 col-12 text-sm-end">WINS / LOSES</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-0 d-none d-lg-flex col-lg-8">
+        <div class="d-flex-col w-75">
+          <div class="d-flex justify-content-between w-100">
+            <b>User ID</b>
+            <span>#{{ res.payload.id }}</span>
+          </div>
+          <div class="d-flex justify-content-between w-100">
+            <b>Nickname</b>
+            <span>{{ res.payload.nickname }}</span>
+          </div>
+          <div class="d-flex justify-content-between w-100">
+            <b>Joined</b>
+            <span>{{ moment(res.payload.createdAt).format("ll [at] HH:mm") }}</span>
+          </div>
+          <div class="d-flex justify-content-between w-100">
+            <b>K/D</b>
+            <div>
+              <span class="text-primary">WINS</span> / <span class="text-danger">LOSES</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-0 col-lg-4 d-flex justify-content-end">
+        <img
+            class="rounded d-none d-lg-block"
+            style="object-fit: cover; width: 15vw; height: 15vw"
+            :src="CONST.BackendURL + '/users/avatar/' + res.payload.username"
+            alt="profile picture"
+        />
+      </div>
+      <div class="col-12">
+        <h2 class="mb-4">Match History</h2>
+        <div v-for="(match, id) in history" :key="id" class="d-flex-col w-100 w-75-lg card mb-3">
+          <h5 class="card-header">
+            <span class="text-primary">{{ user.nickname }}</span> vs <span class="text-danger">{{ match.opponent }}</span>
+          </h5>
+          <div class="row w-100 card-body">
+            <div class="col-6">
+              <h5>Game type</h5>
+              <h5 class="card-subtitle text-muted">{{ match.type }}</h5>
+            </div>
+            <div class="col-6">
+              <h5>Score</h5>
+              <h5 class="card-subtitle">
+                <span class="text-primary">{{ match.score }}</span> / <span class="text-danger">{{ match.opponentScore }}</span>
+              </h5>
+
+            </div>
+          </div>
+          <div class="card-footer">
+            {{ moment(match.endedAt).fromNow() }}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref, onMounted, computed } from "vue";
+import router from "@/router";
+import {getUser} from "@/utils/user";
+import CONST from "@/utils/const";
+import moment from "moment";
+import {store} from "@/store";
+
+const res = ref(null);
+const user = computed(() => store.state.auth.user);
+const history = ref([
+  { opponent: "mdesoeuv", score: 1, opponentScore: 2, endedAt: Date.now() - 1e3 * 60, type: "classic" },
+  { opponent: "abucia", score: 3, opponentScore: 0, endedAt: Date.now() - 1e3 * 127, type: "custom" },
+  { opponent: "wekjgjhwekjgh12j", score: 0, opponentScore: 3, endedAt: Date.now() - 1e3 * 260, type: "classic" },
+  { opponent: "abucia", score: 3, opponentScore: 0, endedAt: Date.now() - 1e3 * 127, type: "custom" },
+  { opponent: "wekjgjhwekjgh12j", score: 0, opponentScore: 3, endedAt: Date.now() - 1e3 * 260, type: "classic" },
+]);
+
+onMounted(async () => {
+  const response = await getUser(router.currentRoute.value.params["id"] as string);
+
+  console.debug(response);
+  res.value = response;
+});
+</script>
