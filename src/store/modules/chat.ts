@@ -101,6 +101,10 @@ export default {
     sendFriendRequest({ rootState }, payload: string) {
       rootState.socket?.emit("friend_add", { userNick: payload });
     },
+    unfriend({ state, rootState }) {
+      if (state.selectedFriend)
+        rootState.socket?.emit("friend_remove", { friendId: state.selectedFriend });
+    },
     selectFriend({ state }, payload: number) {
       state.selectedFriend = payload;
       this.dispatch("chat/setAction", ChatActions.FRIEND_MESSAGE);
@@ -139,6 +143,12 @@ export default {
 
       if (f)
         f.status = payload.status;
+    },
+    SOCKET_friend_remove(state: ChatState, payload: { friendId: number }) {
+      if (payload.friendId === state.selectedFriend)
+        state.action = ChatActions.FRIEND_LIST;
+
+      state.friends.delete(payload.friendId);
     },
   },
 } as Module<ChatState, StoreState>;

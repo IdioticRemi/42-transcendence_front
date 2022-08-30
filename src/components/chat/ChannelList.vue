@@ -3,7 +3,7 @@
     <h3 class="mb-3 mt-2">My Channels</h3>
     <div>
       <button class="btn btn-primary my-2 me-2" @click="setAction(ChatActions.FRIEND_LIST)">
-        <i class="bi bi-person" />
+        <i class="bi bi-people" />
       </button>
       <button class="btn btn-primary my-2 me-2" @click="setAction(ChatActions.CREATE_CHANNEL)">
         <i class="bi bi-plus" />

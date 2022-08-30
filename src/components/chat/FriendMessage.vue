@@ -1,11 +1,14 @@
 <template>
   <div class="d-flex flex-column w-100">
     <div class="d-flex flex-row justify-content-between w-100 mb-3 mt-2">
-      <h3>@{{ selectedFriend?.nickname }}</h3>
+      <div class="d-flex flex-row">
+        <h3>@{{ selectedFriend?.nickname }}</h3>
+        <i :class="`mt-1 ms-1 bi-circle-fill text-${selectedFriend?.status === FriendStatus.ONLINE ? 'success' : selectedFriend?.status === FriendStatus.OFFLINE ? 'secondary' : 'warning'}`" />
+      </div>
       <div>
-<!--        <button class="btn btn-danger" @click="deleteChannel(selected)">-->
-<!--          <i class="bi bi-trash" />-->
-<!--        </button>-->
+        <button class="btn btn-danger me-2" @click="removeFriend()">
+          <i class="bi bi-person-dash" />
+        </button>
 <!--        <button class="btn btn-warning mx-2" @click="leaveChannel(selected)">-->
 <!--          <i class="bi bi-door-open" />-->
 <!--        </button>-->
@@ -40,6 +43,7 @@
 <script setup lang="ts">
 import {ref, computed} from "vue";
 import {store} from "@/store";
+import {FriendStatus} from "@/store/modules/chat";
 
 const messageContent = ref("");
 
@@ -55,6 +59,11 @@ function sendMessage() {
 
 function unselectFriend() {
   store.dispatch("chat/unselectFriend");
+}
+
+function removeFriend() {
+  messageContent.value = "";
+  store.dispatch("chat/unfriend");
 }
 </script>
 

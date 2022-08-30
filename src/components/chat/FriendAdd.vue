@@ -2,7 +2,7 @@
   <div class="d-flex flex-column w-100">
     <div class="d-flex flex-row justify-content-between p-2">
       <h3 class="mb-3 mt-2">Add a friend</h3>
-      <button class="btn btn-primary my-2" @click="setAction(ChatActions.LIST_CHANNELS)">
+      <button class="btn btn-primary my-2" @click="setAction(ChatActions.FRIEND_LIST)">
         <i class="bi bi-arrow-return-left" />
       </button>
     </div>
@@ -12,6 +12,7 @@
             v-model="friendName"
             class="form-control me-2"
             placeholder="my awesome friend"
+            @keydown.enter="addFriend()"
         />
       </div>
       <button class="btn btn-primary" @click="addFriend()">
