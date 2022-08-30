@@ -2,7 +2,7 @@
   <div class="d-flex flex-column w-100">
     <div class="d-flex flex-row justify-content-between w-100 mb-3 mt-2">
       <div class="d-flex flex-row">
-        <h3>@{{ selectedFriend?.nickname }}</h3>
+        <h5>@{{ selectedFriend?.nickname }}</h5>
         <i :class="`mt-1 ms-1 bi-circle-fill text-${selectedFriend?.status === FriendStatus.ONLINE ? 'success' : selectedFriend?.status === FriendStatus.OFFLINE ? 'secondary' : 'warning'}`" />
       </div>
       <div>

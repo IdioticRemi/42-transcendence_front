@@ -92,13 +92,13 @@ export default {
     deleteChannel({ rootState }, payload: number) {
       rootState.socket?.emit("channel_delete", { channelId: payload })
     },
-    selectChannel({ state }, payload: number) {
+    selectChannel({ state, dispatch }, payload: number) {
       state.selected = payload;
-      this.dispatch("chat/setAction", ChatActions.CHANNEL_VIEW);
+      dispatch("setAction", ChatActions.CHANNEL_VIEW);
     },
-    unselectChannel({ state }) {
+    unselectChannel({ state, dispatch }) {
       state.selected = null;
-      this.dispatch("chat/setAction", ChatActions.LIST_CHANNELS);
+      dispatch("setAction", ChatActions.LIST_CHANNELS);
     },
     setAction({ state }, payload: number) {
       state.action = payload;
@@ -113,13 +113,13 @@ export default {
       if (state.selectedFriend)
         rootState.socket?.emit("friend_remove", { friendId: state.selectedFriend });
     },
-    selectFriend({ state }, payload: number) {
+    selectFriend({ state, dispatch }, payload: number) {
       state.selectedFriend = payload;
-      this.dispatch("chat/setAction", ChatActions.FRIEND_MESSAGE);
+      dispatch("setAction", ChatActions.FRIEND_MESSAGE);
     },
-    unselectFriend({ state }) {
+    unselectFriend({ state, dispatch }) {
       state.selectedFriend = null;
-      this.dispatch("chat/setAction", ChatActions.FRIEND_LIST);
+      dispatch("setAction", ChatActions.FRIEND_LIST);
     },
     newFriendMessage({ state, rootState }, payload: string) {
       rootState.socket?.emit("friend_message", { friendId: state.selectedFriend, content: payload })
@@ -173,4 +173,4 @@ export default {
       state.blocked.delete(payload.userId);
     },
   },
-} as Module<ChatState, StoreState>;
+} as unknown as Module<ChatState, StoreState>;
