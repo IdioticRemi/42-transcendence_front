@@ -42,14 +42,15 @@ export enum FriendStatus {
 }
 
 export enum ChatActions {
-  LIST_CHANNELS,
-  LIST_AVAILABLE_CHANNELS,
-  CREATE_CHANNEL,
-  CHANNEL_VIEW,
-  FRIEND_LIST,
-  FRIEND_ADD,
-  FRIEND_MESSAGE,
-  BLOCKED_LIST,
+  LIST_CHANNELS = "list_channels",
+  LIST_AVAILABLE_CHANNELS = "list_available_channels",
+  CREATE_CHANNEL = "create_channel",
+  CHANNEL_VIEW = "channel_view",
+  CHANNEL_JOIN_PRIVATE = "channel_join_private",
+  FRIEND_LIST = "friend_list",
+  FRIEND_ADD = "friend_add",
+  FRIEND_MESSAGE = "friend_message",
+  BLOCKED_LIST = "blocked_list",
 }
 
 export default {
@@ -61,7 +62,7 @@ export default {
     channels: new Map(),
     friends: new Map(),
     blocked: new Map(),
-    action: 0,
+    action: ChatActions.LIST_CHANNELS,
   } as ChatState,
   getters: {
     getMessages(state: ChatState): ChatMessage[] {
@@ -86,6 +87,9 @@ export default {
     joinChannel({ rootState }, payload: number) {
       rootState.socket?.emit("channel_join", { channelId: payload })
     },
+    joinPrivateChannel({ rootState }, payload: { channelName: string, password?: string }) {
+      rootState.socket?.emit("channel_joinprv", payload);
+    },
     leaveChannel({ rootState }, payload: number) {
       rootState.socket?.emit("channel_leave", { channelId: payload })
     },
@@ -100,7 +104,7 @@ export default {
       state.selected = null;
       dispatch("setAction", ChatActions.LIST_CHANNELS);
     },
-    setAction({ state }, payload: number) {
+    setAction({ state }, payload: string) {
       state.action = payload;
     },
     getMyFriends({ rootState }) {
@@ -143,9 +147,15 @@ export default {
     SOCKET_channel_info(state: ChatState, { id, name, messages }: { id: number, name: string, messages: { id: number, userId: number, userNick: string, content: string }[] }) {
       state.channels.set(id, { name, id, messages: messages.map(m => { return { content: m.content, nick: m.userNick, user: m.userId.toString() } }) });
     },
+    SOCKET_channel_join(state: ChatState, payload: { channelId: number }) {
+        state.selected = payload.channelId;
+        state.action = ChatActions.CHANNEL_VIEW;
+    },
     SOCKET_channel_leave(state: ChatState, payload: {channelId: number}) {
-      if (state.selected === payload.channelId)
+      if (state.selected === payload.channelId) {
         state.selected = null;
+        state.action = ChatActions.LIST_CHANNELS;
+      }
       state.channels.delete(payload.channelId);
     },
     SOCKET_friend_info(state: ChatState, { id, nickname, messages, status }: { id: number, nickname: string, status: FriendStatus, messages: { id: number, userNick: string, userId: number, content: string }[] }) {

@@ -1,8 +1,8 @@
 <template>
   <div class="d-flex flex-column w-100">
     <div class="d-flex flex-row justify-content-between p-2">
-      <h3 class="mb-3 mt-2">Create Channel</h3>
-      <button class="btn btn-primary my-2" @click="setAction(ChatActions.LIST_CHANNELS)">
+      <h3 class="mb-3 mt-2">Join Private Channel</h3>
+      <button class="btn btn-primary my-2" @click="setAction(ChatActions.LIST_AVAILABLE_CHANNELS)">
         <i class="bi bi-arrow-return-left" />
       </button>
     </div>
@@ -10,28 +10,17 @@
       <div>
         <input
             v-model="channelName"
-            class="form-control me-2"
-            placeholder="my awesome channel"
+            class="form-control me-2 mb-2"
+            placeholder="channel name (case sensitive)"
         />
-        <div class="d-flex flex-row justify-content-between my-4 w-100">
-              <span>
-                Should channel be private?
-              </span>
-          <input
-              type="checkbox"
-              v-model="isChannelPrivate"
-              class="me-2"
-              :disabled="channelPassword.length > 0"
-          />
-        </div>
         <input
             v-model="channelPassword"
             class="form-control me-2"
-            placeholder="my secret password"
+            placeholder="channel password if set"
         />
       </div>
-      <button class="btn btn-primary" @click="createChannel()">
-        Create!
+      <button class="btn btn-primary" @click="joinPrivateChannel()">
+        Join Private Channel
       </button>
     </div>
   </div>
@@ -44,22 +33,19 @@ import {ChatActions} from "@/store/modules/chat";
 
 const channelName = ref("");
 const channelPassword = ref("");
-const isChannelPrivate = ref(false);
 
 function setAction(action: ChatActions) {
   store.dispatch("chat/setAction", action);
 }
 
-function createChannel() {
-  store.dispatch("chat/createChannel", {
-    name: channelName.value,
-    private: isChannelPrivate.value,
-    password: channelPassword.value || null
+function joinPrivateChannel() {
+  store.dispatch("chat/joinPrivateChannel", {
+    channelName: channelName.value,
+    password: channelPassword.value
   });
 
   channelName.value = "";
   channelPassword.value = "";
-  isChannelPrivate.value = false;
 }
 </script>
 

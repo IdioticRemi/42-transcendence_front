@@ -4,6 +4,7 @@
       <ChannelChat v-if="action === ChatActions.CHANNEL_VIEW" />
       <ChannelCreate v-else-if="action === ChatActions.CREATE_CHANNEL" />
       <ChannelListAvailable v-else-if="action === ChatActions.LIST_AVAILABLE_CHANNELS" />
+      <ChannelJoinPrivate v-else-if="action === ChatActions.CHANNEL_JOIN_PRIVATE" />
       <FriendList v-else-if="action === ChatActions.FRIEND_LIST" />
       <FriendAdd v-else-if="action === ChatActions.FRIEND_ADD" />
       <FriendMessage v-else-if="action === ChatActions.FRIEND_MESSAGE" />
@@ -25,6 +26,7 @@ import FriendList from "@/components/chat/FriendList.vue";
 import FriendAdd from "@/components/chat/FriendAdd.vue";
 import FriendMessage from "@/components/chat/FriendMessage.vue";
 import BlockedList from "@/components/chat/BlockedList.vue";
+import ChannelJoinPrivate from "@/components/chat/ChannelJoinPrivate.vue";
 
 const action = computed(() => store.state.chat.action);
 </script>
