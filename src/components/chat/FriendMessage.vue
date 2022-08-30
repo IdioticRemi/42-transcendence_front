@@ -6,12 +6,12 @@
         <i :class="`mt-1 ms-1 bi-circle-fill text-${selectedFriend?.status === FriendStatus.ONLINE ? 'success' : selectedFriend?.status === FriendStatus.OFFLINE ? 'secondary' : 'warning'}`" />
       </div>
       <div>
-        <button class="btn btn-danger me-2" @click="removeFriend()">
+        <button class="btn btn-danger me-2" @click="blockUser()">
+          <i class="bi bi-x-octagon" />
+        </button>
+        <button class="btn btn-warning me-2" @click="removeFriend()">
           <i class="bi bi-person-dash" />
         </button>
-<!--        <button class="btn btn-warning mx-2" @click="leaveChannel(selected)">-->
-<!--          <i class="bi bi-door-open" />-->
-<!--        </button>-->
         <button class="btn btn-primary" @click="unselectFriend()">
           <i class="bi bi-arrow-return-left" />
         </button>
@@ -59,6 +59,11 @@ function sendMessage() {
 
 function unselectFriend() {
   store.dispatch("chat/unselectFriend");
+}
+
+function blockUser() {
+  if (selectedFriend.value)
+    store.dispatch("chat/blockUser", selectedFriend.value.id);
 }
 
 function removeFriend() {

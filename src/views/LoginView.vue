@@ -9,10 +9,6 @@ import router from "@/router";
 
 const failedLogin = ref(false);
 
-function resetURL() {
-  router.replace("/login");
-}
-
 function sendToHome(success: boolean) {
   router.push(success ? "/" : "/?login=fail");
 }
@@ -23,13 +19,11 @@ onMounted(async () => {
 
   if (token) {
     localStorage.setItem("token", token);
-    resetURL();
   }
   if (localStorage.getItem("token")) {
     if (localStorage.getItem("token") === "null") {
       failedLogin.value = true;
-      store.commit("auth/logout");
-      resetURL();
+      await store.dispatch("auth/logout");
       sendToHome(false);
       return;
     }
@@ -37,7 +31,6 @@ onMounted(async () => {
     const token = localStorage.getItem("token");
 
     const res = await fetch("http://localhost:3000/auth/check?token=" + token);
-    resetURL();
     const json_data = await res.json();
 
     if (!res.ok || json_data.error) {

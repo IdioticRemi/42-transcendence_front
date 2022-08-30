@@ -1,8 +1,11 @@
 <template>
   <div class="d-flex flex-row justify-content-between p-2">
-    <h3 class="mb-3 mt-2">My Friends</h3>
+    <h3 class="mb-3 mt-2">Friends</h3>
     <div>
-      <button class="btn btn-primary my-2 me-2" @click="setAction(ChatActions.FRIEND_ADD)">
+      <button class="btn btn-danger my-2 me-2" @click="setAction(ChatActions.BLOCKED_LIST)">
+        <i class="bi bi-clipboard-x" />
+      </button>
+      <button class="btn btn-success my-2 me-2" @click="setAction(ChatActions.FRIEND_ADD)">
         <i class="bi bi-person-plus" />
       </button>
       <button class="btn btn-primary my-2" @click="setAction(ChatActions.LIST_CHANNELS)">

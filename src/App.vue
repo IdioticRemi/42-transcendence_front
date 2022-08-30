@@ -6,7 +6,7 @@
     </div>
     <div class="col-12 col-lg-9">
       <div class="container">
-        <router-view/>
+        <router-view :key="router.currentRoute.value.fullPath"/>
       </div>
     </div>
   </div>
@@ -16,6 +16,7 @@
 import "bootstrap/dist/css/bootstrap.css";
 import { store } from "@/store";
 import { computed } from "vue";
+import router from "@/router"
 import NavBar from "@/components/NavBar";
 import SideChat from "@/components/SideChat";
 

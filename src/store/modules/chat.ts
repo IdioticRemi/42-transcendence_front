@@ -13,6 +13,11 @@ export interface ChatChannel {
   messages: ChatMessage[];
 }
 
+export interface Blocked {
+  nickname: string,
+  id: number,
+}
+
 export interface Friend {
   nickname: string;
   id: number;
@@ -26,6 +31,7 @@ export interface ChatState {
   selectedFriend: number | null;
   channels: Map<number, ChatChannel>;
   friends: Map<number, Friend>;
+  blocked: Map<number, Blocked>;
   action: ChatActions;
 }
 
@@ -43,6 +49,7 @@ export enum ChatActions {
   FRIEND_LIST,
   FRIEND_ADD,
   FRIEND_MESSAGE,
+  BLOCKED_LIST,
 }
 
 export default {
@@ -53,6 +60,7 @@ export default {
     selectedFriend: null,
     channels: new Map(),
     friends: new Map(),
+    blocked: new Map(),
     action: 0,
   } as ChatState,
   getters: {
@@ -118,10 +126,18 @@ export default {
     },
     setMyId({ state }, payload: number) {
       state.myId = payload;
+    },
+    blockUser({ rootState }, payload: number) {
+      rootState.socket?.emit('user_block', { userId: payload })
+    },
+    unblockUser({ rootState }, payload: number) {
+      rootState.socket?.emit('user_unblock', { userId: payload })
     }
   },
   mutations: {
     SOCKET_channel_message(state: ChatState, payload: { channelId: number, userId: number, userNick: string, content: string }) {
+      if (state.blocked.has(payload.userId))
+        return;
       state.channels.get(payload.channelId)?.messages.push({ content: payload.content, nick: payload.userNick, user: payload.userId.toString() })
     },
     SOCKET_channel_info(state: ChatState, { id, name, messages }: { id: number, name: string, messages: { id: number, userId: number, userNick: string, content: string }[] }) {
@@ -149,6 +165,12 @@ export default {
         state.action = ChatActions.FRIEND_LIST;
 
       state.friends.delete(payload.friendId);
+    },
+    SOCKET_user_block(state: ChatState, payload: { userId: number, userNick: string }) {
+      state.blocked.set(payload.userId, { nickname: payload.userNick, id: payload.userId });
+    },
+    SOCKET_user_unblock(state: ChatState, payload: { userId: number }) {
+      state.blocked.delete(payload.userId);
     },
   },
 } as Module<ChatState, StoreState>;

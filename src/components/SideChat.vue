@@ -7,6 +7,7 @@
       <FriendList v-else-if="action === ChatActions.FRIEND_LIST" />
       <FriendAdd v-else-if="action === ChatActions.FRIEND_ADD" />
       <FriendMessage v-else-if="action === ChatActions.FRIEND_MESSAGE" />
+      <BlockedList v-else-if="action === ChatActions.BLOCKED_LIST" />
       <ChannelList v-else />
     </div>
   </div>
@@ -23,6 +24,7 @@ import ChannelChat from "@/components/chat/ChannelChat.vue";
 import FriendList from "@/components/chat/FriendList.vue";
 import FriendAdd from "@/components/chat/FriendAdd.vue";
 import FriendMessage from "@/components/chat/FriendMessage.vue";
+import BlockedList from "@/components/chat/BlockedList.vue";
 
 const action = computed(() => store.state.chat.action);
 </script>

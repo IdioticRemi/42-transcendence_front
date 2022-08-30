@@ -38,6 +38,10 @@ export default {
       commit("logoutUser");
       rootState.socket?.disconnect();
       dispatch("chat/setMyId", -1, {root: true})
+    },
+    changeNickname({ rootState }, payload: string) {
+      if (payload)
+        rootState.socket?.emit('user_nick', { newNick: payload });
     }
   },
   mutations: {
@@ -51,5 +55,9 @@ export default {
       state.token = null;
       localStorage.removeItem("token");
     },
+    SOCKET_user_nick(state: AuthState, payload: { newNick: string }) {
+      if (state.user)
+        state.user.nickname = payload.newNick;
+    }
   },
 } as unknown as Module<AuthState, StoreState>;

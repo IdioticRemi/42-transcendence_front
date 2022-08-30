@@ -44,7 +44,20 @@
           </div>
           <div class="d-flex justify-content-between w-100">
             <b>Nickname</b>
-            <span>{{ res.payload.nickname }}</span>
+            <span>
+              <span v-if="user.id === res.payload.id">{{ user.nickname }}</span>
+              <span v-else>{{ res.payload.nickname }}</span>
+
+              <button :hidden="res.payload.id !== user.id" @click="toggleEditNickname()" class="btn btn-sm btn-primary ms-1 py-0 px-1">
+                <i class="bi-pencil" />
+              </button>
+            </span>
+          </div>
+          <div :hidden="!editingNickname" class="d-flex flex-row">
+            <input :hidden="!editingNickname" ref="nickInput" @keydown.enter="changeNickname()" v-model="newNickname" class="mt-2 form-control form-control-sm me-2" type="text" placeholder="my awesome nickname">
+            <button :hidden="!editingNickname" @click="changeNickname()" class="mt-2 btn btn-sm btn-primary py-0 px-1">
+              <i class="bi-check2" />
+            </button>
           </div>
           <div class="d-flex justify-content-between w-100">
             <b>Joined</b>
@@ -102,6 +115,9 @@ import CONST from "@/utils/const";
 import moment from "moment";
 import {store} from "@/store";
 
+const editingNickname = ref(false);
+const newNickname = ref("");
+const nickInput = ref(null);
 const res = ref(null);
 const user = computed(() => store.state.auth.user);
 const history = ref([
@@ -112,10 +128,20 @@ const history = ref([
   { opponent: "wekjgjhwekjgh12j", score: 0, opponentScore: 3, endedAt: Date.now() - 1e3 * 260, type: "classic" },
 ]);
 
-onMounted(async () => {
-  const response = await getUser(router.currentRoute.value.params["id"] as string);
+function toggleEditNickname() {
+  if (editingNickname.value)
+    newNickname.value = "";
+  else
+    nickInput.value?.focus();
+  editingNickname.value = !editingNickname.value;
+}
 
-  console.debug(response);
-  res.value = response;
+function changeNickname() {
+  store.dispatch("auth/changeNickname", newNickname.value);
+  toggleEditNickname();
+}
+
+onMounted(async () => {
+  res.value = await getUser(router.currentRoute.value.params["id"] as string);
 });
 </script>
