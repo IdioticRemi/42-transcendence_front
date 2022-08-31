@@ -14,7 +14,7 @@
     </div>
   </div>
   <div class="overflow-scroll" id="chan-list">
-    <div v-for="chan in channels.values()" class="w-100" :key="chan.id">
+    <div v-for="chan in channels" class="w-100" :key="chan.id">
       <div class="d-flex flex-row justify-content-between w-100">
         <div class="text-secondary m-0 py-2 px-0" style="max-width: 50%">
           {{ chan.name }}
@@ -33,7 +33,7 @@ import {computed, onMounted} from "vue";
 import {store} from "@/store";
 import {ChatActions} from "@/store/modules/chat";
 
-const channels = computed(() => store.state.chat.channels);
+const channels = computed(() => [...store.state.chat.channels.values()].sort((a, b) => a.name.localeCompare(b.name)));
 
 function setAction(action: ChatActions) {
   store.dispatch("chat/setAction", action);
