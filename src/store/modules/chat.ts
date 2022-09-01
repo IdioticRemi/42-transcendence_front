@@ -33,7 +33,18 @@ export interface ChatState {
   friends: Map<number, Friend>;
   blocked: Map<number, Blocked>;
   tempUserList: ChannelUsers | null;
+  tempSanctionsList: ChannelSanctions | null;
   action: ChatActions;
+}
+
+export interface ChannelSanctions {
+  channelId: number;
+  users: {
+    id: number;
+    nickname: string;
+    muted: boolean;
+    banned: boolean;
+  }[];
 }
 
 export interface ChannelUsers {
@@ -57,6 +68,7 @@ export enum ChatActions {
   CREATE_CHANNEL = "create_channel",
   CHANNEL_VIEW = "channel_view",
   CHANNEL_USERS = "channel_users",
+  CHANNEL_SANCTIONS = "channel_sanctions",
   CHANNEL_SETTINGS = "channel_settings",
   CHANNEL_JOIN_PRIVATE = "channel_join_private",
   FRIEND_LIST = "friend_list",
@@ -75,6 +87,7 @@ export default {
     friends: new Map(),
     blocked: new Map(),
     tempUserList: null,
+    tempSanctionsList: null,
     action: ChatActions.LIST_CHANNELS,
   } as ChatState,
   getters: {
@@ -166,6 +179,16 @@ export default {
       if (state.selected)
         rootState.socket?.emit('channel_del_admin', { userId: payload, channelId: state.selected });
     },
+    applySanction({ rootState, state }, payload: { sanction: string, duration: number, userId: number, channelId?: number }) {
+      payload.channelId = state.selected;
+
+      if (state.selected)
+        rootState.socket?.emit('channel_add_sanction', payload);
+    },
+    getChannelSanctions({ rootState, state }) {
+      if (state.selected)
+        rootState.socket?.emit('channel_sanctions', { channelId: state.selected });
+    },
   },
   mutations: {
     SOCKET_channel_message(state: ChatState, payload: { channelId: number, userId: number, userNick: string, content: string }) {
@@ -214,6 +237,11 @@ export default {
     SOCKET_channel_users(state: ChatState, payload: ChannelUsers) {
       if (payload.channelId === state.selected) {
         state.tempUserList = payload;
+      }
+    },
+    SOCKET_channel_sanctions(state: ChatState, payload: ChannelSanctions) {
+      if (payload.channelId === state.selected) {
+        state.tempSanctionsList = payload;
       }
     }
   },
