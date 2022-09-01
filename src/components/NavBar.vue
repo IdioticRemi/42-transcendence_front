@@ -14,7 +14,7 @@
       </ul>
 
       <div v-if="connected" class="navbar-nav d-flex flex-row">
-        <router-link class="nav-link p-0" to="/profile">
+        <router-link class="nav-link p-0" :to="`/profile/${user.id}`">
           <img
             v-if="user.hasOwnProperty('username')"
             class="rounded"

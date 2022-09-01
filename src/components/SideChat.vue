@@ -2,6 +2,8 @@
   <div class="position-fixed fixed-bottom" style="width: inherit !important;">
     <div class="bg-light rounded px-2 py-0 m-0 w-100 d-flex flex-column" id="chat-list">
       <ChannelChat v-if="action === ChatActions.CHANNEL_VIEW" />
+      <ChannelUsers v-else-if="action === ChatActions.CHANNEL_USERS" />
+      <ChannelSettings v-else-if="action === ChatActions.CHANNEL_SETTINGS" />
       <ChannelCreate v-else-if="action === ChatActions.CREATE_CHANNEL" />
       <ChannelListAvailable v-else-if="action === ChatActions.LIST_AVAILABLE_CHANNELS" />
       <ChannelJoinPrivate v-else-if="action === ChatActions.CHANNEL_JOIN_PRIVATE" />
@@ -27,6 +29,8 @@ import FriendAdd from "@/components/chat/FriendAdd.vue";
 import FriendMessage from "@/components/chat/FriendMessage.vue";
 import BlockedList from "@/components/chat/BlockedList.vue";
 import ChannelJoinPrivate from "@/components/chat/ChannelJoinPrivate.vue";
+import ChannelUsers from "@/components/chat/ChannelUsers.vue";
+import ChannelSettings from "@/components/chat/ChannelSettings.vue";
 
 const action = computed(() => store.state.chat.action);
 </script>

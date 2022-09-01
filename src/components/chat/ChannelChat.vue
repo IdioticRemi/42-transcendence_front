@@ -3,11 +3,11 @@
     <div class="d-flex flex-row justify-content-between w-100 mb-3 mt-2">
       <h3>#{{ selectedChannel?.name }}</h3>
       <div>
-        <button class="btn btn-danger" @click="deleteChannel(selected)">
-          <i class="bi bi-trash" />
+        <button class="btn btn-primary" @click="goToSettings()">
+          <i class="bi bi-gear" />
         </button>
-        <button class="btn btn-warning mx-2" @click="leaveChannel(selected)">
-          <i class="bi bi-door-open" />
+        <button class="btn btn-primary mx-2" @click="goToUserList()">
+          <i class="bi bi-people" />
         </button>
         <button class="btn btn-primary" @click="unselectChannel()">
           <i class="bi bi-arrow-return-left" />
@@ -40,6 +40,7 @@
 <script setup lang="ts">
 import {ref, computed} from "vue";
 import {store} from "@/store";
+import {ChatActions} from "@/store/modules/chat";
 
 const messageContent = ref("");
 
@@ -50,29 +51,29 @@ const messages = computed(
     () => channels.value.get(selected.value || -1)?.messages
 );
 
+function setAction(action: ChatActions) {
+  store.dispatch("chat/setAction", action);
+}
+
 function sendMessage() {
   store.dispatch("chat/newMessage", messageContent.value);
   messageContent.value = "";
 }
 
-function deleteChannel(channelId: number) {
-  if (channelId < 0)
-    return;
-  store.dispatch("chat/deleteChannel", channelId);
-  unselectChannel();
+function goToUserList() {
+  store.dispatch("chat/getChannelUserList");
+  setAction(ChatActions.CHANNEL_USERS);
 }
 
-function leaveChannel(channelId: number) {
-  if (channelId < 0)
-    return;
-  store.dispatch("chat/leaveChannel", channelId);
-  if (selected.value === channelId)
-    unselectChannel();
+function goToSettings() {
+  store.dispatch("chat/getChannelUserList");
+  setAction(ChatActions.CHANNEL_SETTINGS);
 }
 
 function unselectChannel() {
   store.dispatch("chat/unselectChannel");
 }
+
 </script>
 
 <style scoped>

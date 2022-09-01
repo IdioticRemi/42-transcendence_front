@@ -32,7 +32,17 @@ export interface ChatState {
   channels: Map<number, ChatChannel>;
   friends: Map<number, Friend>;
   blocked: Map<number, Blocked>;
+  tempUserList: ChannelUsers | null;
   action: ChatActions;
+}
+
+export interface ChannelUsers {
+  channelId: number;
+  users: {
+    id: number;
+    nickname: string;
+    perm: number
+  }[];
 }
 
 export enum FriendStatus {
@@ -46,6 +56,8 @@ export enum ChatActions {
   LIST_AVAILABLE_CHANNELS = "list_available_channels",
   CREATE_CHANNEL = "create_channel",
   CHANNEL_VIEW = "channel_view",
+  CHANNEL_USERS = "channel_users",
+  CHANNEL_SETTINGS = "channel_settings",
   CHANNEL_JOIN_PRIVATE = "channel_join_private",
   FRIEND_LIST = "friend_list",
   FRIEND_ADD = "friend_add",
@@ -62,6 +74,7 @@ export default {
     channels: new Map(),
     friends: new Map(),
     blocked: new Map(),
+    tempUserList: null,
     action: ChatActions.LIST_CHANNELS,
   } as ChatState,
   getters: {
@@ -77,24 +90,26 @@ export default {
       rootState.socket?.emit("channel_list");
     },
     newMessage({ state, rootState }, payload: string) {
-      rootState.socket?.emit("channel_message", { channelId: state.selected, content: payload })
+      if (payload.length) {
+        rootState.socket?.emit("channel_message", { channelId: state.selected, content: payload });
+      }
     },
     createChannel({ rootState }, payload: { name: string, private: boolean, password?: string }) {
       if (!payload.password)
         delete payload.password;
-      rootState.socket?.emit("channel_create", payload)
+      rootState.socket?.emit("channel_create", payload);
     },
     joinChannel({ rootState }, payload: number) {
-      rootState.socket?.emit("channel_join", { channelId: payload })
+      rootState.socket?.emit("channel_join", { channelId: payload });
     },
     joinPrivateChannel({ rootState }, payload: { channelName: string, password?: string }) {
       rootState.socket?.emit("channel_joinprv", payload);
     },
     leaveChannel({ rootState }, payload: number) {
-      rootState.socket?.emit("channel_leave", { channelId: payload })
+      rootState.socket?.emit("channel_leave", { channelId: payload });
     },
     deleteChannel({ rootState }, payload: number) {
-      rootState.socket?.emit("channel_delete", { channelId: payload })
+      rootState.socket?.emit("channel_delete", { channelId: payload });
     },
     selectChannel({ state, dispatch }, payload: number) {
       state.selected = payload;
@@ -126,17 +141,31 @@ export default {
       dispatch("setAction", ChatActions.FRIEND_LIST);
     },
     newFriendMessage({ state, rootState }, payload: string) {
-      rootState.socket?.emit("friend_message", { friendId: state.selectedFriend, content: payload })
+      if (payload.length) {
+        rootState.socket?.emit("friend_message", {friendId: state.selectedFriend, content: payload});
+      }
     },
     setMyId({ state }, payload: number) {
       state.myId = payload;
     },
     blockUser({ rootState }, payload: number) {
-      rootState.socket?.emit('user_block', { userId: payload })
+      rootState.socket?.emit('user_block', { userId: payload });
     },
     unblockUser({ rootState }, payload: number) {
-      rootState.socket?.emit('user_unblock', { userId: payload })
-    }
+      rootState.socket?.emit('user_unblock', { userId: payload });
+    },
+    getChannelUserList({ rootState, state }) {
+      if (state.selected)
+        rootState.socket?.emit('channel_users', { channelId: state.selected });
+    },
+    addChannelAdmin({ rootState, state }, payload: number) {
+      if (state.selected)
+        rootState.socket?.emit('channel_add_admin', { userId: payload, channelId: state.selected });
+    },
+    delChannelAdmin({ rootState, state }, payload: number) {
+      if (state.selected)
+        rootState.socket?.emit('channel_del_admin', { userId: payload, channelId: state.selected });
+    },
   },
   mutations: {
     SOCKET_channel_message(state: ChatState, payload: { channelId: number, userId: number, userNick: string, content: string }) {
@@ -182,5 +211,10 @@ export default {
     SOCKET_user_unblock(state: ChatState, payload: { userId: number }) {
       state.blocked.delete(payload.userId);
     },
+    SOCKET_channel_users(state: ChatState, payload: ChannelUsers) {
+      if (payload.channelId === state.selected) {
+        state.tempUserList = payload;
+      }
+    }
   },
 } as unknown as Module<ChatState, StoreState>;
