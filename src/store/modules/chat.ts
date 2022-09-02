@@ -2,7 +2,7 @@ import {Module} from "vuex";
 import {StoreState} from "@/store";
 
 export interface ChatMessage {
-  user: string;
+  user: number;
   nick: string;
   content: string;
 }
@@ -97,6 +97,9 @@ export default {
     getChannels(state: ChatState) {
       return state.channels.keys();
     },
+    getMySanctions(state: ChatState) {
+      return state.tempSanctionsList?.users.find(u => u.id === state.myId);
+    }
   },
   actions: {
     getMyChannels({ rootState }) {
@@ -194,10 +197,10 @@ export default {
     SOCKET_channel_message(state: ChatState, payload: { channelId: number, userId: number, userNick: string, content: string }) {
       if (state.blocked.has(payload.userId))
         return;
-      state.channels.get(payload.channelId)?.messages.push({ content: payload.content, nick: payload.userNick, user: payload.userId.toString() })
+      state.channels.get(payload.channelId)?.messages.push({ content: payload.content, nick: payload.userNick, user: payload.userId })
     },
     SOCKET_channel_info(state: ChatState, { id, name, messages }: { id: number, name: string, messages: { id: number, userId: number, userNick: string, content: string }[] }) {
-      state.channels.set(id, { name, id, messages: messages.map(m => { return { content: m.content, nick: m.userNick, user: m.userId.toString() } }) });
+      state.channels.set(id, { name, id, messages: messages.map(m => { return { content: m.content, nick: m.userNick, user: m.userId } }) });
     },
     SOCKET_channel_join(state: ChatState, payload: { channelId: number }) {
         state.selected = payload.channelId;
@@ -211,10 +214,10 @@ export default {
       state.channels.delete(payload.channelId);
     },
     SOCKET_friend_info(state: ChatState, { id, nickname, messages, status }: { id: number, nickname: string, status: FriendStatus, messages: { id: number, userNick: string, userId: number, content: string }[] }) {
-      state.friends.set(id, { nickname, status, id, messages: messages.map(m => { return { content: m.content, nick: m.userNick, user: m.userId.toString() } }) });
+      state.friends.set(id, { nickname, status, id, messages: messages.map(m => { return { content: m.content, nick: m.userNick, user: m.userId } }) });
     },
     SOCKET_friend_message(state: ChatState, payload: { friendId: number, userId: number, userNick: string, content: string }) {
-      state.friends.get(payload.userId === state.myId ? payload.friendId : payload.userId)?.messages.push({ content: payload.content, nick: payload.userNick, user: payload.userId.toString() })
+      state.friends.get(payload.userId === state.myId ? payload.friendId : payload.userId)?.messages.push({ content: payload.content, nick: payload.userNick, user: payload.userId })
     },
     SOCKET_friend_status(state: ChatState, payload: { id: number, status: FriendStatus }) {
       const f = state.friends.get(payload.id);

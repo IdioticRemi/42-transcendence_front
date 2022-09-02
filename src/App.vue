@@ -20,7 +20,7 @@ import { computed } from "vue";
 import router from "@/router"
 import NavBar from "@/components/NavBar";
 import SideChat from "@/components/SideChat";
-import ErrorList from "@/components/ErrorList";
+import ErrorList from "@/components/AlertList";
 
 const connected = computed(() => store.getters["auth/isConnected"]);
 

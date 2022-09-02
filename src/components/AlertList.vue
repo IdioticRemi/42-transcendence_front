@@ -2,8 +2,8 @@
   <div class="d-flex justify-content-end position-fixed" style="top: 4rem; right: 1rem; z-index: 1500 !important;">
     <div class="d-flex-col">
       <TransitionGroup name="fade">
-        <div v-for="(error, id) in errors" class="alert alert-danger" :key="id">
-          {{ error }}
+        <div v-for="(alert, id) in alerts" :class="`alert alert-${alert.type}`" :key="id">
+          {{ alert.message }}
         </div>
       </TransitionGroup>
     </div>
@@ -14,7 +14,7 @@
 import { computed } from "vue";
 import { store } from "@/store";
 
-const errors = computed(() => store.state.error.errors);
+const alerts = computed(() => store.state.alert.alerts);
 </script>
 
 <style scoped>

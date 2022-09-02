@@ -29,8 +29,9 @@
           class="form-control me-2"
           placeholder="message..."
           @keydown.enter="sendMessage()"
+          :disabled="mySanctions?.muted"
       />
-      <button class="btn btn-primary" @click="sendMessage()">
+      <button class="btn btn-primary" @click="sendMessage()" :disabled="mySanctions?.muted">
         <i class="bi bi-send" />
       </button>
     </div>
@@ -44,11 +45,13 @@ import {ChatActions} from "@/store/modules/chat";
 
 const messageContent = ref("");
 
+const mySanctions = computed(() => store.getters["chat/getMySanctions"]);
 const selected = computed(() => store.state.chat.selected);
 const channels = computed(() => store.state.chat.channels);
+const blocked = computed(() => store.state.chat.blocked);
 const selectedChannel = computed(() => channels.value.get(selected.value || -1));
 const messages = computed(
-    () => channels.value.get(selected.value || -1)?.messages
+    () => channels.value.get(selected.value || -1)?.messages.filter(m => !blocked.value.has(m.user))
 );
 
 function setAction(action: ChatActions) {

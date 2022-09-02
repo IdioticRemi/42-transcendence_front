@@ -49,7 +49,7 @@ const messageContent = ref("");
 
 const selected = computed(() => store.state.chat.selectedFriend);
 const friends = computed(() => store.state.chat.friends);
-const selectedFriend = computed(() => friends.value.get(selected.value || -1));
+const selectedFriend = computed(() => friends.value.get(selected.value === null ? -1 : selected.value));
 const messages = computed(() => selectedFriend.value?.messages);
 
 function sendMessage() {
