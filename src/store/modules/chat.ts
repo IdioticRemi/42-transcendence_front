@@ -5,11 +5,13 @@ export interface ChatMessage {
   user: number;
   nick: string;
   content: string;
+  createdAt?: Date;
 }
 
 export interface ChatChannel {
   name: string;
   id: number;
+  isPrivate: boolean;
   messages: ChatMessage[];
 }
 
@@ -141,8 +143,8 @@ export default {
     getMyFriends({ rootState }) {
       rootState.socket?.emit("friend_list");
     },
-    sendFriendRequest({ rootState }, payload: string) {
-      rootState.socket?.emit("friend_add", { userNick: payload });
+    sendFriendRequest({ rootState }, payload: string | number) {
+      rootState.socket?.emit("friend_add", { user: payload });
     },
     unfriend({ state, rootState }) {
       if (state.selectedFriend)
@@ -198,15 +200,21 @@ export default {
       if (state.selected)
         rootState.socket?.emit('channel_sanctions', { channelId: state.selected });
     },
+    updateChannel({ rootState, state }, payload) {
+      if (state.selected) {
+        payload.channelId = state.selected;
+        rootState.socket?.emit('channel_update', payload);
+      }
+    }
   },
   mutations: {
-    SOCKET_channel_message(state: ChatState, payload: { channelId: number, userId: number, userNick: string, content: string }) {
+    SOCKET_channel_message(state: ChatState, payload: { channelId: number, userId: number, userNick: string, content: string, createdAt: Date }) {
       if (state.blocked.has(payload.userId))
         return;
-      state.channels.get(payload.channelId)?.messages.push({ content: payload.content, nick: payload.userNick, user: payload.userId })
+      state.channels.get(payload.channelId)?.messages.push({ content: payload.content, nick: payload.userNick, user: payload.userId, createdAt: new Date(payload.createdAt) })
     },
-    SOCKET_channel_info(state: ChatState, { id, name, messages }: { id: number, name: string, messages: { id: number, userId: number, userNick: string, content: string }[] }) {
-      state.channels.set(id, { name, id, messages: messages.map(m => { return { content: m.content, nick: m.userNick, user: m.userId } }) });
+    SOCKET_channel_info(state: ChatState, { id, name, messages, isPrivate }) {
+      state.channels.set(id, { name, id, isPrivate, messages: messages.map(m => { return { content: m.content, nick: m.userNick, user: m.userId, createdAt: new Date(m.createdAt) } }) });
     },
     SOCKET_channel_join(state: ChatState, payload: { channelId: number }) {
         state.selected = payload.channelId;

@@ -31,19 +31,19 @@ export default {
             state.alerts.push({ type: 'danger', message: payload });
             setTimeout(() => {
                 state.alerts = state.alerts.filter(e => e.message !== payload && e.type !== 'error');
-            }, 5000);
+            }, 3000);
         },
         SOCKET_warning(state: AlertState, payload: string) {
             state.alerts.push({ type: 'warning', message: payload });
             setTimeout(() => {
                 state.alerts = state.alerts.filter(e => e.message !== payload && e.type !== 'warning');
-            }, 5000);
+            }, 3000);
         },
         SOCKET_success(state: AlertState, payload: string) {
             state.alerts.push({ type: 'success', message: payload });
             setTimeout(() => {
                 state.alerts = state.alerts.filter(e => e.message !== payload && e.type !== 'success');
-            }, 5000);
+            }, 3000);
         }
     },
 } as unknown as Module<AlertState, StoreState>;

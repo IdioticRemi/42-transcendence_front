@@ -9,8 +9,38 @@
       </div>
     </div>
     <div class="d-flex flex-column justify-content-between w-100" id="chan-list">
-      <div>Channel settings content! (top content)</div>
+      <div>
+        <input
+            v-model="channelName"
+            class="form-control me-2"
+            placeholder="my awesome channel"
+            :disabled="myPermLevel < 1"
+        />
+        <div class="d-flex flex-row justify-content-between my-4 w-100">
+              <span>
+                Should channel be private?
+              </span>
+          <input
+              type="checkbox"
+              v-model="isChannelPrivate"
+              class="me-2"
+              :disabled="myPermLevel < 1 || channelPassword.length > 0"
+          />
+        </div>
+        <input
+            v-model="channelPassword"
+            class="form-control me-2"
+            placeholder="my secret password"
+            :disabled="myPermLevel < 1"
+        />
+      </div>
       <div class="row">
+        <div class="col-12">
+          <button class="btn btn-primary my-2 w-100" @click="updateChannel(selected)">
+            Update Channel
+            <i class="bi bi-arrow-clockwise" />
+          </button>
+        </div>
         <div class="col-12 col-md-6">
           <button class="btn btn-warning my-2 w-100" @click="leaveChannel(selected)">
             Leave channel
@@ -29,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted} from "vue";
+import {computed, ref} from "vue";
 import {store} from "@/store";
 import {ChatActions} from "@/store/modules/chat";
 
@@ -37,8 +67,24 @@ const selected = computed(() => store.state.chat.selected);
 const user = computed(() => store.state.auth.user);
 const myPermLevel = computed(() => store.state.chat.tempUserList?.users.find(u => u.id === user.value?.id)?.perm);
 
+const channelPassword = ref("");
+const channelName = ref(store.state.chat.channels.get(selected.value || -1)?.name);
+const isChannelPrivate = ref(store.state.chat.channels.get(selected.value || -1)?.isPrivate);
+
 function setAction(action: ChatActions) {
   store.dispatch("chat/setAction", action);
+}
+
+function updateChannel(channelId: number) {
+  if (channelId < 0)
+    return;
+
+  store.dispatch("chat/updateChannel", {
+    password: channelPassword.value,
+    name: channelName.value,
+    isPrivate: isChannelPrivate.value });
+  channelPassword.value = "";
+  setAction(ChatActions.CHANNEL_VIEW);
 }
 
 function deleteChannel(channelId: number) {

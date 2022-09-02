@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-content-end position-fixed" style="top: 4rem; right: 1rem; z-index: 1500 !important;">
+  <div class="d-flex justify-content-end position-fixed" style="top: 1rem; right: 1rem; z-index: 1500 !important;">
     <div class="d-flex-col">
       <TransitionGroup name="fade">
         <div v-for="(alert, id) in alerts" :class="`alert alert-${alert.type}`" :key="id">
