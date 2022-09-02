@@ -17,10 +17,10 @@
             </div>
           </div>
           <div class="d-flex flex-row"> <!-- RIGHT PART (ACTIONS LIKE BAN/MUTE/KICK/...) -->
-            <button v-if="user.banned && myPermLevel > 0" class="btn btn-danger">
+            <button @click="deleteSanction('ban', user.id)" v-if="user.banned && myPermLevel > 0" class="btn btn-danger">
               Unban
             </button>
-            <button v-if="user.muted && myPermLevel > 0" class="ms-2 btn btn-warning">
+            <button @click="deleteSanction('mute', user.id)" v-if="user.muted && myPermLevel > 0" class="ms-2 btn btn-warning">
               Unmute
             </button>
           </div>
@@ -43,6 +43,10 @@ const sanctions = computed(() => store.state.chat.tempSanctionsList?.users);
 
 function setAction(action: ChatActions) {
   store.dispatch("chat/setAction", action);
+}
+
+function deleteSanction(sanction: string, userId: number) {
+  store.dispatch("chat/deleteSanction", { sanction, userId });
 }
 </script>
 

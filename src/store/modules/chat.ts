@@ -135,7 +135,7 @@ export default {
       state.selected = null;
       dispatch("setAction", ChatActions.LIST_CHANNELS);
     },
-    setAction({ state }, payload: string) {
+    setAction({ state }, payload: ChatActions) {
       state.action = payload;
     },
     getMyFriends({ rootState }) {
@@ -170,7 +170,7 @@ export default {
     unblockUser({ rootState }, payload: number) {
       rootState.socket?.emit('user_unblock', { userId: payload });
     },
-    getChannelUserList({ rootState, state }) {
+    getChannelUsers({ rootState, state }) {
       if (state.selected)
         rootState.socket?.emit('channel_users', { channelId: state.selected });
     },
@@ -187,6 +187,12 @@ export default {
 
       if (state.selected)
         rootState.socket?.emit('channel_add_sanction', payload);
+    },
+    deleteSanction({ rootState, state }, payload: { sanction: string, userId: number, channelId?: number }) {
+      payload.channelId = state.selected;
+
+      if (state.selected)
+        rootState.socket?.emit('channel_del_sanction', payload);
     },
     getChannelSanctions({ rootState, state }) {
       if (state.selected)

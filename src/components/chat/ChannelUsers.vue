@@ -2,7 +2,7 @@
   <div class="d-flex flex-row justify-content-between p-2">
     <h3 class="mb-3 mt-2">User list</h3>
     <div>
-      <button class="btn btn-primary my-2 me-2" @click="goToSanctions()">
+      <button class="btn btn-primary my-2 me-2" @click="setAction(ChatActions.CHANNEL_SANCTIONS)">
         <i class="bi bi-exclamation-triangle" />
       </button>
       <button class="btn btn-primary my-2" @click="setAction(ChatActions.CHANNEL_VIEW)">
@@ -68,16 +68,17 @@ function setAction(action: ChatActions) {
   store.dispatch("chat/setAction", action);
 }
 
-function goToSanctions() {
-  store.dispatch("chat/getChannelSanctions");
-  setAction(ChatActions.CHANNEL_SANCTIONS);
-}
-
 function getRoleColor(user) {
   return user.perm === 2 ? 'danger' : user.perm === 1 ? 'primary' : 'secondary';
 }
 
 function setSanctionType(t: number, type: string) {
+  if (target.value === t && sanctionType.value === type) {
+    sanctionType.value = "";
+    target.value = -1;
+    duration.value = "";
+    return;
+  }
   sanctionType.value = type;
   target.value = t;
   duration.value = "";

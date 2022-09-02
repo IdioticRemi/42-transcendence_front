@@ -58,10 +58,6 @@ function leaveChannel(channelId: number) {
 function unselectChannel() {
   store.dispatch("chat/unselectChannel");
 }
-
-onMounted(() => {
-  store.dispatch("chat/getChannelUserList");
-});
 </script>
 
 <style scoped>

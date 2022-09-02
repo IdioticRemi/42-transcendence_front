@@ -3,10 +3,10 @@
     <div class="d-flex flex-row justify-content-between w-100 mb-3 mt-2">
       <h3>#{{ selectedChannel?.name }}</h3>
       <div>
-        <button class="btn btn-primary" @click="goToSettings()">
+        <button class="btn btn-primary" @click="setAction(ChatActions.CHANNEL_SETTINGS)">
           <i class="bi bi-gear" />
         </button>
-        <button class="btn btn-primary mx-2" @click="goToUserList()">
+        <button class="btn btn-primary mx-2" @click="setAction(ChatActions.CHANNEL_USERS)">
           <i class="bi bi-people" />
         </button>
         <button class="btn btn-primary" @click="unselectChannel()">
@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed} from "vue";
+import {ref, computed, onMounted} from "vue";
 import {store} from "@/store";
 import {ChatActions} from "@/store/modules/chat";
 
@@ -63,20 +63,14 @@ function sendMessage() {
   messageContent.value = "";
 }
 
-function goToUserList() {
-  store.dispatch("chat/getChannelUserList");
-  setAction(ChatActions.CHANNEL_USERS);
-}
-
-function goToSettings() {
-  store.dispatch("chat/getChannelUserList");
-  setAction(ChatActions.CHANNEL_SETTINGS);
-}
-
 function unselectChannel() {
   store.dispatch("chat/unselectChannel");
 }
 
+onMounted(() => {
+  store.dispatch("chat/getChannelSanctions");
+  store.dispatch("chat/getChannelUsers");
+})
 </script>
 
 <style scoped>
