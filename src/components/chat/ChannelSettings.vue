@@ -36,7 +36,7 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <button class="btn btn-primary my-2 w-100" @click="updateChannel(selected)">
+          <button class="btn btn-primary my-2 w-100" @click="updateChannel(selected)" :disabled="myPermLevel < 1">
             Update Channel
             <i class="bi bi-arrow-clockwise" />
           </button>
