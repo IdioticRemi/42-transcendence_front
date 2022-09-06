@@ -18,13 +18,7 @@
       </div>
     </div>
     <div class="overflow-scroll" id="msg-list">
-      <div v-for="(msg, id) in messages" class="w-100" :key="id">
-        <router-link class="m-0 p-0 mb-1" :to="`/profile/${msg.user}`">{{
-            msg.nick
-          }}</router-link>
-        <p class="text-secondary m-0 p-0">{{ msg.content }}</p>
-        <hr class="w-auto m-2" />
-      </div>
+      <ChatMessage v-for="(msg, id) in messages" :msg="msg" :myUserId="myUserId" :refresh="refresh" :key="id" />
     </div>
     <div class="d-flex flex-row justify-content-end">
       <input
@@ -44,9 +38,12 @@
 import {ref, computed} from "vue";
 import {store} from "@/store";
 import {FriendStatus} from "@/store/modules/chat";
+import ChatMessage from "@/components/chat/ChatMessage.vue";
 
 const messageContent = ref("");
+const refresh = ref(false);
 
+const myUserId = computed(() => store.state.auth.user?.id);
 const selected = computed(() => store.state.chat.selectedFriend);
 const friends = computed(() => store.state.chat.friends);
 const selectedFriend = computed(() => friends.value.get(selected.value === null ? -1 : selected.value));

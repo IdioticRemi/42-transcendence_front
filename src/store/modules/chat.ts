@@ -147,7 +147,7 @@ export default {
       rootState.socket?.emit("friend_add", { user: payload });
     },
     unfriend({ state, rootState }) {
-      if (state.selectedFriend)
+      if (state.selectedFriend !== undefined)
         rootState.socket?.emit("friend_remove", { friendId: state.selectedFriend });
     },
     selectFriend({ state, dispatch }, payload: number) {
