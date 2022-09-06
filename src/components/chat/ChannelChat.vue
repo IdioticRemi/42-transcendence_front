@@ -15,35 +15,7 @@
       </div>
     </div>
     <div class="overflow-scroll" id="msg-list">
-      <div v-for="(msg, id) in messages" :class="`d-flex ${msg.user === myUserId ? 'text-end justify-content-end pe-2' : ''} w-100`" :key="id">
-        <div class="card mb-2" style="min-width: 40%; max-width: 70%;">
-          <div class="card-front">
-            <div v-if="msg.user !== myUserId" @click="toggleUserSettings(id)" class="card-header custom-card-header d-flex justify-content-between p-1">
-              <a class="nav-link text-primary mx-0 px-1">{{ msg.nick }}</a>
-              <div>
-                <span v-if="refresh" class="text-secondary mt-1" style="font-size: 12px;">{{ getDateFromNow(msg.createdAt) }}</span>
-                <span v-else class="text-secondary mt-1" style="font-size: 12px;">{{ getDateFromNow(msg.createdAt) }}</span>
-                <i :class="`ms-2 bi-caret-${messageSettings === id ? 'up' : 'down'}`" />
-              </div>
-            </div>
-            <div v-if="msg.user === myUserId" class="card-header d-flex justify-content-between p-1">
-              <span v-if="refresh" class="text-secondary mt-1" style="font-size: 12px;">{{ getDateFromNow(msg.createdAt) }}</span>
-              <span v-else class="text-secondary mt-1" style="font-size: 12px;">{{ getDateFromNow(msg.createdAt) }}</span>
-              <span class="nav-link text-primary mx-0 px-1">me</span>
-            </div>
-            <div v-if="messageSettings === id && msg.user !== myUserId" class="card-header d-flex justify-content-start p-1">
-              <router-link class="btn btn-sm btn-outline-primary py-0 me-1" :to="`/profile/${msg.user}`">Profile</router-link>
-              <button @click="addFriend(msg.user)" class="btn btn-sm btn-outline-success py-0 me-1">Friend</button>
-              <button class="btn btn-sm btn-outline-secondary py-0 me-1">Play</button>
-              <button @click="blockUser(msg.user)" class="btn btn-sm btn-outline-danger py-0">Block</button>
-            </div>
-            <div class="card-body p-1 m-0">
-              <p class="p-0 ps-1 m-0">{{ msg.content }}</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
+      <ChatMessage v-for="(msg, id) in messages" :msg="msg" :myUserId="myUserId" :refresh="refresh" :key="id" />
     </div>
     <div class="d-flex flex-row justify-content-end">
       <input
@@ -64,11 +36,11 @@
 import {ref, computed, onMounted, onUnmounted} from "vue";
 import {store} from "@/store";
 import {ChatActions} from "@/store/modules/chat";
+import ChatMessage from "@/components/chat/ChatMessage.vue";
 import moment from "moment";
 
 let interval;
 
-const messageSettings = ref(-1);
 const messageContent = ref("");
 const refresh = ref(false);
 
@@ -82,16 +54,6 @@ const messages = computed(
     () => channels.value.get(selected.value || -1)?.messages.filter(m => !blocked.value.has(m.user))
 );
 
-function toggleUserSettings(messageId: number) {
-  if (messageId === messageSettings.value)
-    messageSettings.value = -1;
-  else messageSettings.value = messageId;
-}
-
-function getDateFromNow(date: number) {
-  return moment(date - (new Date().getTimezoneOffset() * 60e3)).fromNow();
-}
-
 function setAction(action: ChatActions) {
   store.dispatch("chat/setAction", action);
 }
@@ -103,14 +65,6 @@ function sendMessage() {
 
 function unselectChannel() {
   store.dispatch("chat/unselectChannel");
-}
-
-function addFriend(userId: number) {
-  store.dispatch("chat/sendFriendRequest", userId);
-}
-
-function blockUser(userId: number) {
-  store.dispatch("chat/blockUser", userId);
 }
 
 onMounted(() => {
@@ -128,15 +82,5 @@ onUnmounted(() => clearInterval(interval));
 <style scoped lang="scss">
 #msg-list {
   height: calc(99vh - 40px - 2rem - 7rem);
-}
-
-.custom-card-header {
-  cursor: default !important;
-  transition: 0.5s;
-}
-
-.custom-card-header:hover {
-  background-color: rgba(0, 0, 0, 0.05) !important;
-  cursor: pointer !important;
 }
 </style>
