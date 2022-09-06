@@ -19,7 +19,7 @@
             v-if="user.hasOwnProperty('username')"
             class="rounded"
             style="object-fit: cover; width: 40px; height: 40px"
-            :src="CONST.BackendURL + '/users/avatar/' + user.username"
+            :src="`${CONST.BackendURL}/users/avatar/${user.username}/${refresh}`"
             alt="profile picture"
           />
         </router-link>
@@ -43,6 +43,7 @@ import router from "@/router";
 
 const connected = computed(() => store.getters["auth/isConnected"]);
 const user = computed(() => store.state.auth.user);
+const refresh = computed(() => store.state.refreshAvatar);
 
 function logoutUser() {
   store.dispatch("auth/logout");

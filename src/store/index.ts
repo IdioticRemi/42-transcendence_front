@@ -6,6 +6,7 @@ import ModuleAlert, {AlertState} from "./modules/alert";
 
 export interface StoreState {
   socket: Socket | null;
+  refreshAvatar: number;
   auth: AuthState;
   chat: ChatState;
   alert: AlertState;
@@ -16,14 +17,20 @@ export const store = createStore({
   // @ts-ignore
   state: {
     socket: null as Socket | null,
+    refreshAvatar: Date.now(),
   },
   getters: {},
   mutations: {
     setSocket(state, payload: Socket) {
       state.socket = payload;
+    },
+    refreshAvatars(state) {
+      state.refreshAvatar = Date.now();
     }
   },
-  actions: {},
+  actions: {
+    
+  },
   modules: {
     auth: ModuleAuth,
     chat: ModuleChat,

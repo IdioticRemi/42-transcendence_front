@@ -1,18 +1,23 @@
 import { store } from "@/store";
 import CONST from "@/utils/const";
 
-async function sendBackendRequest(path: string, opts?: RequestInit) {
+export async function sendBackendRequest(path: string, opts?: RequestInit) {
   const token = store.state.auth.token;
 
-  opts = {
-    headers: { Authorization: `Bearer ${token}` },
-    ...opts,
-  };
+  if (!opts)
+    opts = {};
+  if (!opts.headers)
+    opts.headers = {};
+  opts.headers['Authorization'] = `Bearer ${token}`;
   const res = await fetch(CONST.BackendURL + path, opts);
-
+  console.debug(res);
   if (!res.ok) return null;
 
-  return res.json();
+  try {
+    return await res.json();
+  } catch {
+    return undefined;
+  }
 }
 
 export async function getUser(userId: number | string) {

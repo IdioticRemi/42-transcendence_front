@@ -10,10 +10,10 @@
     <div v-else class="row">
       <div class="col-12 col-lg-0 d-flex">
         <div class="d-lg-none w-100 d-flex">
-          <img
+          <img @click="uploadNewImage(res.payload.id)"
               class="rounded me-4 mb-4"
               style="object-fit: cover; width: 15vw; height: 15vw; min-height: 140px; min-width: 140px"
-              :src="CONST.BackendURL + '/users/avatar/' + res.payload.username"
+             :src="`${CONST.BackendURL}/users/avatar/${res.payload.username}/${refresh}`"
               alt="profile picture"
           />
           <div class="d-flex-col w-50">
@@ -86,10 +86,10 @@
         </div>
       </div>
       <div class="col-0 col-lg-4 d-flex justify-content-end">
-        <img
+        <img @click="uploadNewImage(res.payload.id)"
             class="rounded d-none d-lg-block"
             style="object-fit: cover; width: 15vw; height: 15vw"
-            :src="CONST.BackendURL + '/users/avatar/' + res.payload.username"
+            :src="`${CONST.BackendURL}/users/avatar/${res.payload.username}/${refresh}`"
             alt="profile picture"
         />
       </div>
@@ -124,16 +124,17 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import router from "@/router";
-import {getUser} from "@/utils/user";
+import { getUser, sendBackendRequest } from "@/utils/user";
 import CONST from "@/utils/const";
 import moment from "moment";
-import {store} from "@/store";
+import { store } from "@/store";
 
 const editingNickname = ref(false);
 const newNickname = ref("");
 const nickInput = ref(null);
 const res = ref(null);
 const user = computed(() => store.state.auth.user);
+const refresh = computed(() => store.state.refreshAvatar);
 const history = ref([
   { opponent: "mdesoeuv", score: 1, opponentScore: 2, endedAt: Date.now() - 1e3 * 60, type: "classic" },
   { opponent: "abucia", score: 3, opponentScore: 0, endedAt: Date.now() - 1e3 * 127, type: "custom" },
@@ -148,6 +149,36 @@ function toggleEditNickname() {
   else
     nickInput.value?.focus();
   editingNickname.value = !editingNickname.value;
+}
+
+function uploadNewImage(userId: number) {
+  if (store.state.auth.user?.id !== userId) {
+    return ;
+  }
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept="image/png, image/jpeg";
+  input.onchange = async (event) => {
+    const file = event.target?.files[0];
+    console.debug(file);
+    if (!file) { console.debug("Could not get file to upload"); return; }
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+
+    const r = await sendBackendRequest("/users/avatar/me", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!r || r.status !== 'success') {
+      store.dispatch('alert/addError', r ? r.message : "Error");
+      return;
+    }
+
+    store.commit('refreshAvatars');
+    store.dispatch('alert/addSuccess', "Changed profile picture successfuly");
+  }
+  input.click();
 }
 
 function changeNickname() {

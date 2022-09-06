@@ -30,6 +30,7 @@ onMounted(async () => {
 
     const token = localStorage.getItem("token");
 
+    //TODO: replace with real URI
     const res = await fetch("http://localhost:3000/auth/check?token=" + token);
     const json_data = await res.json();
 
