@@ -1,7 +1,15 @@
 <template>
-  <div>
-    <h1>This is the home page!</h1>
-    <p>Let's have some fun :D</p>
-    <RouterLink to="/profile/te123">TEST BUTTON</RouterLink>
+  <h1>Home page</h1>
+  <br><br>
+  <div class="row w-100 d-flex justify-content-around">
+    <div class="col-12 col-lg-10 col-xl-8">
+      <PlayMenu />
+    </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import PlayMenu from "@/components/PlayMenu.vue";
+
+
+</script>
