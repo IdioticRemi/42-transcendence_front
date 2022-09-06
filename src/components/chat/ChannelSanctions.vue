@@ -36,7 +36,6 @@ import {computed} from "vue";
 import {store} from "@/store";
 import {ChatActions} from "@/store/modules/chat";
 
-const users = computed(() => store.state.chat.tempUserList?.users.sort((a, b) => b.perm - a.perm));
 const authUser = computed(() => store.state.auth.user);
 const myPermLevel = computed(() => store.state.chat.tempUserList?.users.find(u => u.id === authUser.value?.id)?.perm);
 const sanctions = computed(() => store.state.chat.tempSanctionsList?.users);
