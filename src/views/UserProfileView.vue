@@ -171,7 +171,7 @@ function uploadNewImage(userId: number) {
     });
 
     if (!r || r.status !== 'success') {
-      store.dispatch('alert/addError', r ? r.message : "Error");
+      store.dispatch('alert/addError', r ? r.message : "File too big");
       return;
     }
 

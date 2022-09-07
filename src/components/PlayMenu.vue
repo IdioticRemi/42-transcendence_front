@@ -1,8 +1,14 @@
 <template>
 	<div class="form-control py-3">
-		<h2 class="mb-4">
-			Matchmaking
-		</h2>
+		<div class="d-flex justify-content-between">
+			<h2 class="mb-4">
+				Matchmaking
+			</h2>
+			<button @click="openInviteModal()" class="mb-4 btn btn-outline-primary">
+				Invite
+				<i class="ms-2 bi-person-fill" />
+			</button>
+		</div>
 		<div v-if="!isQueued">
 			<label class="ms-1 mb-1">Game type</label>
 			<div class="d-flex justify-content-between">
@@ -48,5 +54,9 @@ function startMatchmaking() {
 
 function stopMatchmaking() {
 	store.dispatch("game/delQueue");
+}
+
+function openInviteModal() {
+	store.dispatch("game/openInviteModal");
 }
 </script>

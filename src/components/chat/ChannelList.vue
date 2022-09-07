@@ -42,10 +42,6 @@ function setAction(action: ChatActions) {
 function selectChannel(channelId: number) {
   store.dispatch("chat/selectChannel", channelId);
 }
-
-onMounted(() => {
-  store.dispatch("chat/getMyChannels");
-})
 </script>
 
 <style scoped>

@@ -18,7 +18,7 @@
             <div v-if="showSettings && props.msg.user !== props.myUserId" class="card-header d-flex justify-content-start p-1">
               <router-link class="btn btn-sm btn-outline-primary py-0 me-1" :to="`/profile/${props.msg.user}`">Profile</router-link>
               <button @click="addFriend(props.msg.user)" class="btn btn-sm btn-outline-success py-0 me-1">Friend</button>
-              <button class="btn btn-sm btn-outline-secondary py-0 me-1">Play</button>
+              <button @click="inviteToPlay(props.msg.user)" class="btn btn-sm btn-outline-secondary py-0 me-1">Play</button>
               <button @click="blockUser(props.msg.user)" class="btn btn-sm btn-outline-danger py-0">Block</button>
             </div>
             <div class="card-body p-1 m-0">
@@ -34,6 +34,7 @@
 import {ref, computed, onMounted, onUnmounted, defineProps} from "vue";
 import {store} from "@/store";
 import moment from "moment";
+import { getUser } from "@/utils/user";
 
 const props = defineProps(['msg', 'myUserId', 'refresh']);
 const showSettings = ref(false);
@@ -52,6 +53,10 @@ function addFriend(userId: number) {
 
 function blockUser(userId: number) {
   store.dispatch("chat/blockUser", userId);
+}
+
+async function inviteToPlay(userId: number) {
+  store.dispatch("game/openInviteModal", userId);
 }
 
 </script>

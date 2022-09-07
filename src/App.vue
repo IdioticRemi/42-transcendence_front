@@ -1,6 +1,8 @@
 <template>
   <NavBar />
   <ErrorList />
+  <InviteModal v-if="isInviting" />
+  <InvitedModal v-if="invites.length > 0" :invite="invites[0]"/>
   <div class="container-fluid row mx-0">
     <div class="d-none d-lg-flex col-0 col-lg-4 col-xl-3 px-lg-0">
       <SideChat v-if="connected" />
@@ -21,8 +23,12 @@ import router from "@/router"
 import NavBar from "@/components/NavBar";
 import SideChat from "@/components/SideChat";
 import ErrorList from "@/components/AlertList";
+import InviteModal from "@/components/game/InviteModal";
+import InvitedModal from "@/components/game/InvitedModal";
 
 const connected = computed(() => store.getters["auth/isConnected"]);
+const invites = computed(() => store.state.game.inviteList);
+const isInviting = computed(() => store.state.game.isInviting);
 
 import "bootstrap/dist/js/bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";

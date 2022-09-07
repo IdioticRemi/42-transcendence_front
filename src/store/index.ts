@@ -14,6 +14,7 @@ export interface StoreState {
   game: GameState;
 }
 
+
 export const store = createStore({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -21,7 +22,9 @@ export const store = createStore({
     socket: null as Socket | null,
     refreshAvatar: Date.now(),
   },
-  getters: {},
+  getters: {
+
+  },
   mutations: {
     setSocket(state, payload: Socket) {
       state.socket = payload;
