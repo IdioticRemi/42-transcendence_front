@@ -11,7 +11,7 @@
       <div class="col-12 col-lg-0 d-flex">
         <div class="d-lg-none w-100 d-flex">
           <img @click="uploadNewImage(res.payload.id)"
-              class="rounded me-4 mb-4"
+              class="pfp rounded me-4 mb-4"
               style="object-fit: cover; width: 15vw; height: 15vw; min-height: 140px; min-width: 140px"
              :src="`${CONST.BackendURL}/users/avatar/${res.payload.username}/${refresh}`"
               alt="profile picture"
@@ -87,7 +87,7 @@
       </div>
       <div class="col-0 col-lg-4 d-flex justify-content-end">
         <img @click="uploadNewImage(res.payload.id)"
-            class="rounded d-none d-lg-block"
+            class="pfp rounded d-none d-lg-block"
             style="object-fit: cover; width: 15vw; height: 15vw"
             :src="`${CONST.BackendURL}/users/avatar/${res.payload.username}/${refresh}`"
             alt="profile picture"
@@ -190,3 +190,16 @@ onMounted(async () => {
   res.value = await getUser(router.currentRoute.value.params["id"] as string);
 });
 </script>
+
+<style scoped>
+
+.pfp {
+  transition: all 0.2s ease;
+}
+
+.pfp:hover {
+  filter: brightness(80%);
+  cursor: pointer;
+}
+
+</style>
