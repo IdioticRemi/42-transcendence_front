@@ -3,6 +3,7 @@ import {Socket} from "socket.io-client"
 import ModuleAuth, {AuthState} from "./modules/auth";
 import ModuleChat, {ChatState} from "./modules/chat";
 import ModuleAlert, {AlertState} from "./modules/alert";
+import ModuleGame, {GameState} from "./modules/game";
 
 export interface StoreState {
   socket: Socket | null;
@@ -10,6 +11,7 @@ export interface StoreState {
   auth: AuthState;
   chat: ChatState;
   alert: AlertState;
+  game: GameState;
 }
 
 export const store = createStore({
@@ -35,5 +37,6 @@ export const store = createStore({
     auth: ModuleAuth,
     chat: ModuleChat,
     alert: ModuleAlert,
+    game: ModuleGame,
   },
 }) as unknown as Store<StoreState>;

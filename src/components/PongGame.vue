@@ -238,7 +238,7 @@ function startNewGame() {
 
 function initPixi(pixiDom: HTMLElement) {
   app = new PIXI.Application({
-    width: 800,
+    width: 20,
     height: 600,
     antialias: true,
   });
