@@ -15,6 +15,16 @@ export interface Invite {
 	type: string;
 }
 
+export interface Game {
+	id: number;
+	type: string;
+	playerNick: string;
+	opponnentNick: string;
+	playerScore: number;
+	opponnentScore: number;
+	endedAt: Date;
+}
+
 export default {
     namespaced: true,
     state: {

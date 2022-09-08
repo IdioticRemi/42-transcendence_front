@@ -128,6 +128,7 @@ import { getUser, sendBackendRequest } from "@/utils/user";
 import CONST from "@/utils/const";
 import moment from "moment";
 import { store } from "@/store";
+import { Game } from "@/store/modules/game";
 
 const editingNickname = ref(false);
 const newNickname = ref("");
@@ -142,6 +143,8 @@ const history = ref([
   { opponent: "abucia", score: 3, opponentScore: 0, endedAt: Date.now() - 1e3 * 127, type: "custom" },
   { opponent: "wekjgjhwekjgh12j", score: 0, opponentScore: 3, endedAt: Date.now() - 1e3 * 260, type: "classic" },
 ]);
+
+// const gameHistory = ref(null);
 
 function toggleEditNickname() {
   if (editingNickname.value)
@@ -188,6 +191,7 @@ function changeNickname() {
 
 onMounted(async () => {
   res.value = await getUser(router.currentRoute.value.params["id"] as string);
+  // gameHistory.value = await sendBackendRequest(`/users/${store.state.auth.user?.id}/games`);
 });
 </script>
 
