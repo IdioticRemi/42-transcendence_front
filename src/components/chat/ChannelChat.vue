@@ -25,7 +25,7 @@
           @keydown.enter="sendMessage()"
           :disabled="mySanctions?.muted"
       />
-      <button class="btn btn-primary" @click="sendMessage()" :disabled="mySanctions?.muted">
+      <button class="btn btn-primary" @click="sendMessage()" :disabled="mySanctions?.muted || messageContent.length > MsgMaxSize">
         <i class="bi bi-send" />
       </button>
     </div>
@@ -38,6 +38,7 @@ import {store} from "@/store";
 import {ChatActions} from "@/store/modules/chat";
 import ChatMessage from "@/components/chat/ChatMessage.vue";
 import moment from "moment";
+import { MsgMaxSize } from "@/utils/const"
 
 let interval;
 
@@ -59,6 +60,10 @@ function setAction(action: ChatActions) {
 }
 
 function sendMessage() {
+  if (messageContent.value.length > MsgMaxSize) {
+    store.dispatch("alert/addWarning", `You cannot send more than ${MsgMaxSize} characters`);
+    return;
+  }
   store.dispatch("chat/newMessage", messageContent.value);
   messageContent.value = "";
 }
