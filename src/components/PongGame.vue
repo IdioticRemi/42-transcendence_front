@@ -2,7 +2,7 @@
   <div class="d-none d-lg-flex flex-column">
     <h1 v-if="!finished">score : {{ p1Score }} - {{ p2Score }}</h1>
     <h1 v-else>final score : {{ p1Score }} - {{ p2Score }}</h1>
-    <div ref="pixi"></div>
+    <div ref="game_container" id="game_container" />
   </div>
   <div class="d-flex d-lg-none">
     Please connect on a larger screen to be able to play the amazing pong game!
@@ -10,245 +10,123 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import * as PIXI from "pixi.js";
+import { store } from "@/store";
+import { ref, onMounted, computed } from "vue";
+import libP5 from "p5";
 
-const pixi = ref(null);
+const game_container = ref(null);
+const game = computed(() => store.state.game.gameData);
+
+// const game = {
+//   score: [0, 2],
+//   ball: {
+//     size: 2.5,
+//     speed: 1.2,
+//     velocityX: 0.4622793109332295,
+//     velocityY: -0.7071067811865475,
+//     x: 96.71137325019988,
+//     y: 0.4010678118654707,
+//   },
+//   padLeft: {
+//     height: 15,
+//     move: 0,
+//     speed: 1,
+//     width: 1.25,
+//     x: 2.5,
+//     y: 42.5,
+//   },
+//   padRight: {
+//     height: 15,
+//     move: 0,
+//     speed: 1,
+//     width: 1.25,
+//     x: 96.5,
+//     y: 42.5,
+//   },
+// };
 
 onMounted(() => {
-  if (pixi.value) initPixi(pixi.value);
+  const script = function (p5) {
+    p5.setup = (_) => {
+      let pongCanvas = p5.createCanvas(1, 1, p5.WEBGL);
+      pongCanvas.parent('game_container');
+    };
+
+    p5.draw = (_) => {
+      const w = Math.max(game_container.value?.offsetWidth, 1);
+      p5.resizeCanvas(w, Math.min(w, (w / 4) * 3));
+
+      const scalingX = p5.width / 100;
+      const scalingY = p5.height / 100;
+
+      // 3d effect
+
+      p5.rotateX(p5.PI / 6);
+      p5.translate(-p5.width / 2, (-p5.height / 12) * 9, -p5.width / 6);
+
+      p5.background(0);
+
+      // Back plane
+      p5.push();
+
+      p5.translate(0, 0, -5);
+      p5.fill(30);
+      p5.stroke(200);
+      p5.rect(-5, -5, 100 * scalingX + 10, 100 * scalingY + 10);
+
+      p5.pop();
+
+      // Pads / Ball
+      p5.fill(255);
+      p5.stroke(30);
+
+      p5.push();
+      p5.translate(game.value.padLeft.x * scalingX, game.value.padLeft.y * scalingY, 5);
+
+      p5.box(
+        game.value.padLeft.width * scalingX,
+        game.value.padLeft.height * scalingY,
+        game.value.padLeft.width * scalingX
+      );
+
+      p5.pop();
+
+      p5.push();
+      p5.translate(game.value.padRight.x * scalingX, game.value.padRight.y * scalingY, 5);
+
+      p5.box(
+        game.value.padRight.width * scalingX,
+        game.value.padRight.height * scalingY,
+        game.value.padLeft.width * scalingX
+      );
+
+      p5.pop();
+
+      p5.push();
+
+      p5.noStroke();
+      p5.translate(game.value.ball.x * scalingX, game.value.ball.y * scalingY);
+      p5.sphere((game.value.ball.size * scalingX) / 2);
+
+      p5.pop();
+    };
+  };
+  new libP5(script);
 });
 
-let app: PIXI.Application;
-const p1Score = ref(0);
-const p2Score = ref(0);
-let ball: PIXI.Graphics;
-let ballSpeed: number;
-let velocityX: number;
-let velocityY: number;
-let padLeft: PIXI.Graphics;
-let padRight: PIXI.Graphics;
-let p1ScoreText: PIXI.Text;
-let p2ScoreText: PIXI.Text;
-let finished = ref(false);
-const scoreMax = 3;
-
-function startScreen() {
-  const style = new PIXI.TextStyle({
-    fontFamily: "Arial",
-    fontSize: 140,
-    fontWeight: "bold",
-    fill: "#ffffff",
-  });
-  const startPrompt = new PIXI.Text("PONG", style);
-  startPrompt.anchor.set(0.5);
-  startPrompt.x = app.view.width / 2;
-  startPrompt.y = app.view.height / 2;
-  startPrompt.interactive = true;
-
-  startPrompt.on("mousedown", startNewGame);
-
-  app.stage.addChild(startPrompt);
-}
-
-function displayScore() {
-  const style = new PIXI.TextStyle({
-    fontFamily: "Arial",
-    fontSize: 80,
-    fill: "#ffffff",
-  });
-  p1ScoreText = new PIXI.Text(p1Score.value.toString(), style);
-  p2ScoreText = new PIXI.Text(p2Score.value.toString(), style);
-  p1ScoreText.anchor.set(0.5);
-  p1ScoreText.x = app.view.width / 4;
-  p1ScoreText.y = app.view.height / 4;
-  p2ScoreText.anchor.set(0.5);
-  p2ScoreText.x = (app.view.width * 3) / 4;
-  p2ScoreText.y = app.view.height / 4;
-  app.stage.addChild(p1ScoreText);
-  app.stage.addChild(p2ScoreText);
-}
-
-function displayWinner() {
-  finished.value = true;
-  app.ticker.remove(gameLoop);
-  const style = new PIXI.TextStyle({
-    fontFamily: "Arial",
-    fontSize: 50,
-    fill: "#ffffff",
-  });
-  let winner: string;
-  if (p1Score.value > p2Score.value) winner = "Player 1";
-  else winner = "Player 2";
-  const winText = new PIXI.Text(winner + " wins !", style);
-  winText.anchor.set(0.5);
-  app.stage.addChild(winText);
-  winText.x = app.view.width / 2;
-  winText.y = app.view.height / 2;
-
-  const restartText = new PIXI.Text("PRESS TO RESTART", style);
-  restartText.interactive = true;
-  restartText.anchor.set(0.5);
-  restartText.x = app.view.width / 2;
-  restartText.y = (app.view.height * 3) / 4;
-  restartText.on("mousedown", startNewGame);
-  app.stage.addChild(restartText);
-}
-
-function gameInit() {
-  p1Score.value = 0;
-  p2Score.value = 0;
-  setInit();
-}
-
-function setInit() {
-  padLeft.x = 20;
-  padLeft.y = app.view.height / 2 - padLeft.height / 2;
-  padRight.x = app.view.width - 20 - padRight.width;
-  padRight.y = app.view.height / 2 - padRight.height / 2;
-  ball.x = app.view.width / 2 - ball.width / 2;
-  ball.y = 10;
-  ballSpeed = 5;
-  if (p2Score.value > p1Score.value)
-    velocityX = ballSpeed * Math.cos(Math.PI / 4);
-  else velocityX = -ballSpeed * Math.cos(Math.PI / 4);
-  velocityY = ballSpeed * Math.sin(Math.PI / 4);
-}
-
-function createBall(size: number, color: number): PIXI.Graphics {
-  const g = new PIXI.Graphics();
-  g.beginFill(color);
-  g.drawRect(0, 0, size, size);
-  g.endFill();
-  return g;
-}
-
-function createPad(
-  width: number,
-  height: number,
-  color: number
-): PIXI.Graphics {
-  const g = new PIXI.Graphics();
-  g.beginFill(color);
-  g.drawRect(0, 0, width, height);
-  g.endFill();
-  return g;
-}
-
-function checkWalls() {
-  if (
-    (ball.y <= 0 && velocityY < 0) ||
-    (ball.y + ball.height >= app.view.height && velocityY > 0)
-  )
-    velocityY = -velocityY;
-}
-
-function checkPadLeft() {
-  if (ball.x <= padLeft.x + padLeft.width && velocityX < 0) {
-    if (
-      ball.y + ball.height > padLeft.y &&
-      ball.y < padLeft.y + padLeft.height
-    ) {
-      const collidePoint =
-        ball.y + ball.width / 2 - (padLeft.y + padLeft.height / 2);
-      velocityX = Math.abs(
-        ballSpeed *
-          Math.cos((collidePoint * Math.PI) / 4 / (padLeft.height / 2))
-      );
-      velocityY =
-        ballSpeed *
-        Math.sin((collidePoint * Math.PI) / 4 / (padLeft.height / 2));
-      ballSpeed++;
-    }
-  }
-}
-
-function checkPadRight() {
-  if (ball.x + ball.width >= padRight.x && velocityX > 0) {
-    if (
-      ball.y + ball.height > padRight.y &&
-      ball.y < padRight.y + padRight.height
-    ) {
-      const collidePoint =
-        ball.y + ball.width / 2 - (padRight.y + padRight.height / 2);
-      velocityX = -Math.abs(
-        ballSpeed *
-          Math.cos((collidePoint * Math.PI) / 4 / (padRight.height / 2))
-      );
-      velocityY =
-        ballSpeed *
-        Math.sin((collidePoint * Math.PI) / 4 / (padRight.height / 2));
-      ballSpeed++;
-    }
-  }
-}
-
-function checkWin() {
-  if (ball.x <= 0) {
-    p2Score.value++;
-    p2ScoreText.text = p2Score.value.toString();
-    if (p2Score.value !== scoreMax) setInit();
-  } else if (ball.x + ball.width >= app.view.width) {
-    p1Score.value++;
-    p1ScoreText.text = p1Score.value.toString();
-    if (p1Score.value !== scoreMax) setInit();
-  }
-}
-
-function padRightAI() {
-  padRight.y = ball.y - padRight.height / 2;
-}
-
-// function clearStage() {
-//   app.stage.removeChildren();
-//   ball.destroy();
-//   padLeft.destroy();
-//   padRight.destroy();
+// function updateMove() {
+//   if (keyIsPressed) {
+//     switch (keyCode) {
+//       case 40:
+//         offset = 2;
+//         break;
+//       case 38:
+//         offset = -2;
+//         break;
+//     }
+//   } else offset = 0;
+//   game.value.padLeft.y += offset;
 // }
-
-function gameLoop() {
-  checkWin();
-  if (p1Score.value === scoreMax || p2Score.value === scoreMax) {
-    app.ticker.stop();
-    displayWinner();
-  }
-  checkWalls();
-  checkPadLeft();
-  checkPadRight();
-  padRightAI();
-  ball.x += velocityX;
-  ball.y += velocityY;
-}
-
-function startNewGame() {
-  app.stage.removeChildren();
-  app.ticker.add(gameLoop);
-  app.ticker.start();
-  app.stage.addChild(ball);
-  app.stage.addChild(padLeft);
-  app.stage.addChild(padRight);
-  gameInit();
-  padLeft.interactive = true;
-  padLeft.on("pointermove", (event: PIXI.InteractionEvent) => {
-    padLeft.y = event.data.global.y - padLeft.height / 2;
-  });
-  finished.value = false;
-  displayScore();
-}
-
-function initPixi(pixiDom: HTMLElement) {
-  app = new PIXI.Application({
-    width: 800,
-    height: 600,
-    antialias: true,
-  });
-  pixiDom.appendChild(app.view);
-  ball = createBall(20, 0xffffff);
-  padLeft = createPad(10, 100, 0xffffff);
-  padRight = createPad(10, 100, 0xffffff);
-  app.ticker.autoStart = false;
-  startScreen();
-}
 </script>
 
 <style scoped>

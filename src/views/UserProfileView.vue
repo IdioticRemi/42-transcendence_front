@@ -11,7 +11,7 @@
       <div class="col-12 col-lg-0 d-flex">
         <div class="d-lg-none w-100 d-flex">
           <img @click="uploadNewImage(res.payload.id)"
-              class="pfp rounded me-4 mb-4"
+              :class="`${res.payload.id === user.id ? 'mypfp' : ''} rounded me-4 mb-4`"
               style="object-fit: cover; width: 15vw; height: 15vw; min-height: 140px; min-width: 140px"
              :src="`${CONST.BackendURL}/users/avatar/${res.payload.username}/${refresh}`"
               alt="profile picture"
@@ -87,7 +87,7 @@
       </div>
       <div class="col-0 col-lg-4 d-flex justify-content-end">
         <img @click="uploadNewImage(res.payload.id)"
-            class="pfp rounded d-none d-lg-block"
+            :class="`${res.payload.id === user.id ? 'mypfp' : ''} rounded d-none d-lg-block`"
             style="object-fit: cover; width: 15vw; height: 15vw"
             :src="`${CONST.BackendURL}/users/avatar/${res.payload.username}/${refresh}`"
             alt="profile picture"
@@ -203,11 +203,11 @@ onMounted(async () => {
 
 <style scoped>
 
-.pfp {
+.mypfp {
   transition: all 0.2s ease;
 }
 
-.pfp:hover {
+.mypfp:hover {
   filter: brightness(80%);
   cursor: pointer;
 }

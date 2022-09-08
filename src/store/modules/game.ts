@@ -3,11 +3,13 @@ import {StoreState} from "@/store";
 import { getUser } from "@/utils/user";
 import router from "@/router";
 
+// TODO: Typer gameData
 export interface GameState {
 	queueType: string | null;
 	inviteList: Invite[];
 	isInviting: boolean;
 	inviteTarget: string;
+	gameData: any;
 }
 
 export interface Invite {
@@ -33,6 +35,7 @@ export default {
 		inviteList: [],
 		isInviting: false,
 		inviteTarget: "",
+		gameData: null,
     },
 	getters: {
 		isQueued(state: GameState) {
@@ -113,7 +116,11 @@ export default {
 			state.isInviting = false;
 		},
 		SOCKET_game_data(state: GameState, payload) {
-			state.queueType = null;
+			state.gameData = payload;
+		},
+		SOCKET_game_ended(state: GameState, payload) {
+			state.gameData = null;
+			// TODO: Mettre dans un truc genre 'gameResult' les donnees de fin de game (score, ...) pour afficher le endgame screen
 		}
     },
 } as unknown as Module<GameState, StoreState>;
