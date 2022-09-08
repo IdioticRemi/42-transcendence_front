@@ -95,9 +95,9 @@
       </div>
       <div class="col-12">
         <h2 class="mb-4">Match History</h2>
-        <div v-for="(match, id) in history" :key="id" class="d-flex-col w-100 w-75-lg card mb-3">
+        <div v-for="(match, id) in gameHistory" :key="id" class="d-flex-col w-100 w-75-lg card mb-3">
           <h5 class="card-header">
-            <span class="text-primary">{{ user.nickname }}</span> vs <span class="text-danger">{{ match.opponent }}</span>
+            <span class="text-primary">{{ user.nickname }}</span> vs <span class="text-danger">{{ match.opponentNick }}</span>
           </h5>
           <div class="row w-100 card-body">
             <div class="col-6">
@@ -107,13 +107,13 @@
             <div class="col-6">
               <h5>Score</h5>
               <h5 class="card-subtitle">
-                <span class="text-primary">{{ match.score }}</span> / <span class="text-danger">{{ match.opponentScore }}</span>
+                <span class="text-primary">{{ match.playerScore }}</span> / <span class="text-danger">{{ match.opponentScore }}</span>
               </h5>
 
             </div>
           </div>
           <div class="card-footer">
-            {{ moment(match.endedAt).fromNow() }}
+            {{ moment(new Date(match.endedAt).getTime() - (new Date().getTimezoneOffset() * 60e3)).fromNow() }}
           </div>
         </div>
       </div>
@@ -144,7 +144,7 @@ const history = ref([
   { opponent: "wekjgjhwekjgh12j", score: 0, opponentScore: 3, endedAt: Date.now() - 1e3 * 260, type: "classic" },
 ]);
 
-// const gameHistory = ref(null);
+const gameHistory = ref([]);
 
 function toggleEditNickname() {
   if (editingNickname.value)
@@ -191,7 +191,13 @@ function changeNickname() {
 
 onMounted(async () => {
   res.value = await getUser(router.currentRoute.value.params["id"] as string);
-  // gameHistory.value = await sendBackendRequest(`/users/${store.state.auth.user?.id}/games`);
+  const r = await sendBackendRequest(`/users/${store.state.auth.user?.id}/games`);
+  if (r.status !== 'success') {
+    store.dispatch('alert/addError', r.message);
+  }
+
+  gameHistory.value = r.payload;
+  console.log(gameHistory.value);
 });
 </script>
 

@@ -1,6 +1,7 @@
 import {Module} from "vuex";
 import {StoreState} from "@/store";
 import { getUser } from "@/utils/user";
+import router from "@/router";
 
 export interface GameState {
 	queueType: string | null;
@@ -15,7 +16,7 @@ export interface Invite {
 	type: string;
 }
 
-export interface Game {
+export interface GameResult {
 	id: number;
 	type: string;
 	playerNick: string;
@@ -97,6 +98,7 @@ export default {
 		},
 		SOCKET_game_found(state: GameState, payload: Invite) {
 			state.queueType = null;
+			router.push("/pong");
 		},
 		SOCKET_game_invite(state: GameState, payload: Invite) {
 			state.inviteList.push(payload);
@@ -110,5 +112,8 @@ export default {
 		SOCKET_game_invite_refused(state: GameState, payload: Invite) {
 			state.isInviting = false;
 		},
+		SOCKET_game_data(state: GameState, payload) {
+			state.queueType = null;
+		}
     },
 } as unknown as Module<GameState, StoreState>;
