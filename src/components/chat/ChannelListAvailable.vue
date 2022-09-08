@@ -1,16 +1,20 @@
 <template>
   <div>
     <div class="d-flex flex-row justify-content-between p-2">
-      <h3 class="mb-3 mt-2">Available Channels</h3>
+      <h3 class="mb-3 mt-2">Public Channels</h3>
       <div>
-        <button class="btn btn-primary my-2 me-2" @click="fetchAvailableChannels()">
+        <button class="btn btn-primary my-2 me-3 me-xl-2" :key="refresh" @click="fetchAvailableChannels()">
           <i class="bi bi-arrow-repeat" />
         </button>
-        <button class="btn btn-primary my-2 me-2" @click="setAction(ChatActions.CHANNEL_JOIN_PRIVATE)">
+        <button class="btn btn-primary my-2 me-2 d-none d-xl-inline-block" @click="setAction(ChatActions.CHANNEL_JOIN_PRIVATE)">
           <i class="bi bi-lock" />
         </button>
         <button class="btn btn-primary my-2" @click="setAction(ChatActions.LIST_CHANNELS)">
           <i class="bi bi-arrow-return-left" />
+        </button>
+        <button class="btn btn-primary my-2 me-2 d-block d-xl-none" @click="setAction(ChatActions.CHANNEL_JOIN_PRIVATE)">
+          Private
+          <i class="ms-2 bi bi-lock" />
         </button>
       </div>
     </div>
@@ -36,6 +40,7 @@ import {getChannels} from "@/utils/user";
 import {store} from "@/store";
 import {ChatActions} from "@/store/modules/chat";
 
+const refresh = ref(false);
 const availableChannels = ref(new Map<number, string>());
 const channels = computed(() => store.state.chat.channels);
 
@@ -48,6 +53,7 @@ function joinChannel(channelId: number) {
 }
 
 async function fetchAvailableChannels() {
+  refresh.value = !refresh.value;
   const chans = await getChannels();
 
   availableChannels.value.clear();
