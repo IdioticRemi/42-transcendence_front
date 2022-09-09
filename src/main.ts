@@ -12,7 +12,7 @@ createApp(App)
   .use(store)
   .use(router)
   .use(new VueSocketIO({
-      debug: true,
+      debug: false,
       connection: instance,
       vuex: {
           store,

@@ -10,22 +10,20 @@ export interface GameState {
 	isInviting: boolean;
 	inviteTarget: string;
 	gameData: any;
+	gameEnd: GameEnd | null;
+}
+
+export interface GameEnd {
+	winnerNick: string;
+	winnerId: number;
+	winnerScore: number;
+	loserScore: number;
 }
 
 export interface Invite {
 	id: number;
 	nickname: string;
 	type: string;
-}
-
-export interface GameResult {
-	id: number;
-	type: string;
-	playerNick: string;
-	opponnentNick: string;
-	playerScore: number;
-	opponnentScore: number;
-	endedAt: Date;
 }
 
 export default {
@@ -36,6 +34,7 @@ export default {
 		isInviting: false,
 		inviteTarget: "",
 		gameData: null,
+		gameEnd: null,
     },
 	getters: {
 		isQueued(state: GameState) {
@@ -99,6 +98,9 @@ export default {
 		},
 		sendMove({ rootState }, payload: string) {
 			rootState.socket?.emit("game_move", payload);
+		},
+		deleteGameEnd({ state }) {
+			state.gameEnd = null;
 		}
     },
     mutations: {
@@ -125,8 +127,10 @@ export default {
 		SOCKET_game_data(state: GameState, payload) {
 			state.gameData = payload;
 		},
-		SOCKET_game_ended(state: GameState, payload) {
+		SOCKET_game_ended(state: GameState, payload: GameEnd) {
 			state.gameData = null;
+			state.gameEnd = payload;
+			router.push("/");
 			// TODO: Mettre dans un truc genre 'gameResult' les donnees de fin de game (score, ...) pour afficher le endgame screen
 		}
     },

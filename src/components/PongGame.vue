@@ -16,8 +16,23 @@ import libP5 from "p5";
 
 const game_container = ref(null);
 const game = computed(() => store.state.game.gameData);
+const gameEnd = computed(() => store.state.game.gameEnd);
 
 const pressedKeys = new Set();
+
+let previousBall = null;
+const frameRate = 60;
+
+function interpollate(p5) {
+  const tpsToFps = (game.value.tps / frameRate);
+
+  // game.value.padLeft.y += game.value.padLeft.speed * tpsToFps;
+
+  // game.value.padRight.y += game.value.padRight.speed * tpsToFps;
+
+  game.value.ball.x += game.value.ball.velocityX * tpsToFps;
+  game.value.ball.y += game.value.ball.velocityY * tpsToFps;
+}
 
 onMounted(() => {
   const script = function (p5) {
@@ -25,10 +40,12 @@ onMounted(() => {
       let pongCanvas = p5.createCanvas(1, 1, p5.WEBGL);
       pongCanvas.parent('game_container');
 
-      p5.frameRate(60);
+      p5.frameRate(frameRate);
     };
 
     p5.keyReleased = (_) => {
+      if (gameEnd.value)
+        return;
       pressedKeys.delete(p5.key);
       if (p5.key === 'ArrowUp' && pressedKeys.has('ArrowDown'))
         return;
@@ -39,12 +56,28 @@ onMounted(() => {
     }
 
     p5.keyPressed = (_) => {
+      if (gameEnd.value)
+        return;
       pressedKeys.add(p5.key);
       if (['ArrowUp', 'ArrowDown'].includes(p5.key))
         store.dispatch('game/sendMove', p5.key);
     }
   
     p5.draw = (_) => {
+      if (gameEnd.value) {
+        p5.noLoop();
+        p5.remove();
+        return;
+      }
+
+      if (!previousBall)
+        previousBall = game.value.ball;
+      if (previousBall.x === game.value.ball.x && previousBall.y === game.value.ball.y) {
+        interpollate(p5);
+      } else {
+        previousBall = game.value.ball;
+      }
+
       const w = Math.max(game_container.value?.offsetWidth, 1);
       p5.resizeCanvas(w, Math.min(w, (w / 4) * 3));
 
@@ -53,11 +86,11 @@ onMounted(() => {
 
       // 3D
 
-      // p5.rotateX(p5.PI / 6);
-      // p5.translate(-p5.width / 2, (-p5.height / 12) * 9, -p5.width / 6);
+      p5.rotateX(p5.PI / 6);
+      p5.translate(-p5.width / 2, (-p5.height / 12) * 9, -p5.width / 6);
 
       // 2D
-      p5.translate(-p5.width / 2, -p5.height / 2);10+
+      // p5.translate(-p5.width / 2, -p5.height / 2);
 
       p5.background(0);
 
@@ -76,36 +109,36 @@ onMounted(() => {
       p5.stroke(30);
 
       p5.push();
-      // p5.translate(game.value.padLeft.x * scalingX, game.value.padLeft.y * scalingY, 5);
+      p5.translate(game.value.padLeft.x * scalingX, game.value.padLeft.y * scalingY + (game.value.padLeft.height * scalingY / 2), 5);
 
-      // p5.box(
-      //   game.value.padLeft.width * scalingX,
-      //   game.value.padLeft.height * scalingY,
-      //   game.value.padLeft.width * scalingX
-      // );
-      p5.rect(game.value.padLeft.x * scalingX, game.value.padLeft.y * scalingY, game.value.padLeft.width * scalingX, game.value.padLeft.height * scalingY);
+      p5.box(
+        game.value.padLeft.width * scalingX,
+        game.value.padLeft.height * scalingY,
+        game.value.padLeft.width * scalingX
+      );
+      // p5.rect(game.value.padLeft.x * scalingX, game.value.padLeft.y * scalingY, game.value.padLeft.width * scalingX, game.value.padLeft.height * scalingY);
 
       p5.pop();
 
       p5.push();
-      // p5.translate(game.value.padRight.x * scalingX, game.value.padRight.y * scalingY, 5);
+      p5.translate(game.value.padRight.x * scalingX, game.value.padRight.y * scalingY + (game.value.padRight.height * scalingY / 2), 5);
 
-      // p5.box(
-      //   game.value.padRight.width * scalingX,
-      //   game.value.padRight.height * scalingY,
-      //   game.value.padLeft.width * scalingX
-      // );
-      p5.rect(game.value.padRight.x * scalingX, game.value.padRight.y * scalingY, game.value.padRight.width * scalingX, game.value.padRight.height * scalingY);
+      p5.box(
+        game.value.padRight.width * scalingX,
+        game.value.padRight.height * scalingY,
+        game.value.padLeft.width * scalingX
+      );
+      // p5.rect(game.value.padRight.x * scalingX, game.value.padRight.y * scalingY, game.value.padRight.width * scalingX, game.value.padRight.height * scalingY);
 
       p5.pop();
 
       p5.push();
 
       p5.noStroke();
-      // p5.translate(game.value.ball.x * scalingX, game.value.ball.y * scalingY);
-      // p5.sphere((game.value.ball.size * scalingX) / 2);
+      p5.translate(game.value.ball.x * scalingX, game.value.ball.y * scalingY);
+      p5.sphere((game.value.ball.size * scalingX) / 2);
 
-      p5.rect(game.value.ball.x * scalingX, game.value.ball.y * scalingY, game.value.ball.size * scalingX, game.value.ball.size * scalingY);
+      // p5.rect(game.value.ball.x * scalingX, game.value.ball.y * scalingY, game.value.ball.size * scalingX, game.value.ball.size * scalingY);
 
       p5.pop();
     };
