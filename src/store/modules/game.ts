@@ -40,6 +40,9 @@ export default {
 	getters: {
 		isQueued(state: GameState) {
 			return !!state.queueType;
+		},
+		isInGame(state: GameState) {
+			return !!state.gameData;
 		}
 	},
     actions: {
@@ -93,6 +96,9 @@ export default {
 		refuseInvite({ rootState, state }, payload: Invite) {
 			state.inviteList = state.inviteList.filter(i => i !== payload);
 			rootState.socket?.emit("game_invite_refuse", payload);
+		},
+		sendMove({ rootState }, payload: string) {
+			rootState.socket?.emit("game_move", payload);
 		}
     },
     mutations: {

@@ -4,7 +4,7 @@
 			<h2 class="mb-4">
 				Matchmaking
 			</h2>
-			<button @click="openInviteModal()" class="mb-4 btn btn-outline-primary" :disabled="isQueued">
+			<button @click="openInviteModal()" class="mb-4 btn btn-outline-primary" :disabled="isQueued || isInGame">
 				Invite
 				<i class="ms-2 bi-person-fill" />
 			</button>
@@ -16,7 +16,7 @@
   					<option value="classic">Classic</option>
   					<option value="custom">Custom</option>
 				</select>
-				<button @click="startMatchmaking()" class="ms-2 btn btn-outline-success d-flex">
+				<button @click="startMatchmaking()" class="ms-2 btn btn-outline-success d-flex" :disabled="isInGame">
 					Play
 					<i class="ms-2 bi-play-fill" />
 				</button>
@@ -46,6 +46,7 @@ import { ref, computed } from "vue";
 
 const selectedGameType = ref("classic");
 const isQueued = computed(() => store.getters["game/isQueued"]);
+const isInGame = computed(() => store.getters["game/isInGame"]);
 const queueType = computed(() => store.state.game.queueType);
 
 function startMatchmaking() {

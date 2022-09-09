@@ -42,6 +42,10 @@ export default {
     changeNickname({ rootState }, payload: string) {
       if (payload)
         rootState.socket?.emit('user_nick', { newNick: payload });
+    },
+    SOCKET_logout_user({ commit, dispatch }) {
+      commit('logoutUser', false);
+      dispatch('alert/addError', "You are already connected somewhere else", { root: true });
     }
   },
   mutations: {
@@ -50,14 +54,15 @@ export default {
       state.user = user;
       state.token = token;
     },
-    logoutUser(state: AuthState) {
+    logoutUser(state: AuthState, payload = true) {
       state.user = null;
       state.token = null;
-      localStorage.removeItem("token");
+      if (payload)
+        localStorage.removeItem("token");
     },
     SOCKET_user_nick(state: AuthState, payload: { newNick: string }) {
       if (state.user)
         state.user.nickname = payload.newNick;
-    }
+    },
   },
 } as unknown as Module<AuthState, StoreState>;

@@ -17,41 +17,33 @@ import libP5 from "p5";
 const game_container = ref(null);
 const game = computed(() => store.state.game.gameData);
 
-// const game = {
-//   score: [0, 2],
-//   ball: {
-//     size: 2.5,
-//     speed: 1.2,
-//     velocityX: 0.4622793109332295,
-//     velocityY: -0.7071067811865475,
-//     x: 96.71137325019988,
-//     y: 0.4010678118654707,
-//   },
-//   padLeft: {
-//     height: 15,
-//     move: 0,
-//     speed: 1,
-//     width: 1.25,
-//     x: 2.5,
-//     y: 42.5,
-//   },
-//   padRight: {
-//     height: 15,
-//     move: 0,
-//     speed: 1,
-//     width: 1.25,
-//     x: 96.5,
-//     y: 42.5,
-//   },
-// };
+const pressedKeys = new Set();
 
 onMounted(() => {
   const script = function (p5) {
     p5.setup = (_) => {
       let pongCanvas = p5.createCanvas(1, 1, p5.WEBGL);
       pongCanvas.parent('game_container');
+
+      p5.frameRate(60);
     };
 
+    p5.keyReleased = (_) => {
+      pressedKeys.delete(p5.key);
+      if (p5.key === 'ArrowUp' && pressedKeys.has('ArrowDown'))
+        return;
+      if (p5.key === 'ArrowDown' && pressedKeys.has('ArrowUp'))
+        return;
+      if (['ArrowUp', 'ArrowDown'].includes(p5.key))
+        store.dispatch('game/sendMove', 'Stop');
+    }
+
+    p5.keyPressed = (_) => {
+      pressedKeys.add(p5.key);
+      if (['ArrowUp', 'ArrowDown'].includes(p5.key))
+        store.dispatch('game/sendMove', p5.key);
+    }
+  
     p5.draw = (_) => {
       const w = Math.max(game_container.value?.offsetWidth, 1);
       p5.resizeCanvas(w, Math.min(w, (w / 4) * 3));
@@ -59,10 +51,13 @@ onMounted(() => {
       const scalingX = p5.width / 100;
       const scalingY = p5.height / 100;
 
-      // 3d effect
+      // 3D
 
-      p5.rotateX(p5.PI / 6);
-      p5.translate(-p5.width / 2, (-p5.height / 12) * 9, -p5.width / 6);
+      // p5.rotateX(p5.PI / 6);
+      // p5.translate(-p5.width / 2, (-p5.height / 12) * 9, -p5.width / 6);
+
+      // 2D
+      p5.translate(-p5.width / 2, -p5.height / 2);10+
 
       p5.background(0);
 
@@ -81,52 +76,42 @@ onMounted(() => {
       p5.stroke(30);
 
       p5.push();
-      p5.translate(game.value.padLeft.x * scalingX, game.value.padLeft.y * scalingY, 5);
+      // p5.translate(game.value.padLeft.x * scalingX, game.value.padLeft.y * scalingY, 5);
 
-      p5.box(
-        game.value.padLeft.width * scalingX,
-        game.value.padLeft.height * scalingY,
-        game.value.padLeft.width * scalingX
-      );
+      // p5.box(
+      //   game.value.padLeft.width * scalingX,
+      //   game.value.padLeft.height * scalingY,
+      //   game.value.padLeft.width * scalingX
+      // );
+      p5.rect(game.value.padLeft.x * scalingX, game.value.padLeft.y * scalingY, game.value.padLeft.width * scalingX, game.value.padLeft.height * scalingY);
 
       p5.pop();
 
       p5.push();
-      p5.translate(game.value.padRight.x * scalingX, game.value.padRight.y * scalingY, 5);
+      // p5.translate(game.value.padRight.x * scalingX, game.value.padRight.y * scalingY, 5);
 
-      p5.box(
-        game.value.padRight.width * scalingX,
-        game.value.padRight.height * scalingY,
-        game.value.padLeft.width * scalingX
-      );
+      // p5.box(
+      //   game.value.padRight.width * scalingX,
+      //   game.value.padRight.height * scalingY,
+      //   game.value.padLeft.width * scalingX
+      // );
+      p5.rect(game.value.padRight.x * scalingX, game.value.padRight.y * scalingY, game.value.padRight.width * scalingX, game.value.padRight.height * scalingY);
 
       p5.pop();
 
       p5.push();
 
       p5.noStroke();
-      p5.translate(game.value.ball.x * scalingX, game.value.ball.y * scalingY);
-      p5.sphere((game.value.ball.size * scalingX) / 2);
+      // p5.translate(game.value.ball.x * scalingX, game.value.ball.y * scalingY);
+      // p5.sphere((game.value.ball.size * scalingX) / 2);
+
+      p5.rect(game.value.ball.x * scalingX, game.value.ball.y * scalingY, game.value.ball.size * scalingX, game.value.ball.size * scalingY);
 
       p5.pop();
     };
   };
   new libP5(script);
 });
-
-// function updateMove() {
-//   if (keyIsPressed) {
-//     switch (keyCode) {
-//       case 40:
-//         offset = 2;
-//         break;
-//       case 38:
-//         offset = -2;
-//         break;
-//     }
-//   } else offset = 0;
-//   game.value.padLeft.y += offset;
-// }
 </script>
 
 <style scoped>
