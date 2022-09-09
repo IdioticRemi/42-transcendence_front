@@ -114,6 +114,7 @@ export default {
 		},
 		SOCKET_game_invite_refused(state: GameState, payload: Invite) {
 			state.isInviting = false;
+			state.queueType = null;
 		},
 		SOCKET_game_data(state: GameState, payload) {
 			state.gameData = payload;
