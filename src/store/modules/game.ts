@@ -12,6 +12,7 @@ export interface GameState {
 	inviteTarget: string;
 	gameData: any;
 	gameEnd: GameEnd | null;
+	gameInfo: GameInfo | null;
 }
 
 export interface GameEnd {
@@ -19,6 +20,14 @@ export interface GameEnd {
 	winnerId: number;
 	winnerScore: number;
 	loserScore: number;
+}
+
+export interface GameInfo {
+	p1: number;
+	p2: number;
+
+	p1Nick: string;
+	p2Nick: string;
 }
 
 export interface Invite {
@@ -36,6 +45,7 @@ export default {
 		inviteTarget: "",
 		gameData: null,
 		gameEnd: null,
+		gameInfo: null,
     },
 	getters: {
 		isQueued(state: GameState) {
@@ -129,10 +139,18 @@ export default {
 		SOCKET_game_data(state: GameState, payload) {
 			state.gameData = payload;
 		},
+		SOCKET_game_info(state: GameState, payload) {
+			state.gameInfo = payload;
+		},
 		SOCKET_game_ended(state: GameState, payload: GameEnd) {
 			state.gameData = null;
 			state.gameEnd = payload;
-			router.push("/");
+			
+			setTimeout(() => {
+				router.push("/");
+				state.gameInfo = null;
+				state.gameEnd = null;
+			}, 10e3);
 			// TODO: Mettre dans un truc genre 'gameResult' les donnees de fin de game (score, ...) pour afficher le endgame screen
 		}
     },

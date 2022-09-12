@@ -5,7 +5,7 @@
         <li class="nav-item">
           <router-link class="nav-link" to="/">Home</router-link>
         </li>
-        <li v-if="connected" class="nav-item">
+        <li v-if="connected && isPlaying" class="nav-item">
           <router-link class="nav-link ms-2" to="/pong">Pong</router-link>
         </li>
         <li v-if="connected" class="nav-item d-block d-lg-none">
@@ -44,6 +44,7 @@ import router from "@/router";
 const connected = computed(() => store.getters["auth/isConnected"]);
 const user = computed(() => store.state.auth.user);
 const refresh = computed(() => store.state.refreshAvatar);
+const isPlaying = computed(() => !!store.state.game.gameData);
 
 function logoutUser() {
   store.dispatch("auth/logout");
