@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="card-footer">
-		<button class="btn btn-primary">Spectate</button>
+		<button @click="spectateGame(game.id)" class="btn btn-primary">Spectate</button>
     </div>
   </div>
 </template>
@@ -45,6 +45,10 @@ function getGames() {
   refresh.value = !refresh.value;
   store.dispatch("game/getGames");
 
+}
+
+function spectateGame(gameId: string) {
+  store.dispatch("game/spectateGame", gameId);
 }
 
 onMounted(() => {

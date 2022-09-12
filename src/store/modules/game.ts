@@ -122,6 +122,9 @@ export default {
 		},
 		getGames({ rootState }) {
 			rootState.socket?.emit('game_list');
+		},
+		spectateGame({ rootState }, payload: string) {
+			rootState.socket?.emit('game_spectate', payload);
 		}
     },
     mutations: {
