@@ -12,6 +12,7 @@
             v-model="channelName"
             class="form-control me-2"
             placeholder="my awesome channel"
+            maxlength="64"
         />
         <div class="d-flex flex-row justify-content-between my-4 w-100">
               <span>
@@ -28,6 +29,7 @@
             v-model="channelPassword"
             class="form-control me-2"
             placeholder="my secret password"
+            maxlength="128"
         />
       </div>
       <button class="btn btn-primary" @click="createChannel()">

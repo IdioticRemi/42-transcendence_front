@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed, onMounted} from "vue";
+import {ref, computed} from "vue";
 import {store} from "@/store";
 import {FriendStatus} from "@/store/modules/chat";
 import ChatMessage from "@/components/chat/ChatMessage.vue";
@@ -48,8 +48,6 @@ const selected = computed(() => store.state.chat.selectedFriend);
 const friends = computed(() => store.state.chat.friends);
 const selectedFriend = computed(() => friends.value.get(selected.value === null ? -1 : selected.value));
 const messages = computed(() => selectedFriend.value?.messages);
-
-onMounted(() => console.debug(messages.value));
 
 function sendMessage() {
   store.dispatch("chat/newFriendMessage", messageContent.value);

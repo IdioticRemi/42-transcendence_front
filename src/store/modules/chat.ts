@@ -227,8 +227,8 @@ export default {
       }
       state.channels.delete(payload.channelId);
     },
-    SOCKET_friend_info(state: ChatState, { id, nickname, messages, status }: { id: number, nickname: string, status: FriendStatus, messages: { id: number, userNick: string, userId: number, content: string }[] }) {
-      state.friends.set(id, { nickname, status, id, messages: messages.map(m => { return { content: m.content, nick: m.userNick, user: m.userId } }) });
+    SOCKET_friend_info(state: ChatState, { id, nickname, messages, status }: { id: number, nickname: string, status: FriendStatus, messages: { id: number, userNick: string, userId: number, content: string, createdAt: Date }[] }) {
+      state.friends.set(id, { nickname, status, id, messages: messages.map(m => { return { content: m.content, nick: m.userNick, user: m.userId, createdAt: m.createdAt } }) });
     },
     SOCKET_friend_message(state: ChatState, payload: { friendId: number, userId: number, userNick: string, content: string, createdAt: Date }) {
       state.friends.get(payload.userId === state.myId ? payload.friendId : payload.userId)?.messages.push({ content: payload.content, nick: payload.userNick, user: payload.userId, createdAt: payload.createdAt })

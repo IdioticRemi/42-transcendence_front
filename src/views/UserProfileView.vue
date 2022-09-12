@@ -96,8 +96,8 @@
       <div class="col-12">
         <h2 class="mb-4">Match History</h2>
         <div v-for="(match, id) in gameHistory" :key="id" class="d-flex-col w-100 w-75-lg card mb-3">
-          <h5 class="card-header">
-            <span class="text-primary">{{ user.nickname }}</span> vs <span class="text-danger">{{ match.opponentNick }}</span>
+          <h5 class="card-header d-flex">
+               <router-link class="nav-link text-primary me-1" :to="`/profile/${match.playerId}`">{{ user.nickname }}</router-link>vs<router-link class="nav-link text-danger ms-1" :to="`/profile/${match.opponentId}`">{{ match.opponentNick }}</router-link>
           </h5>
           <div class="row w-100 card-body">
             <div class="col-6">
@@ -113,10 +113,10 @@
             </div>
           </div>
           <div class="card-footer">
-            {{ moment(match.endedAt).fromNow() }}
+            {{ moment(new Date(match.endedAt).getTime() - (new Date().getTimezoneOffset() * 60e3)).fromNow() }}
           </div>
         </div>
-        <div v-if="!gameHistory">
+        <div v-if="!gameHistory.length">
           <h5>no previous games...</h5>
         </div>
       </div>
@@ -139,13 +139,6 @@ const nickInput = ref(null);
 const res = ref(null);
 const user = computed(() => store.state.auth.user);
 const refresh = computed(() => store.state.refreshAvatar);
-const history = ref([
-  { opponent: "mdesoeuv", score: 1, opponentScore: 2, endedAt: Date.now() - 1e3 * 60, type: "classic" },
-  { opponent: "abucia", score: 3, opponentScore: 0, endedAt: Date.now() - 1e3 * 127, type: "custom" },
-  { opponent: "wekjgjhwekjgh12j", score: 0, opponentScore: 3, endedAt: Date.now() - 1e3 * 260, type: "classic" },
-  { opponent: "abucia", score: 3, opponentScore: 0, endedAt: Date.now() - 1e3 * 127, type: "custom" },
-  { opponent: "wekjgjhwekjgh12j", score: 0, opponentScore: 3, endedAt: Date.now() - 1e3 * 260, type: "classic" },
-]);
 
 const gameHistory = ref([]);
 

@@ -43,9 +43,9 @@ function toggleMessageSettings(messageId: number) {
   showSettings.value = !showSettings.value;
 }
 
-function getDateFromNow(date: number) {
-  return moment(date).fromNow();
-  // return moment(date - (new Date().getTimezoneOffset() * 60e3)).fromNow();
+function getDateFromNow(date: string) {
+  console.log(date);
+  return moment(new Date(date).getTime() - (new Date().getTimezoneOffset() * 60e3)).fromNow();
 }
 
 function addFriend(userId: number) {
