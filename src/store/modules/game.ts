@@ -13,6 +13,7 @@ export interface GameState {
 	gameData: any;
 	gameEnd: GameEnd | null;
 	gameInfo: GameInfo | null;
+	gameList: GameInfo[];
 }
 
 export interface GameEnd {
@@ -22,12 +23,17 @@ export interface GameEnd {
 	loserScore: number;
 }
 
+
+// interface Gameinfo extends Game
 export interface GameInfo {
+	id?: string;
 	p1: number;
 	p2: number;
-
+	p1Score?: number;
+	p2Score?: number;
 	p1Nick: string;
 	p2Nick: string;
+	type?: string;
 }
 
 export interface Invite {
@@ -46,6 +52,7 @@ export default {
 		gameData: null,
 		gameEnd: null,
 		gameInfo: null,
+		gameList: null,
     },
 	getters: {
 		isQueued(state: GameState) {
@@ -112,6 +119,9 @@ export default {
 		},
 		deleteGameEnd({ state }) {
 			state.gameEnd = null;
+		},
+		getGames({ rootState }) {
+			rootState.socket?.emit('game_list');
 		}
     },
     mutations: {
@@ -152,6 +162,9 @@ export default {
 				state.gameEnd = null;
 			}, 10e3);
 			// TODO: Mettre dans un truc genre 'gameResult' les donnees de fin de game (score, ...) pour afficher le endgame screen
+		},
+		SOCKET_game_list(state: GameState, payload: GameInfo[]) {
+			state.gameList = payload;
 		}
     },
 } as unknown as Module<GameState, StoreState>;

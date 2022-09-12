@@ -5,6 +5,7 @@ import UserProfileView from "@/views/UserProfileView.vue";
 import PongView from "@/views/PongView.vue";
 import LoginView from "@/views/LoginView.vue";
 import ChatView from "@/views/ChatView.vue";
+import SpectateView from "@/views/SpectateView.vue";
 import {store} from "@/store";
 
 const routes: Array<RouteRecordRaw> = [
@@ -47,6 +48,14 @@ const routes: Array<RouteRecordRaw> = [
       title: "Pong",
     },
     component: PongView,
+  },
+  {
+    path: "/spectate",
+    name: "Spectate",
+    meta: {
+      title: "Spectate",
+    },
+    component: SpectateView,
   },
   {
     name: "NotFound",

@@ -3,15 +3,6 @@
     <h1 v-if="!gameEnd">
       Score : {{ game?.p1Score || 0 }} - {{ game?.p2Score || 0 }}
     </h1>
-    <div v-if="gameInfo" class="d-flex justify-content-between w-100">
-      <router-link class="nav-link" :to="`/profile/${gameInfo.p1}`">{{
-        gameInfo.p1Nick
-      }}</router-link>
-      <router-link class="nav-link" :to="`/profile/${gameInfo.p2}`">{{
-        gameInfo.p2Nick
-      }}</router-link>
-    </div>
-    <div ref="game_container" id="game_container" />
     <div v-if="gameEnd">
       <h3>
         <span class="text-primary">{{ gameEnd.winnerNick }}</span> won the game
@@ -20,6 +11,15 @@
         >!
       </h3>
     </div>
+    <div v-if="gameInfo" class="d-flex justify-content-between w-100">
+      <router-link class="nav-link text-primary" :to="`/profile/${gameInfo.p1}`">{{
+        gameInfo.p1Nick
+      }}</router-link>
+      <router-link class="nav-link text-primary" :to="`/profile/${gameInfo.p2}`">{{
+        gameInfo.p2Nick
+      }}</router-link>
+    </div>
+    <div ref="game_container" id="game_container" />
   </div>
   <!-- <div class="d-flex d-lg-none">
     Please connect on a larger screen to be able to play the amazing pong game!

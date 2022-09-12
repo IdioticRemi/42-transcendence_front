@@ -11,6 +11,9 @@
         <li v-if="connected" class="nav-item d-block d-lg-none">
           <router-link class="nav-link ms-2" to="/chat">Chat</router-link>
         </li>
+        <li v-if="connected && !isPlaying" class="nav-item">
+          <router-link class="nav-link ms-2" to="/spectate">Spectate</router-link>
+        </li>
       </ul>
 
       <div v-if="connected" class="navbar-nav d-flex flex-row">
