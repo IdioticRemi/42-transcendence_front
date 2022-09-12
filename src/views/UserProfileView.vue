@@ -113,8 +113,11 @@
             </div>
           </div>
           <div class="card-footer">
-            {{ moment(new Date(match.endedAt).getTime() - (new Date().getTimezoneOffset() * 60e3)).fromNow() }}
+            {{ moment(match.endedAt).fromNow() }}
           </div>
+        </div>
+        <div v-if="!gameHistory">
+          <h5>no previous games...</h5>
         </div>
       </div>
     </div>
