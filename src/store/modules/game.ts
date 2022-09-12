@@ -2,6 +2,7 @@ import {Module} from "vuex";
 import {StoreState} from "@/store";
 import { getUser } from "@/utils/user";
 import router from "@/router";
+import moment from "moment";
 
 // TODO: Typer gameData
 export interface GameState {
@@ -109,6 +110,7 @@ export default {
 		},
 		SOCKET_game_found(state: GameState, payload: Invite) {
 			state.queueType = null;
+			state.gameEnd = null;
 			router.push("/pong");
 		},
 		SOCKET_game_invite(state: GameState, payload: Invite) {

@@ -1,12 +1,11 @@
 <template>
-  <div class="d-none d-lg-flex flex-column">
-    <h1 v-if="!finished">score : {{ p1Score }} - {{ p2Score }}</h1>
-    <h1 v-else>final score : {{ p1Score }} - {{ p2Score }}</h1>
+  <div class="d-flex flex-column">
+    <h1 v-if="!gameEnd">Score : {{ game?.p1Score || 0 }} - {{ game?.p2Score || 0 }}</h1>
     <div ref="game_container" id="game_container" />
   </div>
-  <div class="d-flex d-lg-none">
+  <!-- <div class="d-flex d-lg-none">
     Please connect on a larger screen to be able to play the amazing pong game!
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">
@@ -17,18 +16,25 @@ import libP5 from "p5";
 const game_container = ref(null);
 const game = computed(() => store.state.game.gameData);
 const gameEnd = computed(() => store.state.game.gameEnd);
+const myUserId = computed(() => store.state.auth.user?.id);
 
-const pressedKeys = new Set();
-
+let direction = 'Stop';
 let previousBall = null;
+let pressedKeys = new Set();
+
 const frameRate = 60;
 
 function interpollate(p5) {
   const tpsToFps = (game.value.tps / frameRate);
 
-  // game.value.padLeft.y += game.value.padLeft.speed * tpsToFps;
+  const playerPad = (game.value.p1 === myUserId.value ? game.value.padLeft : game.value.padRight);
+  const playerSpeed = playerPad.speed * tpsToFps;
 
-  // game.value.padRight.y += game.value.padRight.speed * tpsToFps;
+  if (direction === 'ArrowDown') {
+    playerPad.y = Math.min(playerPad.y + playerSpeed, 100 - playerPad.height);
+  } else if (direction === 'ArrowUp') {
+    playerPad.y = Math.max(playerPad.y - playerSpeed, 0);
+  }
 
   game.value.ball.x += game.value.ball.velocityX * tpsToFps;
   game.value.ball.y += game.value.ball.velocityY * tpsToFps;
@@ -46,27 +52,33 @@ onMounted(() => {
     p5.keyReleased = (_) => {
       if (gameEnd.value)
         return;
-      pressedKeys.delete(p5.key);
-      if (p5.key === 'ArrowUp' && pressedKeys.has('ArrowDown'))
-        return;
-      if (p5.key === 'ArrowDown' && pressedKeys.has('ArrowUp'))
-        return;
-      if (['ArrowUp', 'ArrowDown'].includes(p5.key))
-        store.dispatch('game/sendMove', 'Stop');
+      if (['ArrowUp', 'ArrowDown'].includes(p5.key)) {
+        pressedKeys.delete(p5.key);
+        if (pressedKeys.size === 0) {
+          direction = 'Stop'
+          store.dispatch('game/sendMove', direction);
+        }
+      }
     }
 
     p5.keyPressed = (_) => {
+      console.log("pressed");
       if (gameEnd.value)
         return;
-      pressedKeys.add(p5.key);
-      if (['ArrowUp', 'ArrowDown'].includes(p5.key))
-        store.dispatch('game/sendMove', p5.key);
+
+      if (['ArrowUp', 'ArrowDown'].includes(p5.key)) {
+        pressedKeys.add(p5.key);
+        direction = p5.key;
+        store.dispatch('game/sendMove', direction);
+      }
     }
   
     p5.draw = (_) => {
+      if (!game.value || !('ball' in game.value) || !('padLeft' in game.value) || !('padRight' in game.value) || game.value.pause) {
+        return;
+      }
+
       if (gameEnd.value) {
-        p5.noLoop();
-        p5.remove();
         return;
       }
 
