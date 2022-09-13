@@ -36,6 +36,7 @@
 <script setup lang="ts">
 import { sendBackendRequest } from "@/utils/user";
 import { ref, onMounted } from "vue";
+import { store } from "@/store";
 
 const refresh = ref(false);
 const lb = ref(null);

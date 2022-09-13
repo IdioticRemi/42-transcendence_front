@@ -125,6 +125,9 @@ export default {
 		},
 		spectateGame({ rootState }, payload: string) {
 			rootState.socket?.emit('game_spectate', payload);
+		},
+		test({ rootState }) {
+			rootState.socket?.emit('game_invite_refuse', null);
 		}
     },
     mutations: {
