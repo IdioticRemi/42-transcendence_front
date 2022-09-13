@@ -13,7 +13,7 @@
           <img @click="uploadNewImage(res.payload.id)"
               :class="`${res.payload.id === user.id ? 'mypfp' : ''} rounded me-4 mb-4`"
               style="object-fit: cover; width: 15vw; height: 15vw; min-height: 140px; min-width: 140px"
-             :src="`${CONST.BackendURL}/users/avatar/${res.payload.username}/${refresh}`"
+             :src="`${CONST.BackendURL}/users/avatar/${res.payload.id}/${refresh}`"
               alt="profile picture"
           />
           <div class="d-flex-col w-50">
@@ -89,7 +89,7 @@
         <img @click="uploadNewImage(res.payload.id)"
             :class="`${res.payload.id === user.id ? 'mypfp' : ''} rounded d-none d-lg-block`"
             style="object-fit: cover; width: 15vw; height: 15vw"
-            :src="`${CONST.BackendURL}/users/avatar/${res.payload.username}/${refresh}`"
+            :src="`${CONST.BackendURL}/users/avatar/${res.payload.id}/${refresh}`"
             alt="profile picture"
         />
       </div>

@@ -22,7 +22,7 @@
             v-if="user.hasOwnProperty('username')"
             class="rounded"
             style="object-fit: cover; width: 40px; height: 40px"
-            :src="`${CONST.BackendURL}/users/avatar/${user.username}/${refresh}`"
+            :src="`${CONST.BackendURL}/users/avatar/${user.id}/${refresh}`"
             alt="profile picture"
           />
         </router-link>
