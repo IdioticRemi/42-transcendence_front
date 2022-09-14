@@ -11,6 +11,7 @@ export interface AuthState {
     img_path: string;
     nickname: string;
     username: string;
+    otp_enabled: boolean;
   } | null;
 }
 

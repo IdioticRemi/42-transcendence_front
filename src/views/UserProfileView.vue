@@ -1,4 +1,5 @@
 <template>
+
   <div>
     <h1 class="mb-4">User Information</h1>
     <div v-if="!res || !'payload' in res">
@@ -47,6 +48,9 @@
               <b class="col-sm-4 col-12">K/D</b>
               <span class="col-sm-8 col-12 text-sm-end">WINS / LOSES</span>
             </div>
+            <div class="d-flex flex-row justify-content-end px-4">
+              <TwoFactorAuth />
+            </div>
           </div>
         </div>
       </div>
@@ -93,6 +97,7 @@
             alt="profile picture"
         />
       </div>
+
       <div class="col-12">
         <h2 class="mb-4">Match History</h2>
         <div v-for="(match, id) in gameHistory" :key="id" class="d-flex-col w-100 w-75-lg card mb-3">
@@ -132,6 +137,7 @@ import CONST from "@/utils/const";
 import moment from "moment";
 import { store } from "@/store";
 import { Game } from "@/store/modules/game";
+import TwoFactorAuth from "@/components/TwoFactorAuth.vue"
 
 const editingNickname = ref(false);
 const newNickname = ref("");
