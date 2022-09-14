@@ -49,7 +49,9 @@
               <span class="col-sm-8 col-12 text-sm-end">WINS / LOSES</span>
             </div>
             <div class="d-flex flex-row justify-content-end px-4">
-              <TwoFactorAuth />
+              <button @click="show2faModal()" class="btn btn-sm btn-primary">2FA Settings
+                <i class="bi bi-gear"></i>
+              </button>
             </div>
           </div>
         </div>
@@ -189,6 +191,10 @@ function uploadNewImage(userId: number) {
 function changeNickname() {
   store.dispatch("auth/changeNickname", newNickname.value);
   toggleEditNickname();
+}
+
+function show2faModal() {
+  store.state.show2faModal = true;
 }
 
 onMounted(async () => {

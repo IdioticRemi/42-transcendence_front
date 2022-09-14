@@ -8,6 +8,7 @@ import ModuleGame, {GameState} from "./modules/game";
 export interface StoreState {
   socket: Socket | null;
   refreshAvatar: number;
+  show2faModal: boolean;
   auth: AuthState;
   chat: ChatState;
   alert: AlertState;
@@ -21,6 +22,7 @@ export const store = createStore({
   state: {
     socket: null as Socket | null,
     refreshAvatar: Date.now(),
+    show2faModal: false,
   },
   getters: {
 
