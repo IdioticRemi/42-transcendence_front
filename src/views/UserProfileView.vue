@@ -49,7 +49,7 @@
               <span class="col-sm-8 col-12 text-sm-end">WINS / LOSES</span>
             </div>
             <div class="d-flex flex-row justify-content-end px-4">
-              <button @click="show2faModal()" class="btn btn-sm btn-primary">2FA Settings
+              <button :hidden="res.payload.id !== user.id" @click="show2faModal()" class="btn btn-sm btn-primary">2FA Settings
                 <i class="bi bi-gear"></i>
               </button>
             </div>
@@ -89,7 +89,7 @@
               <span class="text-primary">WINS</span> / <span class="text-danger">LOSES</span>
             </div>
             <div class="d-flex flex-row justify-content-end">
-              <button @click="show2faModal()" class="btn btn-sm btn-primary">2FA Settings
+              <button :hidden="res.payload.id !== user.id" @click="show2faModal()" class="btn btn-sm btn-primary">2FA Settings
                 <i class="bi bi-gear"></i>
               </button>
             </div>
