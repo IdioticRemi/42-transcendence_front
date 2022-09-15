@@ -143,7 +143,7 @@ import CONST from "@/utils/const";
 import moment from "moment";
 import { store } from "@/store";
 import { Game } from "@/store/modules/game";
-import TwoFactorAuth from "@/components/TwoFactorAuth.vue"
+import TwoFactorSettings from "@/components/TwoFactorSettings.vue"
 
 const editingNickname = ref(false);
 const newNickname = ref("");

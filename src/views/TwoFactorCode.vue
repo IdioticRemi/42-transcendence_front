@@ -1,10 +1,10 @@
 <template>
 	<div class="">
     <h3 class="mb-4">Two-Factor Authentication</h3>
-    <input type="text" v-model="code" placeholder="input 6-digit Code..." class="form-control mb-2" />
+    <input @keydown.enter="sendCode()" type="text" v-model="code" placeholder="input 6-digit Code..." class="form-control mb-2" />
 
     <div class="d-flex justify-content-between">
-      <button @keypress.enter="sendCode()"
+      <button 
         @click="sendCode()"
         class="btn btn-primary justify-content-around d-flex w-100"
       >
