@@ -4,7 +4,6 @@
   <InviteModal v-if="isInviting" />
   <InvitedModal v-if="invites.length > 0" :invite="invites[0]"/>
   <TwoFactorAuth v-if="show2faModal" />
-  <TwoFactorCodeModal v-if="show2faCodeModal" />
   <div class="container-fluid row mx-0">
     <div class="d-none d-lg-flex col-0 col-lg-4 col-xl-3 px-lg-0">
       <SideChat v-if="connected" />
@@ -28,7 +27,6 @@ import ErrorList from "@/components/AlertList";
 import InviteModal from "@/components/game/InviteModal";
 import InvitedModal from "@/components/game/InvitedModal";
 import TwoFactorAuth from "@/components/TwoFactorAuth";
-import TwoFactorCodeModal from "@/components/TwoFactorCodeModal";
 
 const connected = computed(() => store.getters["auth/isConnected"]);
 const invites = computed(() => store.state.game.inviteList);

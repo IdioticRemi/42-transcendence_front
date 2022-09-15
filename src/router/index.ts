@@ -5,6 +5,7 @@ import UserProfileView from "@/views/UserProfileView.vue";
 import PongView from "@/views/PongView.vue";
 import LoginView from "@/views/LoginView.vue";
 import ChatView from "@/views/ChatView.vue";
+import TwoFactorCode from "@/views/TwoFactorCode.vue";
 import SpectateView from "@/views/SpectateView.vue";
 import {store} from "@/store";
 
@@ -24,6 +25,14 @@ const routes: Array<RouteRecordRaw> = [
       title: "Login callback"
     },
     component: LoginView,
+  },
+  {
+    path: "/2fa",
+    name: "TwoFactorCode",
+    meta: {
+      title: "Two-Factor Auth"
+    },
+    component: TwoFactorCode,
   },
   {
     path: "/chat",
@@ -73,7 +82,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to) => {
-  if (!(store.getters["auth/isConnected"]) && !['/', '/login'].includes(to.path))
+  if (!(store.getters["auth/isConnected"]) && !['/', '/login', '/2fa'].includes(to.path))
     return { path: '/' }
 });
 
