@@ -1,8 +1,10 @@
 import {Module} from "vuex";
 import {StoreState} from "@/store";
+import { useRoute } from "vue-router";
 
 export interface AuthState {
   token: string | null;
+  otp_token: string | null;
   user: {
     id: number;
     createdAt: string;
@@ -20,6 +22,7 @@ export default {
   state: {
     user: null,
     token: null,
+    otp_token: null,
   },
   getters: {
     isConnected: (state: AuthState) =>
@@ -50,16 +53,22 @@ export default {
     }
   },
   mutations: {
+    //TODO otp_token a recuperer
     loginUser(state: AuthState, payload: AuthState) {
-      const { user, token } = payload;
+      const { user, token, otp_token } = payload;
       state.user = user;
+      console.debug("otp_token", otp_token);
       state.token = token;
+      state.otp_token = otp_token;
     },
     logoutUser(state: AuthState, payload = true) {
       state.user = null;
       state.token = null;
-      if (payload)
+      state.otp_token = null;
+      if (payload) {
         localStorage.removeItem("token");
+        localStorage.removeItem("otp_token");
+      }
     },
     SOCKET_user_nick(state: AuthState, payload: { newNick: string }) {
       if (state.user)

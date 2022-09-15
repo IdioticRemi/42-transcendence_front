@@ -38,6 +38,10 @@ onMounted(async () => {
       failedLogin.value = true;
       await store.dispatch("auth/logout");
     } else {
+      const user = json_data.content;
+      if (user.otp_enabled) {
+        store.state.show2faCodeModal = true;
+      }
       await store.dispatch("auth/login", { token, user: json_data.content });
     }
     sendToHome(true);

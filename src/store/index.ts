@@ -9,6 +9,7 @@ export interface StoreState {
   socket: Socket | null;
   refreshAvatar: number;
   show2faModal: boolean;
+  show2faCodeModal: boolean;
   auth: AuthState;
   chat: ChatState;
   alert: AlertState;
@@ -23,6 +24,7 @@ export const store = createStore({
     socket: null as Socket | null,
     refreshAvatar: Date.now(),
     show2faModal: false,
+    show2faCodeModal: false,
   },
   getters: {
 
