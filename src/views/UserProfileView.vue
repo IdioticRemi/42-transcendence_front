@@ -1,5 +1,4 @@
 <template>
-
   <div>
     <h1 class="mb-4">User Information</h1>
     <div v-if="!res || !'payload' in res">
