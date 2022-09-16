@@ -51,11 +51,11 @@ const isPlaying = computed(() => !!store.state.game.gameData);
 
 function logoutUser() {
   store.dispatch("auth/logout");
-  window.location = "http://localhost:8081/";
+  window.location = `${CONST.BackendURL}/`;
 }
 
 function loginUser() {
-  window.location = "http://localhost:3000/auth";
+  window.location = `${CONST.BackendURL}/auth`;
 }
 
 onMounted(async () => {

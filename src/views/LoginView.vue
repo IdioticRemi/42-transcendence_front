@@ -6,6 +6,7 @@
 import { store } from "@/store";
 import { ref, onMounted } from "vue";
 import router from "@/router";
+import CONST from "@/utils/const";
 
 const failedLogin = ref(false);
 
@@ -30,8 +31,7 @@ onMounted(async () => {
 
     const token = localStorage.getItem("token");
 
-    //TODO: replace with real URI
-    const res = await fetch("http://localhost:3000/auth/check?token=" + token);
+    const res = await fetch(`${CONST.BackendURL}/auth/check?token=${token}`);
     const json_data = await res.json();
 
 

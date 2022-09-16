@@ -115,7 +115,7 @@ onMounted(() => {
         previousBall = game.value.ball;
       }
 
-      const w = Math.max(game_container.value?.offsetWidth, 1);
+      const w = Math.max(Math.min(game_container.value?.offsetWidth, p5.windowHeight), 1);
       p5.resizeCanvas(w, Math.min(w, (w / 4) * 3));
 
       const scalingX = p5.width / 100;
