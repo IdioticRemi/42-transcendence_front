@@ -112,7 +112,9 @@ onMounted(() => {
       ) {
         interpolate(p5);
       } else {
+        // console.log(previousBall.velocityX, previousBall.velocityY);
         previousBall = game.value.ball;
+        // console.log(previousBall.velocityX, previousBall.velocityY);
       }
 
       const w = Math.max(Math.min(game_container.value?.offsetWidth, p5.windowHeight), 1);
