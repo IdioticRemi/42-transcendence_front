@@ -35,13 +35,13 @@ onMounted(async () => {
     const json_data = await res.json();
 
 
-    if (!res.ok || json_data.error) {
+    if (!res.ok || json_data.status === 'error') {
       failedLogin.value = true;
       await store.dispatch("auth/logout");
     } else {
-      const user = json_data.content;
+      const user = json_data.payload;
 
-      await store.dispatch("auth/login", { token, user: json_data.content });
+      await store.dispatch("auth/login", { token, user: json_data.payload });
     }
     sendToHome(true);
   }

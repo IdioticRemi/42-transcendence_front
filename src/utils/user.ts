@@ -10,13 +10,13 @@ export async function sendBackendRequest(path: string, opts?: RequestInit) {
     opts.headers = {};
   opts.headers['Authorization'] = `Bearer ${token}`;
   const res = await fetch(CONST.BackendURL + path, opts);
-  console.debug(res);
+
   if (!res.ok) return null;
 
   try {
     return await res.json();
   } catch {
-    return undefined;
+    return null;
   }
 }
 

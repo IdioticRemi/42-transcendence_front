@@ -42,7 +42,6 @@ const refresh = ref(false);
 const lb = ref(null);
 
 function getColor(n: number, type: string) {
-	console.log(n);
 	if (type === 'wr') {
 		if (n > 65) return 'success';
 		if (n > 48) return 'primary';

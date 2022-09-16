@@ -55,6 +55,10 @@ function joinChannel(channelId: number) {
 async function fetchAvailableChannels() {
   refresh.value = !refresh.value;
   const chans = await getChannels();
+  if (!chans || chans.status === 'error') {
+    store.dispatch("alert/addError", "Failed to fetch channels, (expired token?)");
+    return;
+  }
 
   availableChannels.value.clear();
   chans.payload.forEach((chan: { id: number, name: string }) => {
