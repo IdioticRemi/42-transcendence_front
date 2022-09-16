@@ -43,7 +43,7 @@ let pressedKeys = new Set();
 
 const frameRate = 60;
 
-function interpollate(p5) {
+function interpolate(p5) {
   const tpsToFps = game.value.tps / frameRate;
 
   const playerPad =
@@ -110,7 +110,7 @@ onMounted(() => {
         previousBall.x === game.value.ball.x &&
         previousBall.y === game.value.ball.y
       ) {
-        interpollate(p5);
+        interpolate(p5);
       } else {
         previousBall = game.value.ball;
       }
@@ -183,9 +183,9 @@ onMounted(() => {
 
       p5.noStroke();
       p5.translate(game.value.ball.x * scalingX, game.value.ball.y * scalingY);
-      p5.sphere((game.value.ball.size * scalingX) / 2);
+      p5.sphere((game.value.ball.sizeX * scalingX) / 2);
 
-      // p5.rect(game.value.ball.x * scalingX, game.value.ball.y * scalingY, game.value.ball.size * scalingX, game.value.ball.size * scalingY);
+      // p5.rect(game.value.ball.x * scalingX, game.value.ball.y * scalingY, game.value.ball.sizeX * scalingX, game.value.ball.sizeY * scalingY);
 
       p5.pop();
     };
