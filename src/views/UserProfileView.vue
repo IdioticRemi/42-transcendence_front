@@ -108,7 +108,7 @@
         <h2 class="mb-4">Match History</h2>
         <div v-for="(match, id) in gameHistory" :key="id" class="d-flex-col w-100 w-75-lg card mb-3">
           <h5 class="card-header d-flex">
-               <router-link class="nav-link text-primary me-1" :to="`/profile/${match.playerId}`">{{ user.nickname }}</router-link>vs<router-link class="nav-link text-danger ms-1" :to="`/profile/${match.opponentId}`">{{ match.opponentNick }}</router-link>
+               <router-link class="nav-link text-primary me-1" :to="`/profile/${match.playerId}`">{{ res.payload.nickname }}</router-link>vs<router-link class="nav-link text-danger ms-1" :to="`/profile/${match.opponentId}`">{{ match.opponentNick }}</router-link>
           </h5>
           <div class="row w-100 card-body">
             <div class="col-6">
@@ -203,13 +203,11 @@ function show2faModal() {
 
 onMounted(async () => {
   res.value = await getUser(router.currentRoute.value.params["id"] as string);
-  const r = await sendBackendRequest(`/users/${store.state.auth.user?.id}/games`);
+  const r = await sendBackendRequest(`/users/${res.value?.payload?.id}/games`);
   if (r.status !== 'success') {
     store.dispatch('alert/addError', r.message);
   }
-
-  gameHistory.value = r.payload;
-  console.log(gameHistory.value);
+  gameHistory.value = r.payload.reverse();
 });
 </script>
 
