@@ -5,6 +5,8 @@
       <i class="bi bi-arrow-repeat"></i>
     </button>
   </div>
+  <h5 v-if="!games || !games.length">No games currently running...</h5>
+
   <div
     v-for="(game, id) in games"
     :key="id"

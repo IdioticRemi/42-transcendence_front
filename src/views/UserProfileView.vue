@@ -44,10 +44,10 @@
               <span class="col-sm-8 col-12 text-sm-end">{{ moment(res.payload.createdAt).format("ll [at] HH:mm") }}</span>
             </div>
             <div class="row w-100">
-              <b class="col-sm-4 col-12">K/D</b>
-              <span class="col-sm-8 col-12 text-sm-end">WINS / LOSES</span>
+              <b class="col-sm-4 col-12">Winrate</b>
+              <span class="col-sm-8 col-12 text-sm-end">{{ (winrate * 100).toFixed(2) }}%</span>
             </div>
-            <div class="d-flex flex-row justify-content-end px-4">
+            <div class="d-flex flex-sm-row-reverse justify-content-end-sm pe-sm-4">
               <button :hidden="res.payload.id !== user.id" @click="show2faModal()" class="btn btn-sm btn-primary">2FA Settings
                 <i class="bi bi-gear"></i>
               </button>
@@ -83,15 +83,15 @@
             <span>{{ moment(res.payload.createdAt).format("ll [at] HH:mm") }}</span>
           </div>
           <div class="d-flex justify-content-between w-100">
-            <b>K/D</b>
+            <b>Winrate</b>
             <div>
-              <span class="text-primary">WINS</span> / <span class="text-danger">LOSES</span>
+              {{ (winrate * 100).toFixed(2) }}%
             </div>
-            <div class="d-flex flex-row justify-content-end">
-              <button :hidden="res.payload.id !== user.id" @click="show2faModal()" class="btn btn-sm btn-primary">2FA Settings
-                <i class="bi bi-gear"></i>
-              </button>
-            </div>
+          </div>
+          <div class="d-flex flex-row justify-content-end">
+            <button :hidden="res.payload.id !== user.id" @click="show2faModal()" class="btn btn-sm btn-primary">2FA Settings
+              <i class="bi bi-gear"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -148,11 +148,11 @@ import TwoFactorSettings from "@/components/TwoFactorSettings.vue"
 const editingNickname = ref(false);
 const newNickname = ref("");
 const nickInput = ref(null);
+const gameHistory = ref([]);
 const res = ref(null);
 const user = computed(() => store.state.auth.user);
 const refresh = computed(() => store.state.refreshAvatar);
-
-const gameHistory = ref([]);
+const winrate = computed(() => gameHistory.value.filter(g => g.playerScore > g.opponentScore).length / (gameHistory.value.length || 1));
 
 function toggleEditNickname() {
   if (editingNickname.value)
@@ -208,7 +208,10 @@ onMounted(async () => {
     store.dispatch('alert/addError', r.message);
   }
   gameHistory.value = r.payload.reverse();
+  
 });
+
+
 </script>
 
 <style scoped>
