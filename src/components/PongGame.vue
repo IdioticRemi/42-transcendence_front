@@ -12,18 +12,15 @@
       </h3>
     </div>
     <div v-if="gameInfo" class="d-flex justify-content-between w-100">
-      <router-link :class="`nav-link text-${myUserId === game.p1 ? 'primary' : 'danger'}`" :to="`/profile/${gameInfo.p1}`">{{
+      <router-link :class="`nav-link text-${myUserId === gameInfo.p1 ? 'primary' : 'danger'}`" :to="`/profile/${gameInfo.p1}`">{{
         gameInfo.p1Nick
       }}</router-link>
-      <router-link :class="`nav-link text-${myUserId === game.p2 ? 'primary' : 'danger'}`" :to="`/profile/${gameInfo.p2}`">{{
+      <router-link :class="`nav-link text-${myUserId === gameInfo.p2 ? 'primary' : 'danger'}`" :to="`/profile/${gameInfo.p2}`">{{
         gameInfo.p2Nick
       }}</router-link>
     </div>
     <div ref="game_container" id="game_container" />
   </div>
-  <!-- <div class="d-flex d-lg-none">
-    Please connect on a larger screen to be able to play the amazing pong game!
-  </div> -->
 </template>
 
 <script setup lang="ts">
@@ -49,11 +46,12 @@ function interpolate(p5) {
   const playerPad =
     game.value.p1 === myUserId.value ? game.value.padLeft : game.value.padRight;
   const playerSpeed = playerPad.speed * tpsToFps;
+  const direction = playerPad.reversed;
 
   if (direction === "ArrowDown") {
-    playerPad.y = Math.min(playerPad.y + playerSpeed, 100 - playerPad.height);
+    playerPad.y = Math.min(Math.max(playerPad.y + playerSpeed * direction, 0), 100 - playerPad.height);
   } else if (direction === "ArrowUp") {
-    playerPad.y = Math.max(playerPad.y - playerSpeed, 0);
+    playerPad.y = Math.min(Math.max(playerPad.y - playerSpeed * direction, 0), 100 - playerPad.height);
   }
 
   game.value.ball.x += game.value.ball.velocityX * tpsToFps;
@@ -99,8 +97,6 @@ onMounted(() => {
         !("pause" in game.value) ||
         game.value.pause
       ) {
-        // if (game.value.pause)
-          // previousBall = null;
         return;
       }
 
@@ -115,9 +111,7 @@ onMounted(() => {
       ) {
         interpolate(p5);
       } else {
-        // console.log(previousBall.velocityX, previousBall.velocityY);
         previousBall = game.value.ball;
-        // console.log(previousBall.velocityX, previousBall.velocityY);
       }
 
       const w = Math.max(Math.min(game_container.value?.offsetWidth, p5.windowHeight), 1);
@@ -201,6 +195,23 @@ onMounted(() => {
       // p5.rect(game.value.ball.x * scalingX, game.value.ball.y * scalingY, game.value.ball.sizeX * scalingX, game.value.ball.sizeY * scalingY);
 
       p5.pop();
+
+      if (game.value.type === 'custom') {
+        if (game.value.triggerZone) {
+          p5.push();
+
+          p5.translate(
+            game.value.triggerZone.x * scalingX + (game.value.triggerZone.width * scalingX) / 2,
+            game.value.triggerZone.y * scalingY + (game.value.triggerZone.height * scalingY) / 2,
+            game.value.triggerZone.width / 12 * 7 * scalingX
+          );
+          p5.rotateY(p5.millis() / 1000);
+          p5.noStroke();
+          p5.fill(255, 223, 0);
+          p5.torus((game.value.triggerZone.width * scalingX) / 2, (game.value.triggerZone.width * scalingX) / 2 * (5 / 12));
+          p5.pop();
+        }
+      }
     };
   };
   new libP5(script);
@@ -208,7 +219,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Montserrat&family=Press+Start+2P&display=swap");
 
 body {
   background-color: rgb(194, 194, 194);
