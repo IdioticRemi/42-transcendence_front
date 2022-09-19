@@ -51,7 +51,8 @@ const isPlaying = computed(() => !!store.state.game.gameData);
 
 function logoutUser() {
   store.dispatch("auth/logout");
-  window.location = `${CONST.BackendURL}/`;
+  router.push("/");
+  // window.location = `${CONST.BackendURL}/`;
 }
 
 function loginUser() {
