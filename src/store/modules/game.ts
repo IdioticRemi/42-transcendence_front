@@ -1,5 +1,5 @@
 import {Module} from "vuex";
-import {StoreState} from "@/store";
+import {store, StoreState} from "@/store";
 import { getUser } from "@/utils/user";
 import router from "@/router";
 import moment from "moment";
@@ -153,7 +153,11 @@ export default {
 			state.queueType = null;
 		},
 		SOCKET_game_data(state: GameState, payload) {
-			state.gameData = payload;
+			if (payload && state.gameData) {
+				if (payload.packetId > state.gameData.packetId)
+					state.gameData = payload;
+			} else
+				state.gameData = payload;
 		},
 		SOCKET_game_info(state: GameState, payload) {
 			state.gameInfo = payload;
@@ -167,7 +171,6 @@ export default {
 				state.gameInfo = null;
 				state.gameEnd = null;
 			}, 10e3);
-			// TODO: Mettre dans un truc genre 'gameResult' les donnees de fin de game (score, ...) pour afficher le endgame screen
 		},
 		SOCKET_game_list(state: GameState, payload: GameInfo[]) {
 			state.gameList = payload;

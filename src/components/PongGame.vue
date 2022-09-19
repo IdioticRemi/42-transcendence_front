@@ -114,6 +114,12 @@ onMounted(() => {
         previousBall = game.value.ball;
       }
 
+      p5.ambientLight(60, 60, 60);
+      p5.shininess(50);
+      p5.lightFalloff(1, 0, 0);
+      p5.pointLight(255, 255, 255, 0, -p5.height / 4, 100);
+      p5.specularMaterial(250, 50);
+
       const w = Math.max(Math.min(game_container.value?.offsetWidth, p5.windowHeight), 1);
       p5.resizeCanvas(w, Math.min(w, (w / 4) * 3));
 
@@ -132,7 +138,7 @@ onMounted(() => {
 
       // Back plane
       p5.push();
-
+      p5.normalMaterial();
       p5.translate(0, 0, -5);
       p5.fill(30);
       p5.stroke(200);
@@ -197,7 +203,7 @@ onMounted(() => {
       p5.pop();
 
       if (game.value.type === 'custom') {
-        if (game.value.triggerZone) {
+        if (game.value.triggerZone && game.value.triggerActive) {
           p5.push();
 
           p5.translate(
@@ -212,6 +218,7 @@ onMounted(() => {
           p5.pop();
         }
       }
+
     };
   };
   new libP5(script);
