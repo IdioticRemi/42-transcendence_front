@@ -18,12 +18,12 @@ COPY . .
 RUN rm -f vue.config.js
 
 # add certs for ssl
-RUN apk add openssl
-RUN mkdir -p cert ; openssl req -x509 -nodes -days 360 -newkey rsa:2048 -keyout ./cert/key.pem -out ./cert/cert.pem -subj "/C=FR/ST=Rhone/L=Lyon/O=42Lyon/CN=mdesoeuv"
+# RUN apk add openssl
+# RUN mkdir -p cert ; openssl req -x509 -nodes -days 360 -newkey rsa:2048 -keyout ./cert/key.pem -out ./cert/cert.pem -subj "/C=FR/ST=Rhone/L=Lyon/O=42Lyon/CN=mdesoeuv"
 
 # Build app for production with minification
 RUN npm run build
 
 EXPOSE 8080
-# CMD [ "http-server", "-S", "-C", "cert/cert.pem", "-K", "cert/key.pem", "-o", "dist" ]
-CMD [ "http-server", "dist" ]
+# CMD http-server -S -C cert/cert.pem -K cert/key.pem dist
+CMD npm run serve

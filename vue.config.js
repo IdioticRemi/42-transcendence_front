@@ -10,7 +10,7 @@ const cert = fs.readFileSync('./cert/cert.pem');
 
 module.exports = {
 	devServer: {
-        port: 8081,
+        port: 80,
         https: {key, cert},
     }
 };
