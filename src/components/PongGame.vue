@@ -96,8 +96,11 @@ onMounted(() => {
         !("ball" in game.value) ||
         !("padLeft" in game.value) ||
         !("padRight" in game.value) ||
+        !("pause" in game.value) ||
         game.value.pause
       ) {
+        // if (game.value.pause)
+          // previousBall = null;
         return;
       }
 
