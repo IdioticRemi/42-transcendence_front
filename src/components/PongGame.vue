@@ -12,10 +12,10 @@
       </h3>
     </div>
     <div v-if="gameInfo" class="d-flex justify-content-between w-100">
-      <router-link class="nav-link text-primary" :to="`/profile/${gameInfo.p1}`">{{
+      <router-link :class="`nav-link text-${myUserId === game.p1 ? 'primary' : 'danger'}`" :to="`/profile/${gameInfo.p1}`">{{
         gameInfo.p1Nick
       }}</router-link>
-      <router-link class="nav-link text-primary" :to="`/profile/${gameInfo.p2}`">{{
+      <router-link :class="`nav-link text-${myUserId === game.p2 ? 'primary' : 'danger'}`" :to="`/profile/${gameInfo.p2}`">{{
         gameInfo.p2Nick
       }}</router-link>
     </div>
@@ -151,6 +151,10 @@ onMounted(() => {
       p5.stroke(30);
 
       p5.push();
+      if (game.value.p1 === myUserId.value)
+        p5.fill(62, 62, 255);
+      else if (game.value.p2 === myUserId.value)
+        p5.fill(255, 62, 62);
       p5.translate(
         game.value.padLeft.x * scalingX,
         game.value.padLeft.y * scalingY +
@@ -168,6 +172,10 @@ onMounted(() => {
       p5.pop();
 
       p5.push();
+      if (game.value.p2 === myUserId.value)
+        p5.fill(62, 62, 255);
+      else if (game.value.p1 === myUserId.value)
+        p5.fill(255, 62, 62);
       p5.translate(
         game.value.padRight.x * scalingX,
         game.value.padRight.y * scalingY +

@@ -5,8 +5,8 @@
 				Matchmaking
 			</h2>
 			<button @click="openInviteModal()" class="mb-4 btn btn-outline-primary" :disabled="isQueued || isInGame">
-				Invite
-				<i class="ms-2 bi-person-fill" />
+				<span class="d-none d-md-flex me-md-2">Invite</span>
+				<i class="bi-person-fill" />
 			</button>
 		</div>
 		<div v-if="!isQueued">
@@ -17,8 +17,8 @@
   					<option value="custom">Custom</option>
 				</select>
 				<button @click="startMatchmaking()" class="ms-2 btn btn-outline-success d-flex" :disabled="isInGame">
-					Play
-					<i class="ms-2 bi-play-fill" />
+					<span class="d-none d-md-flex me-md-2">Play</span>
+					<i class="bi-play-fill" />
 				</button>
 				
 			</div>
