@@ -26,4 +26,4 @@ RUN npm run build
 
 EXPOSE 8080
 # CMD http-server -S -C cert/cert.pem -K cert/key.pem dist
-CMD npm run serve
+CMD node server.js
