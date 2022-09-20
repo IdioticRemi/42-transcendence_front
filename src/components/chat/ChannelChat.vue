@@ -7,7 +7,7 @@
           <i class="bi bi-gear" />
         </button>
         <button class="btn btn-primary mx-2" @click="setAction(ChatActions.CHANNEL_USERS)">
-          <i class="bi bi-people" />
+          <i class="bi bi-person-lines-fill" />
         </button>
         <button class="btn btn-primary" @click="unselectChannel()">
           <i class="bi bi-arrow-return-left" />

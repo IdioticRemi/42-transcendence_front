@@ -170,7 +170,7 @@ export default {
 				router.push("/");
 				state.gameInfo = null;
 				state.gameEnd = null;
-			}, 10e3);
+			}, 3e3);
 		},
 		SOCKET_game_list(state: GameState, payload: GameInfo[]) {
 			state.gameList = payload;
