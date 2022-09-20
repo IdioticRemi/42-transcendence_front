@@ -4,7 +4,7 @@
 			<h2 class="mb-4">
 				Matchmaking
 			</h2>
-			<button @click="openInviteModal()" class="mb-4 btn btn-outline-primary" :disabled="isQueued || isInGame">
+			<button @click="openInviteModal()" class="mb-4 btn btn-outline-primary d-flex" :disabled="isQueued || isInGame">
 				<span class="d-none d-md-flex me-md-2">Invite</span>
 				<i class="bi-person-fill" />
 			</button>
