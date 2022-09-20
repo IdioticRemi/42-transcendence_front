@@ -42,4 +42,5 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 a:hover {
   cursor: pointer !important;
 }
+
 </style>
