@@ -58,7 +58,11 @@ const isQueued = computed(() => store.getters["game/isQueued"]);
 
 function inviteUser() {
   if (!targetUser.value) {
-    store.dispatch("alert/addError", "Empty field");
+    store.dispatch("alert/addWarning", "Empty field");
+    return;
+  }
+  if (targetUser.value.length < 4 || targetUser.value.length > 16) {
+    store.dispatch("alert/addWarning", "Nickname length is 4 to 16 characters");
     return;
   }
   store.dispatch("game/inviteUser", { nickname: targetUser.value, type: selectedGameType.value });
