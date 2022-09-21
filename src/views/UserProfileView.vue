@@ -193,7 +193,7 @@ function uploadNewImage(userId: number) {
 }
 
 function changeNickname() {
-  if (newNickname.value.length < 4 || newNickname.value.length > 16 || /^\s*$/.test(newNickname.value)) {
+  if (newNickname.value.trim().length < 4 || newNickname.value.length > 16 || /^\s*$/.test(newNickname.value)) {
       store.dispatch('alert/addError', "Nickname must include 4 to 16 characters");
       return;
   }
