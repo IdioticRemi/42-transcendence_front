@@ -60,6 +60,10 @@ function setAction(action: ChatActions) {
 }
 
 function sendMessage() {
+  if (/^\s*$/.test(messageContent.value)) {
+    return;
+  }
+  
   if (messageContent.value.length > MsgMaxSize) {
     store.dispatch("alert/addWarning", `You cannot send more than ${MsgMaxSize} characters`);
     return;

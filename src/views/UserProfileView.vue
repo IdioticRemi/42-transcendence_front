@@ -34,7 +34,7 @@
             <div class="row w-100">
               <div :hidden="!editingNickname" class="d-flex flex-row">
                 <input :hidden="!editingNickname" ref="nickInput" @keydown.enter="changeNickname()" v-model="newNickname" class="mt-2 form-control form-control-sm me-2" type="text" placeholder="my awesome nickname">
-                <button :hidden="!editingNickname" @click="changeNickname()" class="mt-2 btn btn-sm btn-primary py-0 px-1">
+                <button :hidden="!editingNickname" :disabled="newNickname.length < 4 || newNickname > 16" @click="changeNickname()" class="mt-2 btn btn-sm btn-primary py-0 px-1">
                   <i class="bi-check2" />
                 </button>
               </div>
@@ -74,7 +74,7 @@
           </div>
           <div :hidden="!editingNickname" class="d-flex flex-row">
             <input :hidden="!editingNickname" ref="nickInput" @keydown.enter="changeNickname()" v-model="newNickname" class="mt-2 form-control form-control-sm me-2" type="text" placeholder="my awesome nickname">
-            <button :hidden="!editingNickname" @click="changeNickname()" class="mt-2 btn btn-sm btn-primary py-0 px-1">
+            <button :hidden="!editingNickname" :disabled="newNickname.length < 4 || newNickname > 16" @click="changeNickname()" class="mt-2 btn btn-sm btn-primary py-0 px-1">
               <i class="bi-check2" />
             </button>
           </div>
@@ -193,6 +193,10 @@ function uploadNewImage(userId: number) {
 }
 
 function changeNickname() {
+  if (newNickname.value.length < 4 || newNickname.value.length > 16 || /^\s*$/.test(newNickname.value)) {
+      store.dispatch('alert/addError', "Nickname must include 4 to 16 characters");
+      return;
+  }
   store.dispatch("auth/changeNickname", newNickname.value);
   toggleEditNickname();
 }

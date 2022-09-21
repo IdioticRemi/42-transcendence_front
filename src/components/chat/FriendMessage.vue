@@ -39,6 +39,8 @@ import {ref, computed} from "vue";
 import {store} from "@/store";
 import {FriendStatus} from "@/store/modules/chat";
 import ChatMessage from "@/components/chat/ChatMessage.vue";
+import { MsgMaxSize } from "@/utils/const";
+
 
 const messageContent = ref("");
 const refresh = ref(false);
@@ -50,6 +52,16 @@ const selectedFriend = computed(() => friends.value.get(selected.value === null 
 const messages = computed(() => selectedFriend.value?.messages);
 
 function sendMessage() {
+  if (/^\s*$/.test(messageContent.value)) {
+    return;
+  }
+
+  if (messageContent.value.length > MsgMaxSize) {
+    store.dispatch("alert/addWarning", `You cannot send more than ${MsgMaxSize} characters`);
+    return;
+  }
+
+
   store.dispatch("chat/newFriendMessage", messageContent.value);
   messageContent.value = "";
 }

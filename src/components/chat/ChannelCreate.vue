@@ -53,6 +53,10 @@ function setAction(action: ChatActions) {
 }
 
 function createChannel() {
+  if (channelName.value.length > 100 || channelPassword.value.length > 20) {
+    store.dispatch("alert/addWarning", "Channel name or password too long");
+    return;
+  }
   store.dispatch("chat/createChannel", {
     name: channelName.value,
     private: isChannelPrivate.value,

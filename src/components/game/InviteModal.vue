@@ -19,6 +19,7 @@
             <button
               @click="inviteUser()"
               class="ms-2 btn btn-outline-success d-flex"
+              :disabled="!targetUser"
             >
               Play
               <i class="ms-2 bi-play-fill" />
@@ -56,6 +57,10 @@ const selectedGameType = ref("classic");
 const isQueued = computed(() => store.getters["game/isQueued"]);
 
 function inviteUser() {
+  if (!targetUser.value) {
+    store.dispatch("alert/addError", "Empty field");
+    return;
+  }
   store.dispatch("game/inviteUser", { nickname: targetUser.value, type: selectedGameType.value });
 }
 

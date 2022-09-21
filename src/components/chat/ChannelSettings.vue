@@ -79,6 +79,11 @@ function updateChannel(channelId: number) {
   if (channelId < 0)
     return;
 
+  if (channelName.value.length > 30 || channelPassword.value.length > 20) {
+    store.dispatch("alert/addError", "Channel name or password too long");
+    return;
+  }
+
   store.dispatch("chat/updateChannel", {
     password: channelPassword.value,
     name: channelName.value,
