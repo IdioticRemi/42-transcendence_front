@@ -30,6 +30,8 @@
 import {ref} from "vue";
 import {store} from "@/store";
 import {ChatActions} from "@/store/modules/chat";
+import { channelNameMaxSize, passwordMaxSize } from "@/utils/const";
+
 
 const channelName = ref("");
 const channelPassword = ref("");
@@ -39,6 +41,16 @@ function setAction(action: ChatActions) {
 }
 
 function joinPrivateChannel() {
+  if (!channelName.value.trim()) {
+    store.dispatch("alert/addWarning", "Channel name empty field");
+    return;
+  }
+
+  if (channelName.value.length > channelNameMaxSize || channelPassword.value.length > passwordMaxSize) {
+    store.dispatch("alert/addWarning", "Channel name or password too long");
+    return;
+  }
+
   store.dispatch("chat/joinPrivateChannel", {
     channelName: channelName.value,
     password: channelPassword.value

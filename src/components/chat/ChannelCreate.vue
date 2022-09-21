@@ -43,6 +43,9 @@
 import {ref} from "vue";
 import {store} from "@/store";
 import {ChatActions} from "@/store/modules/chat";
+import { channelNameMaxSize, passwordMaxSize } from "@/utils/const";
+
+
 
 const channelName = ref("");
 const channelPassword = ref("");
@@ -53,7 +56,7 @@ function setAction(action: ChatActions) {
 }
 
 function createChannel() {
-  if (channelName.value.length > 100 || channelPassword.value.length > 20) {
+  if (channelName.value.length > channelNameMaxSize || channelPassword.value.length > passwordMaxSize) {
     store.dispatch("alert/addWarning", "Channel name or password too long");
     return;
   }
