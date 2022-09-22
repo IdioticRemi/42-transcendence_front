@@ -4,7 +4,6 @@ import { getUser } from "@/utils/user";
 import router from "@/router";
 import moment from "moment";
 
-// TODO: Typer gameData
 export interface GameState {
 	queueType: string | null;
 	inviteList: Invite[];
@@ -24,7 +23,6 @@ export interface GameEnd {
 }
 
 
-// interface Gameinfo extends Game
 export interface GameInfo {
 	id?: string;
 	p1: number;
