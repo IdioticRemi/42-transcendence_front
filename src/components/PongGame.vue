@@ -12,12 +12,20 @@
       </h3>
     </div>
     <div v-if="gameInfo" class="d-flex justify-content-between w-100">
-      <router-link :class="`nav-link text-${myUserId === gameInfo.p1 ? 'primary' : 'danger'}`" :to="`/profile/${gameInfo.p1}`">{{
-        gameInfo.p1Nick
-      }}</router-link>
-      <router-link :class="`nav-link text-${myUserId === gameInfo.p2 ? 'primary' : 'danger'}`" :to="`/profile/${gameInfo.p2}`">{{
-        gameInfo.p2Nick
-      }}</router-link>
+      <router-link
+        :class="`nav-link text-${
+          myUserId === gameInfo.p1 ? 'primary' : 'danger'
+        }`"
+        :to="`/profile/${gameInfo.p1}`"
+        >{{ gameInfo.p1Nick }}</router-link
+      >
+      <router-link
+        :class="`nav-link text-${
+          myUserId === gameInfo.p2 ? 'primary' : 'danger'
+        }`"
+        :to="`/profile/${gameInfo.p2}`"
+        >{{ gameInfo.p2Nick }}</router-link
+      >
     </div>
     <div ref="game_container" id="game_container" />
   </div>
@@ -37,6 +45,7 @@ const myUserId = computed(() => store.state.auth.user?.id);
 let direction = "Stop";
 let previousBall = null;
 let pressedKeys = new Set();
+let bgImage = null;
 
 const frameRate = 60;
 
@@ -49,9 +58,15 @@ function interpolate(p5) {
   const direction = playerPad.reversed;
 
   if (direction === "ArrowDown") {
-    playerPad.y = Math.min(Math.max(playerPad.y + playerSpeed * direction, 0), 100 - playerPad.height);
+    playerPad.y = Math.min(
+      Math.max(playerPad.y + playerSpeed * direction, 0),
+      100 - playerPad.height
+    );
   } else if (direction === "ArrowUp") {
-    playerPad.y = Math.min(Math.max(playerPad.y - playerSpeed * direction, 0), 100 - playerPad.height);
+    playerPad.y = Math.min(
+      Math.max(playerPad.y - playerSpeed * direction, 0),
+      100 - playerPad.height
+    );
   }
 
   game.value.ball.x += game.value.ball.velocityX * tpsToFps;
@@ -65,6 +80,7 @@ onMounted(() => {
       pongCanvas.parent("game_container");
 
       p5.frameRate(frameRate);
+      bgImage = p5.loadImage("../pong_background.jpg");
     };
 
     p5.keyReleased = (_) => {
@@ -114,25 +130,29 @@ onMounted(() => {
         previousBall = game.value.ball;
       }
 
-      p5.ambientLight(60, 60, 60);
-      p5.shininess(50);
-      p5.lightFalloff(1, 0, 0);
-      p5.pointLight(255, 255, 255, 0, -p5.height / 4, 100);
-      p5.specularMaterial(250, 50);
+      if (game.value.type === "custom") {
+        p5.ambientLight(60, 60, 60);
+        p5.shininess(50);
+        p5.lightFalloff(1, 0, 0);
+        p5.pointLight(255, 255, 255, 0, -p5.height / 4, 100);
+        p5.specularMaterial(250, 50);
+      }
 
-      const w = Math.max(Math.min(game_container.value?.offsetWidth, p5.windowHeight), 1);
+      const w = Math.max(
+        Math.min(game_container.value?.offsetWidth, p5.windowHeight),
+        1
+      );
       p5.resizeCanvas(w, Math.min(w, (w / 4) * 3));
 
       const scalingX = p5.width / 100;
       const scalingY = p5.height / 100;
 
-      // 3D
-
-      p5.rotateX(p5.PI / 6);
-      p5.translate(-p5.width / 2, (-p5.height / 12) * 9, -p5.width / 6);
-
-      // 2D
-      // p5.translate(-p5.width / 2, -p5.height / 2);
+      if (game.value.type === "classic") {
+        p5.translate(-p5.width / 2, -p5.height / 2);
+      } else {
+        p5.rotateX(p5.PI / 6);
+        p5.translate(-p5.width / 2, (-p5.height / 12) * 9, -p5.width / 6);
+      }
 
       p5.background(0);
 
@@ -140,11 +160,38 @@ onMounted(() => {
       p5.push();
       p5.normalMaterial();
       p5.translate(0, 0, -5);
-      p5.fill(30);
-      p5.stroke(200);
+      if (game.value.type === "classic") {
+        p5.fill(0);
+        p5.stroke(255);
+      } else {
+        p5.fill(30);
+        p5.stroke(200);
+      }
       p5.rect(-5, -5, 100 * scalingX + 10, 100 * scalingY + 10);
 
+      if (game.value.type === 'custom') {
+        p5.noStroke();
+        p5.translate(p5.width / 2, p5.height / 2, -6);
+        p5.texture(bgImage);
+        p5.plane(200 * scalingX, 200 * scalingY);
+      }
+
       p5.pop();
+
+      // LINES CENTER
+      if (game.value.type === 'classic') {
+        p5.push();
+        p5.translate(0, 0, 0);
+        for (let i = 0; i <= 100; i += 10) {
+          p5.rect(
+            49 * scalingX,
+            i * scalingY,
+            1 * scalingX,
+            6 * scalingY
+          );
+        }
+        p5.pop();
+      }
 
       // Pads / Ball
       p5.fill(255);
@@ -155,70 +202,100 @@ onMounted(() => {
         p5.fill(62, 62, 255);
       else if (game.value.p2 === myUserId.value)
         p5.fill(255, 62, 62);
-      p5.translate(
-        game.value.padLeft.x * scalingX,
-        game.value.padLeft.y * scalingY +
-          (game.value.padLeft.height * scalingY) / 2,
-        5
-      );
 
-      p5.box(
-        game.value.padLeft.width * scalingX,
-        game.value.padLeft.height * scalingY,
-        game.value.padLeft.width * scalingX
-      );
-      // p5.rect(game.value.padLeft.x * scalingX, game.value.padLeft.y * scalingY, game.value.padLeft.width * scalingX, game.value.padLeft.height * scalingY);
+      if (game.value.type === "classic") {
+        p5.rect(
+          game.value.padLeft.x * scalingX,
+          game.value.padLeft.y * scalingY,
+          game.value.padLeft.width * scalingX,
+          game.value.padLeft.height * scalingY
+        );
+      } else {
+        p5.translate(
+          game.value.padLeft.x * scalingX,
+          game.value.padLeft.y * scalingY + (game.value.padLeft.height * scalingY) / 2,
+          5
+        );
+
+        p5.box(
+          game.value.padLeft.width * scalingX,
+          game.value.padLeft.height * scalingY,
+          game.value.padLeft.width * scalingX
+        );
+      }
 
       p5.pop();
 
       p5.push();
-      if (game.value.p2 === myUserId.value)
+      if (game.value.p2 === myUserId.value) 
         p5.fill(62, 62, 255);
       else if (game.value.p1 === myUserId.value)
         p5.fill(255, 62, 62);
-      p5.translate(
+
+      if (game.value.type === "classic") {
+        p5.rect(
+          game.value.padRight.x * scalingX,
+          game.value.padRight.y * scalingY,
+          game.value.padRight.width * scalingX,
+          game.value.padRight.height * scalingY
+        );
+      } else {
+        p5.translate(
         game.value.padRight.x * scalingX,
         game.value.padRight.y * scalingY +
           (game.value.padRight.height * scalingY) / 2,
         5
-      );
+        );
 
-      p5.box(
-        game.value.padRight.width * scalingX,
-        game.value.padRight.height * scalingY,
-        game.value.padLeft.width * scalingX
-      );
-      // p5.rect(game.value.padRight.x * scalingX, game.value.padRight.y * scalingY, game.value.padRight.width * scalingX, game.value.padRight.height * scalingY);
+        p5.box(
+          game.value.padRight.width * scalingX,
+          game.value.padRight.height * scalingY,
+          game.value.padLeft.width * scalingX
+        );
+      }
 
       p5.pop();
 
       p5.push();
 
       p5.noStroke();
-      p5.translate(game.value.ball.x * scalingX, game.value.ball.y * scalingY);
-      p5.sphere((game.value.ball.sizeX * scalingX) / 2);
-
-      // p5.rect(game.value.ball.x * scalingX, game.value.ball.y * scalingY, game.value.ball.sizeX * scalingX, game.value.ball.sizeY * scalingY);
+      p5.fill(255);
+      
+      if (game.value.type === 'classic') {
+        p5.rect(
+          game.value.ball.x * scalingX,
+          game.value.ball.y * scalingY,
+          game.value.ball.sizeX * scalingX,
+          game.value.ball.sizeY * scalingY
+        );
+      } else {
+        p5.translate(game.value.ball.x * scalingX, game.value.ball.y * scalingY);
+        p5.sphere((game.value.ball.sizeX * scalingX) / 2);
+      }
 
       p5.pop();
 
-      if (game.value.type === 'custom') {
+      if (game.value.type === "custom") {
         if (game.value.triggerZone && game.value.triggerActive) {
           p5.push();
 
           p5.translate(
-            game.value.triggerZone.x * scalingX + (game.value.triggerZone.width * scalingX) / 2,
-            game.value.triggerZone.y * scalingY + (game.value.triggerZone.height * scalingY) / 2,
-            game.value.triggerZone.width / 12 * 7 * scalingX
+            game.value.triggerZone.x * scalingX +
+              (game.value.triggerZone.width * scalingX) / 2,
+            game.value.triggerZone.y * scalingY +
+              (game.value.triggerZone.height * scalingY) / 2,
+            (game.value.triggerZone.width / 12) * 7 * scalingX
           );
           p5.rotateY(p5.millis() / 1000);
           p5.noStroke();
           p5.fill(255, 223, 0);
-          p5.torus((game.value.triggerZone.width * scalingX) / 2, (game.value.triggerZone.width * scalingX) / 2 * (5 / 12));
+          p5.torus(
+            (game.value.triggerZone.width * scalingX) / 2,
+            ((game.value.triggerZone.width * scalingX) / 2) * (5 / 12)
+          );
           p5.pop();
         }
       }
-
     };
   };
   new libP5(script);
@@ -226,7 +303,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
 body {
   background-color: rgb(194, 194, 194);
 }
