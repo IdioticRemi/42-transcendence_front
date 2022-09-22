@@ -3,9 +3,6 @@ FROM node:lts-alpine
 # make the 'app' folder the current working directory
 WORKDIR /app
 
-# install simple http server for serving static content
-RUN npm install -g http-server
-
 # copy both 'package.json' and 'package-lock.json' (if available)
 COPY package*.json .
 
