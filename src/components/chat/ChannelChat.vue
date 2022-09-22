@@ -37,7 +37,6 @@ import {ref, computed, onMounted, onUnmounted} from "vue";
 import {store} from "@/store";
 import {ChatActions} from "@/store/modules/chat";
 import ChatMessage from "@/components/chat/ChatMessage.vue";
-import moment from "moment";
 import { MsgMaxSize } from "@/utils/const"
 
 let interval;

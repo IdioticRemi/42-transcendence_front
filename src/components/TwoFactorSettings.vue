@@ -74,7 +74,8 @@ async function enable2fa() {
     },
   });
   if (r.status === "success") {
-    store.state.auth.user!.otp_enabled = true;
+    if (store.state.auth.user)
+      store.state.auth.user.otp_enabled = true;
     store.dispatch("alert/addSuccess", "2FA is now enabled on your account");
     close2faModal();
   } else store.dispatch("alert/addError", r.message);
@@ -82,7 +83,8 @@ async function enable2fa() {
 async function disable2fa() {
   const r = await sendBackendRequest("/auth/disable-2fa", { method: "POST" });
   if (r.status === "success") {
-    store.state.auth.user!.otp_enabled = false;
+    if (store.state.auth.user)
+      store.state.auth.user.otp_enabled = false;
     store.dispatch("alert/addSuccess", "2FA is now disabled on your account");
     close2faModal();
   } else {

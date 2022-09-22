@@ -47,7 +47,6 @@ import { ref, computed } from "vue";
 const selectedGameType = ref("classic");
 const isQueued = computed(() => store.getters["game/isQueued"]);
 const isInGame = computed(() => store.getters["game/isInGame"]);
-const queueType = computed(() => store.state.game.queueType);
 
 function startMatchmaking() {
 	store.dispatch("game/addQueue", selectedGameType.value);

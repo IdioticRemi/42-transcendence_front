@@ -49,7 +49,7 @@ let bgImage = null;
 
 const frameRate = 60;
 
-function interpolate(p5) {
+function interpolate() {
   const tpsToFps = game.value.tps / frameRate;
 
   const playerPad =
@@ -75,7 +75,7 @@ function interpolate(p5) {
 
 onMounted(() => {
   const script = function (p5) {
-    p5.setup = (_) => {
+    p5.setup = () => {
       let pongCanvas = p5.createCanvas(1, 1, p5.WEBGL);
       pongCanvas.parent("game_container");
 
@@ -83,7 +83,7 @@ onMounted(() => {
       bgImage = p5.loadImage("../pong_background.jpg");
     };
 
-    p5.keyReleased = (_) => {
+    p5.keyReleased = () => {
       if (gameEnd.value) return;
       if (["ArrowUp", "ArrowDown"].includes(p5.key)) {
         pressedKeys.delete(p5.key);
@@ -94,7 +94,7 @@ onMounted(() => {
       }
     };
 
-    p5.keyPressed = (_) => {
+    p5.keyPressed = () => {
       if (gameEnd.value) return;
 
       if (["ArrowUp", "ArrowDown"].includes(p5.key)) {
@@ -104,7 +104,7 @@ onMounted(() => {
       }
     };
 
-    p5.draw = (_) => {
+    p5.draw = () => {
       if (
         !game.value ||
         !("ball" in game.value) ||
@@ -125,7 +125,7 @@ onMounted(() => {
         previousBall.x === game.value.ball.x &&
         previousBall.y === game.value.ball.y
       ) {
-        interpolate(p5);
+        interpolate();
       } else {
         previousBall = game.value.ball;
       }
@@ -184,7 +184,7 @@ onMounted(() => {
         p5.translate(0, 0, 0);
         for (let i = 0; i <= 100; i += 10) {
           p5.rect(
-            49 * scalingX,
+            49.5 * scalingX,
             i * scalingY,
             1 * scalingX,
             6 * scalingY

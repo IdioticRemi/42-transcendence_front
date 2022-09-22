@@ -32,7 +32,6 @@ const connected = computed(() => store.getters["auth/isConnected"]);
 const invites = computed(() => store.state.game.inviteList);
 const isInviting = computed(() => store.state.game.isInviting);
 const show2faModal = computed(() => store.state.show2faModal);
-const show2faCodeModal = computed(() => store.state.show2faCodeModal);
 
 import "bootstrap/dist/js/bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";

@@ -1,16 +1,16 @@
 <template>
-	<div class="">
+	<div>
     <h3 class="mb-4">Two-Factor Authentication</h3>
-    <input @keydown.enter="sendCode()" type="text" v-model="code" placeholder="input 6-digit Code..." class="form-control mb-2" />
+    <input @keydown.enter="sendCode()" type="text" v-model="code" placeholder="6-digit code..." class="form-control mb-2" />
 
     <div class="d-flex justify-content-between">
       <button 
         @click="sendCode()"
         class="btn btn-primary justify-content-around d-flex w-100"
       >
-      <div class="">
-                Authenticate
-      </div>
+        <div>
+          Authenticate
+        </div>
       </button>
     </div>
   </div>
@@ -21,8 +21,6 @@ import { computed, onMounted, ref } from "vue";
 import { store } from "@/store";
 import { sendBackendRequest } from "@/utils/user";
 import router from "@/router";
-
-// const show2faCodeModal = computed(() => store.state.show2faCodeModal);
 
 const code = ref("");
 let userId: string | null;
@@ -49,12 +47,7 @@ async function sendCode() {
   else {
     store.dispatch("alert/addError", r.message);
   }
-  // close2faCodeModal();
 }
-
-// function close2faCodeModal() {
-//   store.state.show2faCodeModal = false;
-// }
 
 </script>
 
