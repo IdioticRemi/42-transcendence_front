@@ -22,7 +22,7 @@
             v-if="user.hasOwnProperty('username')"
             class="rounded"
             style="object-fit: cover; width: 40px; height: 40px"
-            :src="`${CONST.BackendURL}/users/avatar/${user.id}/${refresh}`"
+            :src="`${BackendURL}/users/avatar/${user.id}/${refresh}`"
             alt="profile picture"
           />
         </router-link>
@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import CONST from "@/utils/const";
+import { BackendURL } from "@/utils/const";
 import { store } from "@/store";
 import { computed, onMounted } from "vue";
 import router from "@/router";
@@ -52,11 +52,11 @@ const isPlaying = computed(() => !!store.state.game.gameData);
 function logoutUser() {
   store.dispatch("auth/logout");
   router.push("/");
-  // window.location = `${CONST.BackendURL}/`;
+  // window.location = `${BackendURL}/`;
 }
 
 function loginUser() {
-  window.location = `${CONST.BackendURL}/auth`;
+  window.location = `${BackendURL}/auth`;
 }
 
 onMounted(async () => {

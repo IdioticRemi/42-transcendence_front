@@ -4,9 +4,9 @@ import router from "./router";
 import { store } from "./store";
 import VueSocketIO from "vue-3-socket.io";
 import SocketIO from "socket.io-client"
-import CONST from "@/utils/const"
+import {BackendURL} from "@/utils/const"
 
-const instance = SocketIO(CONST.BackendURL, { autoConnect: false });
+const instance = SocketIO(BackendURL, { autoConnect: false });
 
 createApp(App)
   .use(store)

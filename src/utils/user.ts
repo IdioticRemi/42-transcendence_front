@@ -1,5 +1,5 @@
 import { store } from "@/store";
-import CONST from "@/utils/const";
+import { BackendURL } from "@/utils/const";
 
 export async function sendBackendRequest(path: string, opts?: RequestInit) {
   const token = store.state.auth.token;
@@ -9,7 +9,7 @@ export async function sendBackendRequest(path: string, opts?: RequestInit) {
   if (!opts.headers)
     opts.headers = {};
   opts.headers['Authorization'] = `Bearer ${token}`;
-  const res = await fetch(CONST.BackendURL + path, opts);
+  const res = await fetch(BackendURL + path, opts);
 
   if (!res.ok) return null;
 
