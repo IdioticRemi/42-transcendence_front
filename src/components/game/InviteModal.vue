@@ -57,11 +57,11 @@ const selectedGameType = ref("classic");
 const isQueued = computed(() => store.getters["game/isQueued"]);
 
 function inviteUser() {
-  if (!targetUser.value) {
+  if (!targetUser.value || /^\s*$/.test(targetUser.value)) {
     store.dispatch("alert/addWarning", "Empty field");
     return;
   }
-  if (targetUser.value.length < 4 || targetUser.value.length > 16) {
+  if (targetUser.value.trim().length < 4 || targetUser.value.length > 16) {
     store.dispatch("alert/addWarning", "Nickname length is 4 to 16 characters");
     return;
   }

@@ -62,6 +62,8 @@
 import {computed, ref} from "vue";
 import {store} from "@/store";
 import {ChatActions} from "@/store/modules/chat";
+import { channelNameMaxSize, passwordMaxSize } from "@/utils/const";
+
 
 const selected = computed(() => store.state.chat.selected);
 const user = computed(() => store.state.auth.user);
@@ -79,8 +81,8 @@ function updateChannel(channelId: number) {
   if (channelId < 0)
     return;
 
-  if (channelName.value.length > 30 || channelPassword.value.length > 20) {
-    store.dispatch("alert/addError", "Channel name or password too long");
+  if (channelName.value.length > channelNameMaxSize || channelPassword.value.length > passwordMaxSize) {
+    store.dispatch("alert/addWarning", "Channel name or password too long");
     return;
   }
 

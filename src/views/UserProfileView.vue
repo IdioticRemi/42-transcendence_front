@@ -139,7 +139,7 @@
 import { ref, onMounted, computed } from "vue";
 import router from "@/router";
 import { getUser, sendBackendRequest } from "@/utils/user";
-import CONST from "@/utils/const";
+import { nicknameMinSize, nicknameMaxSize } from "@/utils/const";
 import moment from "moment";
 import { store } from "@/store";
 import { Game } from "@/store/modules/game";
@@ -193,8 +193,8 @@ function uploadNewImage(userId: number) {
 }
 
 function changeNickname() {
-  if (newNickname.value.trim().length < 4 || newNickname.value.length > 16 || /^\s*$/.test(newNickname.value)) {
-      store.dispatch('alert/addError', "Nickname must include 4 to 16 characters");
+  if (newNickname.value.trim().length < nicknameMinSize || newNickname.value.length > nicknameMaxSize || /^\s*$/.test(newNickname.value)) {
+      store.dispatch('alert/addError', `Nickname must include ${nicknameMinSize} to ${nicknameMaxSize} characters`);
       return;
   }
   store.dispatch("auth/changeNickname", newNickname.value);
