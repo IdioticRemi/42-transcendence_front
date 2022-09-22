@@ -31,17 +31,16 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed, onMounted, onUnmounted, defineProps} from "vue";
+import {ref, computed, defineProps} from "vue";
 import {store} from "@/store";
 import moment from "moment";
-import { getUser } from "@/utils/user";
 
 const props = defineProps(['msg', 'myUserId', 'refresh']);
 const showSettings = ref(false);
 const isQueued = computed(() => store.getters["game/isQueued"]);
 const isInGame = computed(() => store.getters["game/isInGame"]);
 
-function toggleMessageSettings(messageId: number) {
+function toggleMessageSettings() {
   showSettings.value = !showSettings.value;
 }
 

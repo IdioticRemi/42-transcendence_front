@@ -1,6 +1,5 @@
 import {Module} from "vuex";
 import {StoreState} from "@/store";
-import { useRoute } from "vue-router";
 
 export interface AuthState {
   token: string | null;

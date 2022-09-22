@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { store } from "@/store";
-import { ref, computed, onMounted, defineProps } from "vue";
+import { defineProps } from "vue";
 
 const props = defineProps(["invite"]);
 

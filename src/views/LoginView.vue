@@ -41,7 +41,7 @@ onMounted(async () => {
     } else {
       const user = json_data.payload;
 
-      await store.dispatch("auth/login", { token, user: json_data.payload });
+      await store.dispatch("auth/login", { token, user });
     }
     sendToHome(true);
   }

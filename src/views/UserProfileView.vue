@@ -142,8 +142,6 @@ import { getUser, sendBackendRequest } from "@/utils/user";
 import { BackendURL, nicknameMinSize, nicknameMaxSize } from "@/utils/const";
 import moment from "moment";
 import { store } from "@/store";
-import { Game } from "@/store/modules/game";
-import TwoFactorSettings from "@/components/TwoFactorSettings.vue"
 
 const editingNickname = ref(false);
 const newNickname = ref("");

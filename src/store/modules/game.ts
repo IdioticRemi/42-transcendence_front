@@ -1,14 +1,14 @@
 import {Module} from "vuex";
-import {store, StoreState} from "@/store";
+import {StoreState} from "@/store";
 import { getUser } from "@/utils/user";
 import router from "@/router";
-import moment from "moment";
 
 export interface GameState {
 	queueType: string | null;
 	inviteList: Invite[];
 	isInviting: boolean;
 	inviteTarget: string;
+	// eslint-disable-next-line
 	gameData: any;
 	gameEnd: GameEnd | null;
 	gameInfo: GameInfo | null;
@@ -80,7 +80,7 @@ export default {
 			dispatch("alert/addSuccess", `Sent invite to ${payload.nickname}`, { root: true });
 			commit("setQueueType", payload.type);
 		},
-		SOCKET_game_invite_cancel({ store, dispatch, commit }) {
+		SOCKET_game_invite_cancel({ dispatch, commit }) {
 			dispatch("alert/addSuccess", `Cancelled invite successfully`, { root: true });
 			commit("setQueueType", null);
 		},
@@ -132,7 +132,7 @@ export default {
 		setQueueType(state: GameState, payload: string) {
 			state.queueType = payload;
 		},
-		SOCKET_game_found(state: GameState, payload: Invite) {
+		SOCKET_game_found(state: GameState) {
 			state.queueType = null;
 			state.gameEnd = null;
 			router.push("/pong");
@@ -143,10 +143,10 @@ export default {
 		SOCKET_game_invite_del(state: GameState, payload: Invite) {
 			state.inviteList = state.inviteList.filter(i => i.id !== payload.id && i.type !== payload.type);
 		},
-		SOCKET_game_invite_accepted(state: GameState, payload: Invite) {
+		SOCKET_game_invite_accepted(state: GameState) {
 			state.isInviting = false;
 		},
-		SOCKET_game_invite_refused(state: GameState, payload: Invite) {
+		SOCKET_game_invite_refused(state: GameState) {
 			state.isInviting = false;
 			state.queueType = null;
 		},
