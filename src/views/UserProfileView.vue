@@ -194,7 +194,7 @@ function uploadNewImage(userId: number) {
 
 function changeNickname() {
   if (newNickname.value.trim().length < nicknameMinSize || newNickname.value.length > nicknameMaxSize || /^\s*$/.test(newNickname.value)) {
-      store.dispatch('alert/addError', `Nickname must include ${nicknameMinSize} to ${nicknameMaxSize} characters`);
+      store.dispatch('alert/addWarning', `Nickname must include ${nicknameMinSize} to ${nicknameMaxSize} characters`);
       return;
   }
   store.dispatch("auth/changeNickname", newNickname.value);
