@@ -139,7 +139,7 @@
 import { ref, onMounted, computed } from "vue";
 import router from "@/router";
 import { getUser, sendBackendRequest } from "@/utils/user";
-import { nicknameMinSize, nicknameMaxSize } from "@/utils/const";
+import { BackendURL, nicknameMinSize, nicknameMaxSize } from "@/utils/const";
 import moment from "moment";
 import { store } from "@/store";
 import { Game } from "@/store/modules/game";
@@ -171,8 +171,7 @@ function uploadNewImage(userId: number) {
   input.accept="image/png, image/jpeg";
   input.onchange = async (event) => {
     const file = event.target?.files[0];
-    console.debug(file);
-    if (!file) { console.debug("Could not get file to upload"); return; }
+    if (!file) { return; }
     const formData = new FormData();
     formData.append('file', file, file.name);
 

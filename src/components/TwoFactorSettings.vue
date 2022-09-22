@@ -73,7 +73,6 @@ async function enable2fa() {
       "Content-Type": "application/json",
     },
   });
-  console.debug(r);
   if (r.status === "success") {
     store.state.auth.user!.otp_enabled = true;
     store.dispatch("alert/addSuccess", "2FA is now enabled on your account");

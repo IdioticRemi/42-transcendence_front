@@ -44,7 +44,6 @@ function toggleMessageSettings(messageId: number) {
 }
 
 function getDateFromNow(date: string) {
-  console.log(date);
   return moment(new Date(date).getTime() - (new Date().getTimezoneOffset() * 60e3)).fromNow();
 }
 
