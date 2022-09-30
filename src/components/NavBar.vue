@@ -50,9 +50,8 @@ const refresh = computed(() => store.state.refreshAvatar);
 const isPlaying = computed(() => !!store.state.game.gameData);
 
 function logoutUser() {
-  store.dispatch("auth/logout");
   router.push("/");
-  // window.location = `${BackendURL}/`;
+  store.dispatch("auth/logout");
 }
 
 function loginUser() {

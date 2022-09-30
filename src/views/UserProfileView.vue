@@ -203,9 +203,11 @@ function show2faModal() {
 }
 
 onMounted(async () => {
+  if (!store.getters["auth/isConnected"])
+    return;
   res.value = await getUser(router.currentRoute.value.params["id"] as string);
   const r = await sendBackendRequest(`/users/${res.value?.payload?.id}/games`);
-  if (r.status !== 'success') {
+  if (!r || r.status !== 'success') {
     store.dispatch('alert/addError', r.message);
   }
   gameHistory.value = r.payload.reverse();

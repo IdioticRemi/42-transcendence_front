@@ -1,4 +1,4 @@
-export const BackendURL = "http://10.3.9.5:3000";
+export const BackendURL = "http://10.3.7.5:3000";
 export const MsgMaxSize = 500; // linked to Backend
 export const channelNameMaxSize = 30;
 export const passwordMaxSize = 20;

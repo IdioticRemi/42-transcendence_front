@@ -56,8 +56,10 @@ onMounted(() => {
 });
 
 async function generateQRcode() {
+  if (twoFactorEnabled.value)
+    return;
   const r = await sendBackendRequest("/auth/generate", { method: "POST" });
-  if (r.status === "success") {
+  if (r && r.status === "success") {
     qrcodeURI.value = r.payload;
     qrcode.value = true;
   }
